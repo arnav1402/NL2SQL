@@ -1,0 +1,122 @@
+from __future__ import annotations
+
+from typing import Any
+
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, ConfigDict, model_validator
+
+from app.connection import connection_manager
+from app.core.exceptions import ConnectionNotFoundError
+
+router = APIRouter(prefix="/connection", tags=["connection"])
+
+
+class ConnectionRequestBase(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    db_type: str
+
+
+class PostgreSQLConnectionRequest(ConnectionRequestBase):
+    host: str = "localhost"
+    port: int = 5432
+    username: str = "postgres"
+    password: str = "postgres"
+    database: str = "postgres"
+    schema: str = "public"
+
+
+class MySQLConnectionRequest(ConnectionRequestBase):
+    host: str = "localhost"
+    port: int = 3306
+    username: str = "root"
+    password: str = ""
+    database: str = "mysql"
+
+
+class SQLiteConnectionRequest(ConnectionRequestBase):
+    sqlite_path: str = "./data/mydb.db"
+
+    @model_validator(mode="after")
+    def validate_sqlite(self) -> "SQLiteConnectionRequest":
+        if not self.sqlite_path:
+            raise ValueError("sqlite_path is required for sqlite connections")
+        return self
+
+
+class ConnectionResponse(BaseModel):
+    connection_id: str
+    status: str
+    tables_indexed: int
+
+
+class ConnectionMetadataResponse(BaseModel):
+    connection_id: str
+    db_type: str
+    dialect: str
+    namespace: str
+    database_name: str
+    created_at: str
+    last_used_at: str
+    schema_version: int
+
+
+def _build_request_model(payload: dict) -> BaseModel:
+    db_type = payload.get("db_type")
+    if db_type == "postgresql":
+        return PostgreSQLConnectionRequest(**payload)
+    if db_type == "mysql":
+        return MySQLConnectionRequest(**payload)
+    if db_type == "sqlite":
+        return SQLiteConnectionRequest(**payload)
+    raise ValueError("Unsupported db_type")
+
+
+@router.post("", response_model=ConnectionResponse)
+def create_connection(payload: dict[str, Any]) -> ConnectionResponse:
+    try:
+        request_model = _build_request_model(payload)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    if request_model.db_type == "postgresql":
+        params = {
+            "host": request_model.host,
+            "port": request_model.port,
+            "username": request_model.username,
+            "password": request_model.password,
+            "database": request_model.database,
+            "schema": request_model.schema,
+        }
+    elif request_model.db_type == "mysql":
+        params = {
+            "host": request_model.host,
+            "port": request_model.port,
+            "username": request_model.username,
+            "password": request_model.password,
+            "database": request_model.database,
+        }
+    else:
+        params = {"sqlite_path": request_model.sqlite_path}
+
+    connection_id = connection_manager.create_connection(request_model.db_type, **params)
+    metadata = connection_manager.get_connection(connection_id)
+    tables_indexed = len(getattr(metadata.engine, "table_names", lambda: [])())
+    return ConnectionResponse(connection_id=connection_id, status="connected", tables_indexed=tables_indexed)
+
+
+@router.delete("/{connection_id}")
+def delete_connection(connection_id: str) -> dict:
+    try:
+        connection_manager.remove_connection(connection_id)
+    except ConnectionNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return {"status": "deleted", "connection_id": connection_id}
+
+
+@router.get("/{connection_id}", response_model=ConnectionMetadataResponse)
+def get_connection(connection_id: str) -> ConnectionMetadataResponse:
+    try:
+        metadata = connection_manager.get_connection(connection_id)
+    except ConnectionNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return ConnectionMetadataResponse(**metadata.to_dict())
