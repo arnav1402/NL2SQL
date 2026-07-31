@@ -8,8 +8,10 @@ from uuid import uuid4
 
 from app.connection.engine_factory import build_engine_from_params, test_connection
 from app.connection.metadata import ConnectionMetadata
-from app.core.exceptions import ConnectionNotFoundError
+from app.core.exceptions import ConnectionNotFoundError, UnsupportedDialectError
+from app.db.connector import get_sqlglot_dialect
 from app.db.inspector import get_table_cards
+from app.utils.logger import logger
 from app.vectordb.pinecone import delete_namespace, upsert_schema_cards
 
 
@@ -31,11 +33,17 @@ class ConnectionManager:
 
         for connection_id, item in payload.items():
             try:
+                raw_dialect = item.get("dialect", item.get("db_type", "unknown"))
+                try:
+                    dialect = get_sqlglot_dialect(raw_dialect)
+                except UnsupportedDialectError:
+                    dialect = raw_dialect
+
                 metadata = ConnectionMetadata(
                     connection_id=connection_id,
                     db_type=item.get("db_type", "unknown"),
                     engine=None,
-                    dialect=item.get("dialect", "unknown"),
+                    dialect=dialect,
                     namespace=item.get("namespace", f"ns-{connection_id}"),
                     database_name=item.get("database_name", "unknown"),
                     created_at=datetime.fromisoformat(item.get("created_at", datetime.now(timezone.utc).isoformat())),
@@ -67,7 +75,7 @@ class ConnectionManager:
 
         connection_id = str(uuid4())
         namespace = f"ns-{connection_id}"
-        dialect = db_type
+        dialect = get_sqlglot_dialect(db_type)
         database_name = params.get("database") or params.get("sqlite_path") or db_type
         cards = get_table_cards(engine, sample_rows=2)
         upsert_schema_cards(cards, namespace=namespace)
@@ -101,6 +109,10 @@ class ConnectionManager:
         upsert_schema_cards(cards, namespace=metadata.namespace)
         metadata.schema_version += 1
         self._save_to_disk()
+        logger.info(
+            "Schema refreshed",
+            extra={"connection_id": connection_id, "schema_version": metadata.schema_version},
+        )
         return metadata
 
     def remove_connection(self, connection_id: str) -> None:
@@ -109,10 +121,22 @@ class ConnectionManager:
             metadata.engine.dispose()
         try:
             delete_namespace(metadata.namespace)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning(
+                "Failed to delete Pinecone namespace during connection removal",
+                exc_info=exc,
+                extra={"connection_id": connection_id, "namespace": metadata.namespace},
+            )
         self._registry.pop(connection_id, None)
         self._save_to_disk()
+        logger.info(
+            "Connection removed",
+            extra={
+                "connection_id": connection_id,
+                "database_name": metadata.database_name,
+                "namespace": metadata.namespace,
+            },
+        )
 
     def list_connections(self) -> list[ConnectionMetadata]:
         return list(self._registry.values())

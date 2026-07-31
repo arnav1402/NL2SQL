@@ -6,7 +6,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from app.connection import connection_manager
-from app.core.exceptions import ConnectionNotFoundError
+from app.core.exceptions import ConnectionNotFoundError, UnsupportedDialectError
+from app.utils.logger import connection_logger, logger
 
 router = APIRouter(prefix="/connection", tags=["connection"])
 
@@ -98,10 +99,39 @@ def create_connection(payload: dict[str, Any]) -> ConnectionResponse:
     else:
         params = {"sqlite_path": request_model.sqlite_path}
 
-    connection_id = connection_manager.create_connection(request_model.db_type, **params)
+    try:
+        connection_id = connection_manager.create_connection(request_model.db_type, **params)
+    except UnsupportedDialectError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     metadata = connection_manager.get_connection(connection_id)
     tables_indexed = len(getattr(metadata.engine, "table_names", lambda: [])())
+    logger.info(
+        "Connection created",
+        extra={
+            "connection_id": connection_id,
+            "db_type": request_model.db_type,
+            "database_name": metadata.database_name,
+            "tables_indexed": tables_indexed,
+            "params": {"host": params.get("host"), "port": params.get("port"), "database": params.get("database"), "sqlite_path": params.get("sqlite_path")},
+        },
+    )
+    connection_logger.info(
+        "Connection created",
+        extra={
+            "connection_id": connection_id,
+            "db_type": request_model.db_type,
+            "database_name": metadata.database_name,
+            "tables_indexed": tables_indexed,
+        },
+    )
     return ConnectionResponse(connection_id=connection_id, status="connected", tables_indexed=tables_indexed)
+
+
+@router.get("", response_model=list[ConnectionMetadataResponse])
+def list_connections() -> list[ConnectionMetadataResponse]:
+    connections = connection_manager.list_connections()
+    return [ConnectionMetadataResponse(**metadata.to_dict()) for metadata in connections]
 
 
 @router.delete("/{connection_id}")

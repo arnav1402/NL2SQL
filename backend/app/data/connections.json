@@ -1,1 +1,38 @@
-{}
+{
+  "c27c4479-85dc-4e16-895e-f9df2bf3eb78": {
+    "db_type": "postgresql",
+    "dialect": "postgres",
+    "namespace": "ns-c27c4479-85dc-4e16-895e-f9df2bf3eb78",
+    "database_name": "postgres",
+    "created_at": "2026-07-31T19:18:26.755219+00:00",
+    "last_used_at": "2026-07-31T19:21:24.383316+00:00",
+    "schema_version": 1
+  },
+  "27412e53-fbfa-4d3d-9cef-e70b7d6a792c": {
+    "db_type": "postgresql",
+    "dialect": "postgres",
+    "namespace": "ns-27412e53-fbfa-4d3d-9cef-e70b7d6a792c",
+    "database_name": "postgres",
+    "created_at": "2026-07-31T19:28:09.629105+00:00",
+    "last_used_at": "2026-07-31T19:28:46.366725+00:00",
+    "schema_version": 1
+  },
+  "2cf1420f-386f-442d-b95a-cfbf2b26962c": {
+    "db_type": "postgresql",
+    "dialect": "postgres",
+    "namespace": "ns-2cf1420f-386f-442d-b95a-cfbf2b26962c",
+    "database_name": "postgres",
+    "created_at": "2026-07-31T19:31:05.081186+00:00",
+    "last_used_at": "2026-07-31T19:31:05.081186+00:00",
+    "schema_version": 1
+  },
+  "cebff799-418d-4c2a-8787-4402ebce50b5": {
+    "db_type": "postgresql",
+    "dialect": "postgres",
+    "namespace": "ns-cebff799-418d-4c2a-8787-4402ebce50b5",
+    "database_name": "postgres",
+    "created_at": "2026-07-31T19:31:36.515564+00:00",
+    "last_used_at": "2026-07-31T19:32:31.354900+00:00",
+    "schema_version": 1
+  }
+}

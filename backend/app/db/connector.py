@@ -5,6 +5,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from app.core.exceptions import UnsupportedDialectError
+
 BASE_DIR = Path(__file__).resolve().parents[2]
 load_dotenv(BASE_DIR / ".env")
 
@@ -12,6 +14,21 @@ load_dotenv(BASE_DIR / ".env")
 def get_env(name: str, default: str | None = None) -> str | None:
     value = os.getenv(name, default)
     return value if value not in (None, "") else default
+
+
+def get_sqlglot_dialect(db_type: str) -> str:
+    mapping = {
+        "postgresql": "postgres",
+        "postgres": "postgres",
+        "mysql": "mysql",
+        "sqlite": "sqlite",
+    }
+    normalized = db_type.lower()
+    if normalized not in mapping:
+        raise UnsupportedDialectError(
+            f"'{db_type}' is not a supported database type. Supported types: {', '.join(sorted(set(mapping.keys())))}."
+        )
+    return mapping[normalized]
 
 
 def build_connection_string() -> str:
@@ -29,7 +46,7 @@ def build_connection_string() -> str:
         return f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     if db_type == "mysql":
         return f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-    raise ValueError(f"Unsupported DB_TYPE: {db_type}")
+    raise UnsupportedDialectError(f"'{db_type}' is not a supported database type.")
 
 
 def build_connection_string_from_params(
@@ -66,4 +83,4 @@ def build_connection_string_from_params(
         database = database or "mysql"
         return f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
 
-    raise ValueError(f"Unsupported DB_TYPE: {db_type}")
+    raise UnsupportedDialectError(f"'{db_type}' is not a supported database type.")

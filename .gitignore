@@ -1,5 +1,6 @@
 .env
-structure.md
+plans/
 .venv
 *.pyc
 __pycache__/
+logs/
