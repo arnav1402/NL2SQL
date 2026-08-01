@@ -30,4 +30,4 @@ PINECONE_ENVIRONMENT = get_env("PINECONE_ENVIRONMENT")
 
 GROQ_API_KEY = get_env("GROQ_API_KEY")
 GROQ_MODEL = get_env("GROQ_MODEL", "llama-3.3-70b-versatile")
-MAX_RESULT_ROWS = int(get_env("MAX_RESULT_ROWS", "100"))
+MAX_RESULT_ROWS = int(get_env("MAX_RESULT_ROWS"))
