@@ -6,10 +6,10 @@ from typing import Any
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.exc import DatabaseError, OperationalError
 
+from app.api.models.query import QueryRequest, QueryResponse
 from app.connection import connection_manager
 from app.core.exceptions import (
     AmbiguousQuestionError,
@@ -49,17 +49,6 @@ def _serialize_value(value: Any) -> Any:
 
 def _serialize_row(row: dict[str, Any]) -> dict[str, Any]:
     return {key: _serialize_value(value) for key, value in row.items()}
-
-
-class QueryRequest(BaseModel):
-    connection_id: str
-    question: str
-
-
-class QueryResponse(BaseModel):
-    sql: str
-    columns: list[str]
-    rows: list[dict[str, Any]]
 
 
 @router.post("")
