@@ -4,6 +4,7 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import re
 from uuid import uuid4
 
 from app.connection.engine_factory import build_engine_from_params, test_connection
@@ -21,6 +22,19 @@ class ConnectionManager:
         self._storage_path = Path(__file__).resolve().parents[1] / "data" / "connections.json"
         self._storage_path.parent.mkdir(parents=True, exist_ok=True)
         self._load_from_disk()
+
+    def _build_namespace(self, database_name: str | None = None, schema_name: str | None = None) -> str:
+        parts: list[str] = []
+        for value in (database_name, schema_name):
+            if value:
+                slug = re.sub(r"[^a-z0-9]+", "-", str(value).lower()).strip("-")
+                if slug:
+                    parts.append(slug)
+
+        if parts:
+            combined = "-".join(parts[:2])
+            return f"ns-{combined[:32]}-{uuid4().hex[:4]}"
+        return f"ns-db-{uuid4().hex[:4]}"
 
     def _load_from_disk(self) -> None:
         if not self._storage_path.exists():
@@ -74,9 +88,10 @@ class ConnectionManager:
         test_connection(engine)
 
         connection_id = str(uuid4())
-        namespace = f"ns-{connection_id}"
-        dialect = get_sqlglot_dialect(db_type)
         database_name = params.get("database") or params.get("sqlite_path") or db_type
+        schema_name = params.get("schema")
+        namespace = self._build_namespace(database_name, schema_name)
+        dialect = get_sqlglot_dialect(db_type)
         cards = get_table_cards(engine, sample_rows=2)
         upsert_schema_cards(cards, namespace=namespace)
 
