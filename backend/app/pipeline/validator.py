@@ -1,15 +1,5 @@
 from __future__ import annotations
 
-"""
-Only DQL (SELECT) is permitted. All DDL (CREATE, ALTER, DROP, TRUNCATE) and
-DML (INSERT, UPDATE, DELETE, MERGE) must be rejected here before reaching the
-database. This is defense-in-depth: the DB connection should already use a
-read-only role so writes would fail at the database level regardless, but this
-validator exists as an additional layer so unsafe SQL is rejected with a clear
-reason before ever touching the database, rather than relying on DB permissions
-alone.
-"""
-
 from typing import Any
 
 import sqlglot

@@ -1,6 +1,7 @@
 .env
-plans/
+CHECKS/
 .venv
+.vscode
 *.pyc
 __pycache__/
 logs/
