@@ -84,3 +84,6 @@ def build_connection_string_from_params(
         return f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
 
     raise UnsupportedDialectError(f"'{db_type}' is not a supported database type.")
+
+def control():
+    pass
