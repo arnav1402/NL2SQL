@@ -1,9 +1,13 @@
 .env
 CHECKS/
-.venv
-.vscode
+.venv/
+.vscode/
 *.pyc
 __pycache__/
 logs/
 
 update.md
+
+backend/app/data/
+
+node_modules/
