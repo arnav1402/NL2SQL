@@ -1,0 +1,179 @@
+.loader-screen {
+width: 100%;
+height: 100vh;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+background: var(--black);
+
+position: relative;
+overflow: hidden;
+}
+
+.loader-screen::before {
+content: "";
+
+position: absolute;
+inset: 0;
+
+background-image:
+    linear-gradient(
+    rgba(58, 75, 110, 0.08) 1px,
+    transparent 1px
+    ),
+    linear-gradient(
+    90deg,
+    rgba(58, 75, 110, 0.08) 1px,
+    transparent 1px
+    );
+
+background-size: 32px 32px;
+
+pointer-events: none;
+}
+
+.loader-content {
+width: min(420px, calc(100% - 48px));
+
+position: relative;
+z-index: 1;
+}
+
+.loader-brand {
+font-size: 26px;
+font-weight: 700;
+letter-spacing: -1.2px;
+
+margin-bottom: 34px;
+}
+
+.loader-status {
+font-size: 10px;
+font-weight: 500;
+letter-spacing: 2px;
+
+color: var(--gray-300);
+
+margin-bottom: 12px;
+}
+
+.loader-bar {
+width: 100%;
+height: 3px;
+
+background: #242833;
+
+overflow: hidden;
+}
+
+.loader-progress {
+height: 100%;
+
+background: var(--cobalt);
+
+transition: width 20ms linear;
+}
+
+.loader-percentage {
+margin-top: 10px;
+
+font-size: 10px;
+font-weight: 500;
+letter-spacing: 1.5px;
+
+color: var(--gray-300);
+
+text-align: right;
+}
+
+.loader-screen {
+width: 100%;
+height: 100vh;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+background: var(--black);
+
+position: relative;
+overflow: hidden;
+}
+
+.loader-screen::before {
+content: "";
+
+position: absolute;
+inset: 0;
+
+background-image:
+    linear-gradient(
+    rgba(58, 75, 110, 0.08) 1px,
+    transparent 1px
+    ),
+    linear-gradient(
+    90deg,
+    rgba(58, 75, 110, 0.08) 1px,
+    transparent 1px
+    );
+
+background-size: 32px 32px;
+
+pointer-events: none;
+}
+
+.loader-content {
+width: min(420px, calc(100% - 48px));
+
+position: relative;
+z-index: 1;
+}
+
+.loader-brand {
+font-size: 26px;
+font-weight: 700;
+letter-spacing: -1.2px;
+
+margin-bottom: 34px;
+}
+
+.loader-status {
+font-size: 10px;
+font-weight: 500;
+letter-spacing: 2px;
+
+color: var(--gray-300);
+
+margin-bottom: 12px;
+}
+
+.loader-bar {
+width: 100%;
+height: 3px;
+
+background: #242833;
+
+overflow: hidden;
+}
+
+.loader-progress {
+height: 100%;
+
+background: var(--cobalt);
+
+transition: width 20ms linear;
+}
+
+.loader-percentage {
+margin-top: 10px;
+
+font-size: 10px;
+font-weight: 500;
+letter-spacing: 1.5px;
+
+color: var(--gray-300);
+
+text-align: right;
+}

@@ -1,0 +1,173 @@
+.workspace {
+width: 100%;
+height: 100vh;
+min-width: 0;
+min-height: 0;
+
+display: flex;
+flex-direction: column;
+
+overflow: hidden;
+
+box-sizing: border-box;
+
+background: #080a0e;
+color: #d9dee7;
+
+font-family: "Poppins", sans-serif;
+}
+
+.workspace-topbar {
+flex: 0 0 68px;
+
+width: 100%;
+height: 68px;
+min-height: 68px;
+
+display: flex;
+align-items: center;
+justify-content: space-between;
+
+padding: 0 20px;
+
+box-sizing: border-box;
+
+background: #080a0e;
+border-bottom: 1px solid #1b2028;
+
+position: relative;
+z-index: 20;
+}
+
+.workspace-brand {
+display: flex;
+align-items: baseline;
+
+flex-shrink: 0;
+
+color: #e8ebf1;
+
+font-family: "JetBrains Mono", monospace;
+font-size: 12px;
+font-weight: 600;
+
+letter-spacing: 0.03em;
+
+white-space: nowrap;
+}
+
+.workspace-brand i {
+margin-left: 1px;
+
+color: #3654a6;
+
+font-style: normal;
+}
+
+.workspace-nav {
+height: 100%;
+
+display: flex;
+align-items: center;
+
+gap: 26px;
+
+flex-shrink: 0;
+}
+
+.workspace-nav button {
+position: relative;
+
+height: 100%;
+
+padding: 0;
+
+border: 0;
+
+background: transparent;
+
+color: #596274;
+
+font-family: "JetBrains Mono", monospace;
+font-size: 8px;
+
+letter-spacing: 0.14em;
+
+cursor: pointer;
+
+white-space: nowrap;
+
+transition: color 160ms ease;
+}
+
+.workspace-nav button:hover {
+color: #9aa3b4;
+}
+
+.workspace-nav button.is-active {
+color: #dce1e9;
+}
+
+.workspace-nav button.is-active::after {
+content: "";
+
+position: absolute;
+
+left: 0;
+right: 0;
+bottom: 0;
+
+height: 1px;
+
+background: #3b568e;
+}
+
+.workspace-nav-disabled {
+opacity: 0.65;
+
+cursor: default !important;
+}
+
+.workspace-body {
+flex: 1 1 auto;
+
+width: 100%;
+min-width: 0;
+min-height: 0;
+
+display: flex;
+
+overflow: hidden;
+
+box-sizing: border-box;
+}
+
+.workspace-main,
+.workspace__main {
+flex: 1 1 auto;
+
+width: 0;
+min-width: 0;
+min-height: 0;
+
+position: relative;
+
+display: flex;
+flex-direction: column;
+
+overflow: hidden;
+
+box-sizing: border-box;
+
+background: #080a0e;
+}
+
+@media (max-width: 700px) {
+.workspace-topbar {
+    padding: 0 14px;
+}
+
+.workspace-nav {
+    gap: 15px;
+}
+}

@@ -1,0 +1,402 @@
+/* =========================================================
+FULL PAGE
+========================================================= */
+
+.workspace-error-page {
+position: relative;
+
+width: 100%;
+min-height: 100vh;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+box-sizing: border-box;
+
+overflow: hidden;
+
+background: #080a0e;
+
+color: #e6e9ed;
+}
+
+
+/* subtle technical background */
+
+.workspace-error-page::before {
+content: "";
+
+position: absolute;
+inset: 0;
+
+pointer-events: none;
+
+opacity: 0.35;
+
+background-image:
+    linear-gradient(
+    rgba(255, 255, 255, 0.018) 1px,
+    transparent 1px
+    ),
+    linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.018) 1px,
+    transparent 1px
+    );
+
+background-size: 32px 32px;
+
+mask-image:
+    linear-gradient(
+    to bottom,
+    black,
+    transparent 75%
+    );
+}
+
+
+/* =========================================================
+ERROR CONTENT
+========================================================= */
+
+.workspace-error-page-inner {
+position: relative;
+z-index: 1;
+
+width: min(430px, calc(100% - 40px));
+
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+}
+
+
+/* =========================================================
+MARK
+========================================================= */
+
+.workspace-error-mark {
+width: 38px;
+height: 38px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+margin-bottom: 20px;
+
+border: 1px solid rgba(220, 65, 65, 0.35);
+
+background: rgba(110, 25, 25, 0.12);
+
+color: #e15d5d;
+
+font-family: var(--mono);
+font-size: 13px;
+}
+
+.workspace-error-mark span {
+width: 16px;
+height: 16px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+border: 1px solid rgba(225, 93, 93, 0.45);
+}
+
+
+/* =========================================================
+TYPOGRAPHY
+========================================================= */
+
+.workspace-error-eyebrow {
+margin-bottom: 9px;
+
+color: #754a4a;
+
+font-family: var(--mono);
+font-size: 7px;
+letter-spacing: 1.4px;
+}
+
+.workspace-error-page h1 {
+margin: 0;
+
+color: #e4e7eb;
+
+font-family: var(--sans);
+font-size: clamp(28px, 4vw, 40px);
+font-weight: 500;
+
+letter-spacing: -1.3px;
+line-height: 1.05;
+}
+
+.workspace-error-page p {
+max-width: 390px;
+
+margin: 13px 0 0;
+
+color: #69727f;
+
+font-family: var(--sans);
+font-size: 11px;
+line-height: 1.7;
+}
+
+
+/* =========================================================
+ERROR CODE
+========================================================= */
+
+.workspace-error-code {
+width: 100%;
+
+display: flex;
+justify-content: space-between;
+
+box-sizing: border-box;
+
+margin-top: 24px;
+padding: 9px 10px;
+
+border-top: 1px solid rgba(255, 255, 255, 0.06);
+border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+color: #4c5562;
+
+font-family: var(--mono);
+font-size: 7px;
+letter-spacing: 0.8px;
+}
+
+
+/* =========================================================
+ACTIONS
+========================================================= */
+
+.workspace-error-actions {
+display: flex;
+align-items: center;
+gap: 9px;
+
+margin-top: 20px;
+}
+
+.workspace-error-primary,
+.workspace-error-secondary {
+height: 34px;
+
+padding: 0 12px;
+
+font-family: var(--mono);
+font-size: 8px;
+
+cursor: pointer;
+
+transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.workspace-error-primary {
+display: flex;
+align-items: center;
+gap: 9px;
+
+border: 1px solid rgba(220, 65, 65, 0.35);
+
+background: rgba(110, 25, 25, 0.13);
+
+color: #d86a6a;
+}
+
+.workspace-error-primary:hover {
+border-color: rgba(220, 65, 65, 0.55);
+
+background: rgba(110, 25, 25, 0.22);
+
+color: #ed7a7a;
+}
+
+.workspace-error-primary span {
+font-size: 11px;
+}
+
+.workspace-error-secondary {
+border: 1px solid rgba(255, 255, 255, 0.08);
+
+background: transparent;
+
+color: #646d79;
+}
+
+.workspace-error-secondary:hover {
+border-color: rgba(255, 255, 255, 0.15);
+
+background: rgba(255, 255, 255, 0.035);
+
+color: #aeb4bd;
+}
+
+
+/* =========================================================
+FOOTER
+========================================================= */
+
+.workspace-error-footer {
+position: absolute;
+
+left: 28px;
+bottom: 22px;
+
+color: #363d47;
+
+font-family: var(--mono);
+font-size: 8px;
+letter-spacing: 0.8px;
+}
+
+.workspace-error-footer span:last-child {
+color: #5a3c3c;
+}
+
+
+/* =========================================================
+BANNER
+========================================================= */
+
+.workspace-error-banner {
+position: relative;
+z-index: 20;
+
+width: 100%;
+
+min-height: 58px;
+
+display: flex;
+align-items: center;
+
+box-sizing: border-box;
+
+padding: 9px 14px;
+
+border-bottom: 1px solid rgba(220, 65, 65, 0.22);
+
+background:
+    rgba(75, 19, 19, 0.78);
+
+backdrop-filter: blur(10px);
+}
+
+.workspace-error-banner-icon {
+width: 26px;
+height: 26px;
+
+flex: 0 0 26px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+margin-right: 11px;
+
+border: 1px solid rgba(225, 93, 93, 0.3);
+
+color: #e26767;
+
+font-family: var(--mono);
+font-size: 10px;
+}
+
+.workspace-error-banner-content {
+min-width: 0;
+
+flex: 1;
+}
+
+.workspace-error-banner-title {
+color: #df7a7a;
+
+font-family: var(--mono);
+font-size: 8px;
+letter-spacing: 0.7px;
+}
+
+.workspace-error-banner-message {
+margin-top: 3px;
+
+overflow: hidden;
+
+color: #9e6464;
+
+font-family: var(--sans);
+font-size: 9px;
+
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+
+.workspace-error-banner-action {
+height: 29px;
+
+flex: 0 0 auto;
+
+margin-left: 14px;
+padding: 0 10px;
+
+border: 1px solid rgba(225, 93, 93, 0.3);
+
+background: rgba(225, 93, 93, 0.07);
+
+color: #dc7474;
+
+font-family: var(--mono);
+font-size: 7px;
+letter-spacing: 0.5px;
+
+cursor: pointer;
+}
+
+.workspace-error-banner-action:hover {
+background: rgba(225, 93, 93, 0.13);
+
+border-color: rgba(225, 93, 93, 0.45);
+
+color: #eb8989;
+}
+
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+.workspace-error-actions {
+    width: 100%;
+
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.workspace-error-primary,
+.workspace-error-secondary {
+    justify-content: center;
+}
+
+.workspace-error-banner {
+    align-items: flex-start;
+}
+
+.workspace-error-banner-action {
+    margin-top: 3px;
+}
+
+.workspace-error-banner-message {
+    white-space: normal;
+}
+}
