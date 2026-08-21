@@ -382,11 +382,11 @@ padding: 0 9px;
 
 box-sizing: border-box;
 
-border: 1px solid transparent;
+border: 1px solid #B85C62;
 
 background: transparent;
 
-color: red;
+color: #B85C62;
 
 font-family: "JetBrains Mono", monospace;
 font-size: 9px;
@@ -402,16 +402,16 @@ transition:
 }
 
 .workspace-exit:hover {
-border-color: rgba(255, 255, 255, 0.07);
+border-color: #c5cad1;
 
-background: red;
+background: #B85C62;
 
 color: #c5cad1;
 }
 
 .workspace-exit-icon {
 font-size: 13px;
-color: red
+color: #B85C62
 }
 .workspace-exit-icon:hover{
     color:#c5cad1;

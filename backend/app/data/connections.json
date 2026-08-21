@@ -1,11 +1,11 @@
 {
-  "7f9050e4-0762-4ed2-93ef-f920dc0adadb": {
+  "fc969826-17c2-419a-ac29-51e2949f1765": {
     "db_type": "postgresql",
     "dialect": "postgres",
-    "namespace": "ns-nl2sql-test-public-48f2",
+    "namespace": "ns-nl2sql-test-public-b746",
     "database_name": "nl2sql_test",
-    "created_at": "2026-08-21T18:39:01.519895+00:00",
-    "last_used_at": "2026-08-21T18:53:34.253034+00:00",
+    "created_at": "2026-08-21T19:07:49.850852+00:00",
+    "last_used_at": "2026-08-21T19:08:00.376758+00:00",
     "schema_version": 1
   }
 }
