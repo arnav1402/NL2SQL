@@ -1,129 +1,107 @@
-import { useEffect, useState } from "react";
 import "./SessionStatus.css";
 
 const STATUS_CONFIG = {
-connected: {
-    label: "SESSION IN PROGRESS",
-    className: "is-connected",
-},
+    connected: {
+        label: "SESSION CONNECTED",
+        className: "is-connected",
+    },
 
-reconnecting: {
-    label: "RECONNECTING",
-    className: "is-reconnecting",
-},
+    connecting: {
+        label: "CONNECTING",
+        className: "is-reconnecting",
+    },
 
-disconnected: {
-    label: "DISCONNECTED",
-    className: "is-disconnected",
-},
+    reconnecting: {
+        label: "RECONNECTING",
+        className: "is-reconnecting",
+    },
+
+    disconnected: {
+        label: "DISCONNECTED",
+        className: "is-disconnected",
+    },
+
+    error: {
+        label: "CONNECTION ERROR",
+        className: "is-disconnected",
+    },
 };
 
 export default function SessionStatus({
-connection,
-status: externalStatus,
+    connection,
+    status: externalStatus,
 }) {
-/*
-* --------------------------------------------------------
-* CURRENT STATUS
-* --------------------------------------------------------
-*
-* For now, a successfully created frontend connection
-* is treated as connected.
-*
-* Later this can be driven by:
-*
-* GET /connection/{connection_id}
-*
-* without changing the visual component.
-*/
+    /*
+    ========================================================
+    DETERMINE CURRENT STATUS
+    ========================================================
 
-const [status, setStatus] = useState(
-    externalStatus || "connected"
-);
+    Priority:
 
-/*
-* If the parent eventually supplies a status,
-* allow it to control this component.
-*/
-useEffect(() => {
-    if (externalStatus) {
-    setStatus(externalStatus);
+    1. Explicit status from parent
+    2. Status contained inside connection object
+    3. If there is a connection object but it is not
+       explicitly connected -> disconnected
+    4. No connection -> disconnected
+
+    IMPORTANT:
+    We DO NOT default to connected anymore.
+    */
+
+    let status = externalStatus;
+
+    if (!status && connection) {
+        /*
+        Support several possible backend response shapes.
+        */
+
+        if (
+            connection.status === "connected" ||
+            connection.status === "success" ||
+            connection.connected === true
+        ) {
+            status = "connected";
+        } else if (
+            connection.status === "connecting"
+        ) {
+            status = "connecting";
+        } else if (
+            connection.status === "reconnecting"
+        ) {
+            status = "reconnecting";
+        } else {
+            status = "disconnected";
+        }
     }
-}, [externalStatus]);
 
-/*
-* --------------------------------------------------------
-* FUTURE CONNECTION CHECK
-* --------------------------------------------------------
-*
-* This is intentionally NOT active yet.
-*
-* Later:
-*
-* useEffect(() => {
-*
-*   if (!connection?.connection_id) return;
-*
-*   const checkConnection = async () => {
-*
-*     try {
-*
-*       const response = await fetch(
-*         `/connection/${connection.connection_id}`
-*       );
-*
-*       if (response.ok) {
-*         setStatus("connected");
-*       } else if (response.status === 404) {
-*         setStatus("disconnected");
-*       } else {
-*         setStatus("reconnecting");
-*       }
-*
-*     } catch {
-*       setStatus("disconnected");
-*     }
-*   };
-*
-*   checkConnection();
-*
-*   const interval = setInterval(
-*     checkConnection,
-*     30000
-*   );
-*
-*   return () => clearInterval(interval);
-*
-* }, [connection?.connection_id]);
-*/
+    /*
+    No connection + no explicit status means
+    there is currently no active database session.
+    */
 
+    if (!status) {
+        status = "disconnected";
+    }
 
-/*
-* --------------------------------------------------------
-* SAFETY FALLBACK
-* --------------------------------------------------------
-*/
+    const currentStatus =
+        STATUS_CONFIG[status] ||
+        STATUS_CONFIG.disconnected;
 
-const currentStatus =
-    STATUS_CONFIG[status] ||
-    STATUS_CONFIG.connected;
+    return (
+        <div
+            className={`session-status ${currentStatus.className}`}
+            role="status"
+            aria-live="polite"
+            aria-label={currentStatus.label}
+        >
+            <span
+                className="session-status__dot"
+                aria-hidden="true"
+            />
 
-
-return (
-    <div
-    className={`session-status ${currentStatus.className}`}
-    role="status"
-    aria-live="polite"
-    aria-label={currentStatus.label}
-    >
-    <span
-        className="session-status__dot"
-        aria-hidden="true"
-    />
-
-    <span className="session-status__label">
-        {currentStatus.label}
-    </span>
-    </div>
-);
+            <span className="session-status__label">
+                {currentStatus.label}
+            </span>
+        </div>
+    );
 }

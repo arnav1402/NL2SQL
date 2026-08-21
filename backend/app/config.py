@@ -29,5 +29,5 @@ PINECONE_INDEX_NAME = get_env("PINECONE_INDEX_NAME") or get_env("PINECONE_INDEX"
 PINECONE_ENVIRONMENT = get_env("PINECONE_ENVIRONMENT")
 
 GROQ_API_KEY = get_env("GROQ_API_KEY")
-GROQ_MODEL = get_env("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = get_env("GROQ_MODEL", "openai/gpt-oss-120b")
 MAX_RESULT_ROWS = int(get_env("MAX_RESULT_ROWS"))
