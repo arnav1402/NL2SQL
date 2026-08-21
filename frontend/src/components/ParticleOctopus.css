@@ -1,0 +1,243 @@
+.pixel-octopus-root {
+width: 100%;
+min-height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+}
+
+.pixel-octopus-stage {
+position: relative;
+width: 500px;
+height: 500px;
+
+transform-origin: center center;
+will-change: transform, filter;
+}
+
+.pixel-octopus-grid {
+width: 500px;
+height: 500px;
+
+display: grid;
+gap: 0;
+
+transform-origin: center center;
+}
+
+.pixel-octopus-grid > div {
+width: 100%;
+height: 100%;
+}
+
+/* Pixel colors */
+
+.pixel-octopus-grid .b1 {
+background: #1B3B6F;
+}
+
+.pixel-octopus-grid .b2 {
+background: #2B6CB0;
+}
+
+.pixel-octopus-grid .b3 {
+background: #3B82F6;
+}
+
+.pixel-octopus-grid .eye {
+    background: #000;
+    animation:
+        pixel-octopus-blink 5s steps(1, end) infinite,
+        pixel-octopus-eye-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes pixel-octopus-eye-bob {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(1px);
+    }
+}
+.pixel-octopus-grid .tr {
+background: transparent;
+}
+
+/* Playing cube */
+
+.pixel-octopus-square {
+position: absolute;
+
+width: 66px;
+height: 66px;
+
+background: #3B82F6;
+border: 4px solid #1B3B6F;
+
+box-shadow:
+    0 0 0 2px rgba(59, 130, 246, 0.25),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+
+transform-origin: center center;
+image-rendering: pixelated;
+z-index: 10;
+}
+
+.pixel-octopus-square::after {
+content: "";
+
+position: absolute;
+left: 7px;
+top: 7px;
+
+width: 10px;
+height: 10px;
+
+background: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes pixel-octopus-blink {
+0%,
+90%,
+100% {
+    background: #000;
+}
+
+95% {
+    background: #2B6CB0;
+}
+}
+
+/* ---------------------------------------------------------------------
+   Phase states, driven by the <PixelOctopus phase="..." /> prop.
+
+   Applied to .pixel-octopus-stage rather than .pixel-octopus-grid,
+   because the grid already gets a per-frame inline `transform:
+   translateY(...)` from the JS animation loop — stacking a CSS
+   animation on the same property/element would fight that. The stage
+   wrapper is free, so the two transforms compose cleanly (grid's
+   subtle per-frame bob nested inside the stage's phase motion).
+
+   typing/resetting — calm idle bob, nothing is happening yet
+   thinking         — restless, uneven wander + a pulsing blue glow,
+                       reading as "it's working on this"
+   result           — one settling bounce, then quiet
+   ------------------------------------------------------------------ */
+
+.pixel-octopus-stage.is-typing {
+    animation: octo-idle 4.8s ease-in-out infinite;
+}
+
+.pixel-octopus-stage.is-resetting {
+    animation: octo-reset 700ms ease-out forwards;
+}
+
+.pixel-octopus-stage.is-thinking {
+    animation: octo-thinking-bob 1.8s ease-in-out infinite;
+}
+
+.pixel-octopus-stage.is-result {
+    animation: octo-result 1.5s ease-out;
+}
+
+@keyframes octo-idle {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes octo-thinking-bob {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-5px);
+    }
+
+    50% {
+        transform: translateY(-1px);
+    }
+
+    75% {
+        transform: translateY(-7px);
+    }
+}
+
+@keyframes octo-result {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    22% {
+        transform: translateY(-4px) scale(1);
+    }
+
+    42% {
+        transform: translateY(4px) scale(1.01, 0.99);
+    }
+
+    62% {
+        transform: translateY(-2px) scale(1);
+    }
+
+    82% {
+        transform: translateY(1px);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes octo-reset {
+    0% {
+        transform: translateY(0);
+    }
+
+    45% {
+        transform: translateY(4px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+.pixel-octopus-grid .eye {
+    animation: none !important;
+}
+
+.pixel-octopus-square {
+    transition: none !important;
+}
+
+.pixel-octopus-stage {
+    animation: none !important;
+    filter: none !important;
+}
+}
+
+/* Optional responsive scaling for smaller containers/screens */
+
+@media (max-width: 560px) {
+.pixel-octopus-stage {
+    transform: scale(calc((100vw - 32px) / 500));
+    transform-origin: center center;
+}
+
+.pixel-octopus-root {
+    height: calc(500px * ((100vw - 32px) / 500));
+    min-height: 0;
+}
+}

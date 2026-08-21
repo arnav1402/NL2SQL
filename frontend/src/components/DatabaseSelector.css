@@ -1,0 +1,775 @@
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+
+.database-selector-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(3, 5, 9, 0.72);
+
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    animation: database-overlay-in 160ms ease-out;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.database-selector {
+    width: min(420px, 100%);
+
+    background: #0b0e13;
+
+    border: 1px solid rgba(255, 255, 255, 0.11);
+
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(0, 0, 0, 0.4);
+
+    animation:
+        database-modal-in 180ms
+        cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.database-selector.is-details {
+    width: min(440px, 100%);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.database-selector-header {
+    position: relative;
+
+    padding: 24px 24px 20px;
+
+    border-bottom: 1px solid
+        rgba(255, 255, 255, 0.07);
+}
+
+.database-selector-eyebrow {
+    margin-bottom: 8px;
+
+    color: #5d6a7d;
+
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 500;
+
+    letter-spacing: 1.6px;
+}
+
+.database-selector h2 {
+    margin: 0;
+
+    color: #e7e9ed;
+
+    font-family: var(--sans);
+    font-size: 20px;
+    font-weight: 500;
+
+    letter-spacing: -0.5px;
+}
+
+.database-selector-header p {
+    margin: 7px 30px 0 0;
+
+    color: #697282;
+
+    font-family: var(--sans);
+    font-size: 11px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.database-selector-close {
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.08);
+
+    background: rgba(255, 255, 255, 0.015);
+
+    color: #687180;
+
+    font-family: var(--mono);
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition:
+        color 140ms ease,
+        border-color 140ms ease,
+        background-color 140ms ease;
+}
+
+.database-selector-close:hover {
+    color: #d8dce3;
+
+    border-color:
+        rgba(255, 255, 255, 0.16);
+
+    background:
+        rgba(255, 255, 255, 0.04);
+}
+
+
+/* =========================================================
+   DATABASE OPTIONS
+   ========================================================= */
+
+.database-options {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    padding: 18px 20px 20px;
+}
+
+
+/* =========================================================
+   DATABASE OPTION
+   ========================================================= */
+
+.database-option {
+    --database-color: #336791;
+
+    position: relative;
+
+    width: 100%;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0;
+
+    background: #0d1015;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.10);
+
+    color: #dfe3e9;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+
+/*
+ * IMPORTANT:
+ *
+ * Each button receives --database-color from JSX.
+ *
+ * PostgreSQL -> #336791
+ * MySQL      -> #00758F
+ * SQLite     -> #0F80CC
+ */
+
+.database-option:hover {
+    background: var(--database-color);
+
+    border-color: var(--database-color);
+
+    color: #ffffff;
+}
+
+.database-option:active {
+    transform: translateX(1px);
+}
+
+
+/* =========================================================
+   DATABASE ICON
+   ========================================================= */
+
+.database-option-icon {
+    width: 58px;
+    height: 52px;
+
+    flex: 0 0 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.08);
+
+    transition:
+        background-color 160ms ease;
+}
+
+.database-option:hover
+.database-option-icon {
+    background: rgba(0, 0, 0, 0.10);
+}
+
+.database-option-icon img {
+    width: 32px;
+    height: 32px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================================================
+   DATABASE NAME
+   ========================================================= */
+
+.database-option-name {
+    margin-left: 15px;
+
+    color: #dfe3e9;
+
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: color 160ms ease;
+}
+
+.database-option:hover
+.database-option-name {
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.database-option-arrow {
+    margin-left: auto;
+    margin-right: 14px;
+
+    color: #687080;
+
+    font-family: var(--mono);
+    font-size: 15px;
+
+    transition:
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+.database-option:hover
+.database-option-arrow {
+    color: #ffffff;
+
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.database-selector-footer {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 13px 20px;
+
+    border-top: 1px solid
+        rgba(255, 255, 255, 0.06);
+
+    color: #464f5d;
+
+    font-family: var(--mono);
+    font-size: 7px;
+
+    letter-spacing: 0.8px;
+}
+
+.database-footer-dot {
+    width: 4px;
+    height: 4px;
+
+    flex: 0 0 4px;
+
+    border-radius: 50%;
+
+    background: #5d8b69;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.database-back {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 14px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #687180;
+
+    font-family: var(--mono);
+    font-size: 10px;
+
+    cursor: pointer;
+
+    transition: color 140ms ease;
+}
+
+.database-back:hover {
+    color: #e7e9ed;
+}
+
+.database-back:disabled {
+    opacity: 0.45;
+
+    cursor: default;
+}
+
+
+/* =========================================================
+   CONNECTION FORM
+   ========================================================= */
+
+.database-connection-form {
+    padding: 18px 18px 16px;
+}
+
+
+/* =========================================================
+   SELECTED DATABASE BAR
+   ========================================================= */
+
+.selected-database-bar {
+    --database-color: #336791;
+
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin-bottom: 18px;
+
+    padding: 0 12px;
+
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--database-color) 45%,
+            rgba(255, 255, 255, 0.08)
+        );
+
+    background:
+        color-mix(
+            in srgb,
+            var(--database-color) 10%,
+            #0d1015
+        );
+
+    color: #f4f5f7;
+
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.selected-database-logo {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.selected-database-logo img {
+    width: 19px;
+    height: 19px;
+
+    object-fit: contain;
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.connection-fields {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+}
+
+.connection-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.connection-field--full {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.connection-field-label {
+    color: #7b8492;
+
+    font-family: var(--mono);
+    font-size: 9px;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.connection-field input {
+    width: 100%;
+    height: 36px;
+
+    box-sizing: border-box;
+
+    padding: 0 10px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.10);
+
+    border-radius: 0;
+
+    outline: none;
+
+    background: #0b0e13;
+
+    color: #f2f3f5;
+
+    font-family: var(--mono);
+    font-size: 11px;
+
+    transition:
+        border-color 140ms ease,
+        background-color 140ms ease;
+}
+
+
+/*
+ * Placeholder text is intentionally muted.
+ *
+ * This makes it obvious that "localhost",
+ * "5432", "postgres", etc. are examples,
+ * not actual submitted values.
+ */
+
+.connection-field input::placeholder {
+    color: #4e5664;
+
+    opacity: 1;
+}
+
+.connection-field input:focus {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--database-color) 70%,
+            rgba(255, 255, 255, 0.12)
+        );
+
+    background: #0e1117;
+}
+
+.connection-field input:disabled {
+    opacity: 0.55;
+
+    cursor: default;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.connection-error {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 9px;
+
+    margin-top: 14px;
+
+    padding: 9px 10px;
+
+    border: 1px solid
+        rgba(239, 68, 68, 0.35);
+
+    background:
+        rgba(239, 68, 68, 0.08);
+
+    color: #f87171;
+
+    font-family: var(--mono);
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+.connection-error > span {
+    width: 15px;
+    height: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 15px;
+
+    border: 1px solid
+        rgba(239, 68, 68, 0.5);
+
+    color: #ef4444;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.connection-error p {
+    margin: 0;
+}
+
+
+/* =========================================================
+   CONNECT BUTTON
+   ========================================================= */
+
+.establish-button {
+    --database-color: #336791;
+
+    width: 100%;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 18px;
+
+    border: 1px solid
+        var(--database-color);
+
+    background:
+        var(--database-color);
+
+    color: #ffffff;
+
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        filter 160ms ease,
+        transform 160ms ease,
+        opacity 160ms ease;
+}
+
+.establish-button:hover:not(:disabled) {
+    filter: brightness(1.08);
+}
+
+.establish-button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.establish-button:disabled {
+    opacity: 0.65;
+
+    cursor: default;
+}
+
+
+/* =========================================================
+   CONNECTING STATE
+   ========================================================= */
+
+.connection-spinner {
+    width: 11px;
+    height: 11px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.35);
+
+    border-top-color: #ffffff;
+
+    border-radius: 50%;
+
+    animation:
+        connection-spin 700ms linear infinite;
+}
+
+.connection-dots {
+    width: 16px;
+
+    text-align: left;
+
+    overflow: hidden;
+
+    animation:
+        connection-dots 1.2s steps(4, end) infinite;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes database-overlay-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes database-modal-in {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(8px)
+            scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+@keyframes connection-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes connection-dots {
+    0% {
+        width: 4px;
+    }
+
+    33% {
+        width: 8px;
+    }
+
+    66% {
+        width: 12px;
+    }
+
+    100% {
+        width: 16px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 520px) {
+    .database-selector-overlay {
+        padding: 16px;
+    }
+
+    .database-selector-header {
+        padding: 20px 18px 17px;
+    }
+
+    .database-options {
+        padding: 15px 16px 17px;
+    }
+
+    .database-selector-footer {
+        padding: 12px 16px;
+    }
+
+    .database-connection-form {
+        padding: 16px;
+    }
+
+    .connection-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .connection-field--full {
+        grid-column: auto;
+    }
+}

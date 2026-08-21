@@ -1,0 +1,308 @@
+.connection-error-page {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: #080a0e;
+
+  color: #e8ebef;
+}
+
+
+/* ---------------------------------------------------------
+   Background
+--------------------------------------------------------- */
+
+.connection-error-grid {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0.18;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    );
+
+  background-size: 32px 32px;
+
+  mask-image: linear-gradient(
+    to bottom,
+    black,
+    transparent 85%
+  );
+}
+
+
+/* ---------------------------------------------------------
+   Content
+--------------------------------------------------------- */
+
+.connection-error-content {
+  position: relative;
+  z-index: 2;
+
+  width: min(520px, calc(100% - 32px));
+}
+
+
+/* ---------------------------------------------------------
+   Brand
+--------------------------------------------------------- */
+
+.connection-error-brand {
+  margin-bottom: 18px;
+
+  color: #dfe3e8;
+
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 1px;
+}
+
+.connection-error-brand i {
+  color: #536b9c;
+  font-style: normal;
+}
+
+
+/* ---------------------------------------------------------
+   Panel
+--------------------------------------------------------- */
+
+.connection-error-panel {
+  padding: 32px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  background: rgba(12, 15, 21, 0.92);
+
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.45);
+
+  text-align: center;
+}
+
+
+/* ---------------------------------------------------------
+   Eyebrow
+--------------------------------------------------------- */
+
+.connection-error-eyebrow {
+  margin-bottom: 22px;
+
+  color: #6b7483;
+
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+}
+
+
+/* ---------------------------------------------------------
+   Error icon
+--------------------------------------------------------- */
+
+.connection-error-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 14px;
+
+  border: 1px solid rgba(220, 70, 70, 0.38);
+
+  background: rgba(150, 35, 35, 0.12);
+
+  color: #ff6868;
+
+  font-family: var(--mono);
+  font-size: 23px;
+}
+
+
+/* ---------------------------------------------------------
+   Error code
+--------------------------------------------------------- */
+
+.connection-error-code {
+  margin-bottom: 8px;
+
+  color: #b86666;
+
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1.2px;
+}
+
+
+/* ---------------------------------------------------------
+   Message
+--------------------------------------------------------- */
+
+.connection-error-panel h1 {
+  margin: 0;
+
+  color: #e7eaee;
+
+  font-family: var(--sans);
+  font-size: 25px;
+  font-weight: 500;
+
+  letter-spacing: -0.6px;
+}
+
+.connection-error-panel p {
+  max-width: 390px;
+
+  margin: 10px auto 0;
+
+  color: #737d8c;
+
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* ---------------------------------------------------------
+   Actions
+--------------------------------------------------------- */
+
+.connection-error-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: 25px;
+}
+
+.connection-error-actions button {
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 0 16px;
+
+  font-family: var(--mono);
+  font-size: 9px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.connection-error-retry {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  background: #11151c;
+
+  color: #c4cad3;
+}
+
+.connection-error-retry:hover {
+  background: #171c24;
+
+  border-color: rgba(255, 255, 255, 0.18);
+
+  color: #fff;
+}
+
+.connection-error-home {
+  border: 1px solid #3654a6;
+
+  background: #3654a6;
+
+  color: #fff;
+}
+
+.connection-error-home:hover {
+  background: #4263ba;
+
+  border-color: #4263ba;
+}
+
+.connection-error-actions button:active {
+  transform: translateY(1px);
+}
+
+
+/* ---------------------------------------------------------
+   Footer
+--------------------------------------------------------- */
+
+.connection-error-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 15px;
+
+  color: #414a57;
+
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.8px;
+}
+
+.connection-error-status-dot {
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+
+  background: #a85d5d;
+}
+
+.connection-error-divider {
+  width: 1px;
+  height: 9px;
+
+  background: rgba(255, 255, 255, 0.10);
+}
+
+
+/* ---------------------------------------------------------
+   Mobile
+--------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .connection-error-panel {
+    padding: 25px 20px;
+  }
+
+  .connection-error-actions {
+    flex-direction: column;
+  }
+
+  .connection-error-actions button {
+    width: 100%;
+  }
+
+  .connection-error-footer {
+    flex-wrap: wrap;
+  }
+}
