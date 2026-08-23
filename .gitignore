@@ -6,4 +6,6 @@ CHECKS/
 __pycache__/
 logs/
 
+data/
+
 update.md
