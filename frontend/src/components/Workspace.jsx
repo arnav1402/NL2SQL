@@ -12,8 +12,15 @@ export default function Workspace({
     onExit,
 }) {
     const [activeView, setActiveView] = useState("chat");
+
     const [databaseSelectorOpen, setDatabaseSelectorOpen] =
         useState(false);
+
+    /*
+    ========================================================
+    DATABASE CONNECTION
+    ========================================================
+    */
 
     const [connection, setConnection] =
         useState(database || null);
@@ -21,46 +28,135 @@ export default function Workspace({
     const [connectionError, setConnectionError] =
         useState(null);
 
+    /*
+    ========================================================
+    SESSION STATUS
+    ========================================================
+
+    This is deliberately kept separately from `connection`.
+
+    `connection` tells us what connection we have.
+
+    `sessionStatus` tells us whether that connection
+    is currently usable.
+    */
+
+    const [sessionStatus, setSessionStatus] =
+        useState(
+            database?.status === "connected"
+                ? "connected"
+                : "disconnected"
+        );
+
+    /*
+    ========================================================
+    NEW CHAT
+    ========================================================
+    */
+
     const handleNewChat = () => {
         setConnectionError(null);
         setDatabaseSelectorOpen(true);
     };
 
+    /*
+    ========================================================
+    ONGOING CHAT
+    ========================================================
+    */
+
     const handleOngoingChat = () => {
         setActiveView("chat");
     };
+
+    /*
+    ========================================================
+    DATABASE VISUALIZATION
+    ========================================================
+    */
 
     const handleVisualizeDatabase = () => {
         setActiveView("database");
     };
 
+    /*
+    ========================================================
+    DATABASE CONNECTED
+    ========================================================
+    */
+
     const handleDatabaseConnected = (result) => {
-        console.log("Database connected:", result);
+        console.log(
+            "Database connected:",
+            result
+        );
 
         if (!result?.connection_id) {
             setConnectionError(
                 "Backend did not return a connection ID."
             );
+
+            setSessionStatus("error");
+
             return;
         }
 
+        /*
+        Store the new backend connection.
+        */
+
         setConnection(result);
+
+        /*
+        A successful /connection response means
+        the session is currently connected.
+        */
+
+        setSessionStatus("connected");
 
         setConnectionError(null);
         setDatabaseSelectorOpen(false);
         setActiveView("chat");
     };
 
+    /*
+    ========================================================
+    CONNECTION STATUS CHANGE
+    ========================================================
+    */
+
+    const handleConnectionStatusChange = (status) => {
+        setSessionStatus(status);
+    };
+
+    /*
+    ========================================================
+    EXIT
+    ========================================================
+    */
+
+    const handleExit = () => {
+        setConnection(null);
+        setSessionStatus("disconnected");
+        onExit?.();
+    };
+
     return (
         <main className="workspace">
 
+            {/* =================================================
+                TOP BAR
+            ================================================= */}
+
             <header className="workspace-topbar">
+
                 <div className="workspace-brand">
                     <span>NL2SQL</span>
                     <i>.</i>
                 </div>
 
                 <nav className="workspace-nav">
+
                     <button
                         type="button"
                         className={
@@ -86,8 +182,14 @@ export default function Workspace({
                     >
                         EXECUTE
                     </button>
+
                 </nav>
+
             </header>
+
+            {/* =================================================
+                WORKSPACE BODY
+            ================================================= */}
 
             <div className="workspace-body">
 
@@ -99,7 +201,7 @@ export default function Workspace({
                     onVisualizeDatabase={
                         handleVisualizeDatabase
                     }
-                    onExit={onExit}
+                    onExit={handleExit}
                 />
 
                 <section className="workspace-main">
@@ -110,13 +212,25 @@ export default function Workspace({
                         </div>
                     )}
 
+                    {/* =================================================
+                        CHAT
+                    ================================================= */}
+
                     {activeView === "chat" && (
                         <ChatView
                             connectionId={
                                 connection?.connection_id
                             }
+                            sessionStatus={sessionStatus}
+                            onConnectionStatusChange={
+                                handleConnectionStatusChange
+                            }
                         />
                     )}
+
+                    {/* =================================================
+                        DATABASE
+                    ================================================= */}
 
                     {activeView === "database" && (
                         <DatabaseCanvas
@@ -128,7 +242,12 @@ export default function Workspace({
                     )}
 
                 </section>
+
             </div>
+
+            {/* =================================================
+                DATABASE SELECTOR
+            ================================================= */}
 
             <DatabaseSelector
                 isOpen={databaseSelectorOpen}

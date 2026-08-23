@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+
 import ChatMessage from "./ChatMessage";
 import ChatSkeleton from "./ChatSkeleton";
 import SessionStatus from "./SessionStatus";
+
 import "./ChatView.css";
+
 import { runQuery } from "../api";
 
 const THINKING_STEPS = [
@@ -18,6 +21,8 @@ const THINKING_STEPS = [
 
 export default function ChatView({
     connectionId,
+    sessionStatus,
+    onConnectionStatusChange,
 }) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
@@ -28,17 +33,37 @@ export default function ChatView({
     const messagesEndRef = useRef(null);
     const thinkingTimer = useRef(null);
 
+    /*
+    ========================================================
+    AUTO SCROLL
+    ========================================================
+    */
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth",
         });
     }, [messages, loading]);
 
+    /*
+    ========================================================
+    CLEANUP
+    ========================================================
+    */
+
     useEffect(() => {
         return () => {
-            clearInterval(thinkingTimer.current);
+            clearInterval(
+                thinkingTimer.current
+            );
         };
     }, []);
+
+    /*
+    ========================================================
+    THINKING ANIMATION
+    ========================================================
+    */
 
     const startThinkingAnimation = () => {
         let currentIndex = 0;
@@ -47,7 +72,9 @@ export default function ChatView({
             THINKING_STEPS[currentIndex]
         );
 
-        clearInterval(thinkingTimer.current);
+        clearInterval(
+            thinkingTimer.current
+        );
 
         thinkingTimer.current = setInterval(() => {
             currentIndex =
@@ -61,8 +88,48 @@ export default function ChatView({
     };
 
     const stopThinkingAnimation = () => {
-        clearInterval(thinkingTimer.current);
+        clearInterval(
+            thinkingTimer.current
+        );
     };
+
+    /*
+    ========================================================
+    DETECT CONNECTION ERROR
+    ========================================================
+    */
+
+    const isConnectionError = (error) => {
+        const message =
+            error?.message ||
+            error?.detail ||
+            error?.error ||
+            "";
+
+        const normalized =
+            String(message).toLowerCase();
+
+        return (
+            normalized.includes(
+                "connectionnotfound"
+            ) ||
+            normalized.includes(
+                "connection not found"
+            ) ||
+            normalized.includes(
+                "connection does not exist"
+            ) ||
+            normalized.includes(
+                "no active connection"
+            )
+        );
+    };
+
+    /*
+    ========================================================
+    SEND MESSAGE
+    ========================================================
+    */
 
     const sendMessage = async () => {
         const question = input.trim();
@@ -71,7 +138,17 @@ export default function ChatView({
             return;
         }
 
+        /*
+        ----------------------------------------------------
+        NO CONNECTION
+        ----------------------------------------------------
+        */
+
         if (!connectionId) {
+            onConnectionStatusChange?.(
+                "disconnected"
+            );
+
             setMessages((previous) => [
                 ...previous,
                 {
@@ -86,6 +163,12 @@ export default function ChatView({
             return;
         }
 
+        /*
+        ----------------------------------------------------
+        USER MESSAGE
+        ----------------------------------------------------
+        */
+
         setMessages((previous) => [
             ...previous,
             {
@@ -97,13 +180,24 @@ export default function ChatView({
 
         setInput("");
         setLoading(true);
+
         startThinkingAnimation();
 
+        /*
+        ----------------------------------------------------
+        QUERY
+        ----------------------------------------------------
+        */
+
         try {
-            console.log("Running query:", {
-                connection_id: connectionId,
-                question,
-            });
+            console.log(
+                "Running query:",
+                {
+                    connection_id:
+                        connectionId,
+                    question,
+                }
+            );
 
             const result = await runQuery(
                 connectionId,
@@ -115,10 +209,21 @@ export default function ChatView({
                 result
             );
 
+            /*
+            A successful query proves that the
+            backend connection is currently usable.
+            */
+
+            onConnectionStatusChange?.(
+                "connected"
+            );
+
             const assistantMessage = {
                 id: crypto.randomUUID(),
                 role: "assistant",
-                type: "sql_result",
+                type:
+                    result?.type ||
+                    "sql_result",
                 ...result,
             };
 
@@ -131,6 +236,33 @@ export default function ChatView({
                 "Query execution failed:",
                 error
             );
+
+            /*
+            ------------------------------------------------
+            CONNECTION LOST
+            ------------------------------------------------
+            */
+
+            if (isConnectionError(error)) {
+                onConnectionStatusChange?.(
+                    "disconnected"
+                );
+            } else {
+                /*
+                The connection may still exist,
+                but something else failed.
+                */
+
+                onConnectionStatusChange?.(
+                    "error"
+                );
+            }
+
+            /*
+            ------------------------------------------------
+            ERROR MESSAGE
+            ------------------------------------------------
+            */
 
             setMessages((previous) => [
                 ...previous,
@@ -149,6 +281,12 @@ export default function ChatView({
         }
     };
 
+    /*
+    ========================================================
+    KEYBOARD
+    ========================================================
+    */
+
     const handleKeyDown = (event) => {
         if (
             event.key === "Enter" &&
@@ -161,6 +299,10 @@ export default function ChatView({
 
     return (
         <section className="chat-view">
+
+            {/* =================================================
+                HEADER
+            ================================================= */}
 
             <header className="chat-view-header">
 
@@ -175,19 +317,29 @@ export default function ChatView({
                     </h1>
 
                     <p>
-                        Ask questions in natural language and
-                        get executable SQL with an explanation.
+                        Ask questions in natural language
+                        and get executable SQL with an
+                        explanation.
                     </p>
 
                 </div>
 
                 <div className="chat-view-header-right">
-                    <SessionStatus />
+
+                    <SessionStatus
+                        status={sessionStatus}
+                    />
+
                 </div>
 
             </header>
 
+            {/* =================================================
+                MESSAGES
+            ================================================= */}
+
             <div className="chat-messages">
+
                 <div className="chat-thread">
 
                     {messages.length === 0 && (
@@ -202,8 +354,9 @@ export default function ChatView({
                             </h2>
 
                             <p>
-                                Ask a question about the data
-                                in your connected database.
+                                Ask a question about the
+                                data in your connected
+                                database.
                             </p>
 
                         </div>
@@ -228,7 +381,12 @@ export default function ChatView({
                     />
 
                 </div>
+
             </div>
+
+            {/* =================================================
+                COMPOSER
+            ================================================= */}
 
             <div className="chat-composer-wrapper">
 
@@ -239,13 +397,19 @@ export default function ChatView({
                         <textarea
                             value={input}
                             onChange={(event) =>
-                                setInput(event.target.value)
+                                setInput(
+                                    event.target.value
+                                )
                             }
                             onKeyDown={handleKeyDown}
                             disabled={loading}
-                            placeholder="Ask your database a question..."
+                            placeholder={
+                                "Ask your database a question..."
+                            }
                             rows={1}
-                            aria-label="Ask your database a question"
+                            aria-label={
+                                "Ask your database a question"
+                            }
                         />
 
                         <button
@@ -259,6 +423,7 @@ export default function ChatView({
                             }
                             aria-label="Send message"
                         >
+
                             <svg
                                 viewBox="0 0 24 24"
                                 fill="none"
@@ -272,6 +437,7 @@ export default function ChatView({
                                     strokeLinejoin="round"
                                 />
                             </svg>
+
                         </button>
 
                     </div>
