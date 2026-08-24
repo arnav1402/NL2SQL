@@ -6,6 +6,8 @@ getSmoothStepPath,
 useReactFlow,
 } from "@xyflow/react";
 
+import "./RelationEdge.css";
+
 function RelationEdge({
 id,
 sourceX,
@@ -18,53 +20,78 @@ data,
 }) {
 const { setEdges } = useReactFlow();
 
-const relation = data?.relation || "required";
-const isOptional = relation === "optional";
+const relation =
+    data?.relation === "optional"
+    ? "optional"
+    : "required";
 
-const [edgePath, labelX, labelY] = getSmoothStepPath({
+const optional = relation === "optional";
+
+/*
+* Keep the routing readable.
+*
+* Horizontal:
+* right -> left
+*
+* Vertical:
+* bottom -> top
+*
+* Diagonal:
+* smooth-step chooses the appropriate route.
+*/
+
+const horizontal =
+    Math.abs(targetX - sourceX) >
+    Math.abs(targetY - sourceY);
+
+const [edgePath, labelX, labelY] =
+    getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition,
     targetX,
     targetY,
     targetPosition,
-    borderRadius: 8,
-    offset: 18,
-});
+
+    borderRadius: 12,
+
+    offset: horizontal ? 22 : 26,
+    });
 
 const toggleRelation = () => {
     setEdges((currentEdges) =>
-    currentEdges.map((edge) => {
-        if (edge.id !== id) {
-        return edge;
-        }
-
-        return {
-        ...edge,
-        data: {
-            ...edge.data,
-            relation: isOptional ? "required" : "optional",
-        },
-        };
-    })
+    currentEdges.map((edge) =>
+        edge.id === id
+        ? {
+            ...edge,
+            data: {
+                ...edge.data,
+                relation: optional
+                ? "required"
+                : "optional",
+            },
+            }
+        : edge
+    )
     );
 };
 
 return (
     <>
     <BaseEdge
-        id={id}
         path={edgePath}
         markerEnd={{
         type: MarkerType.ArrowClosed,
-        color: "#3654A6",
-        width: 18,
-        height: 18,
+        width: 17,
+        height: 17,
+        color: "#3159b8",
         }}
         style={{
-        stroke: "#3654A6",
-        strokeWidth: 1.8,
-        strokeDasharray: isOptional ? "6 5" : undefined,
+        stroke: "#3159b8",
+        strokeWidth: 1.7,
+        strokeDasharray: optional
+            ? "7 6"
+            : undefined,
         }}
     />
 
@@ -72,24 +99,26 @@ return (
         <button
         type="button"
         className={`relation-edge-label ${
-            isOptional ? "optional" : "required"
+            optional
+            ? "optional"
+            : "required"
         }`}
         style={{
-            transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+            transform:
+            `translate(-50%, -50%) ` +
+            `translate(${labelX}px, ${labelY}px)`,
         }}
         onClick={(event) => {
             event.stopPropagation();
             toggleRelation();
         }}
-        title="Click to toggle relationship type"
-        aria-label={`Relationship is ${
-            isOptional ? "optional" : "required"
-        }. Click to toggle.`}
         >
         <span className="relation-edge-dot" />
 
-        <span className="relation-edge-text">
-            {isOptional ? "OPTIONAL" : "REQUIRED"}
+        <span>
+            {optional
+            ? "OPTIONAL"
+            : "REQUIRED"}
         </span>
         </button>
     </EdgeLabelRenderer>

@@ -1,357 +1,234 @@
-import "./TableNode.css";
-import { useCallback } from "react";
+import { Handle, Position } from "@xyflow/react";
 import {
-    Handle,
-    Position,
-    useReactFlow,
-} from "@xyflow/react";
+FiMoreVertical,
+FiPlus,
+FiChevronDown,
+FiKey,
+} from "react-icons/fi";
+import { HiOutlineTable } from "react-icons/hi";
 
-function TableNode({ id, data }) {
-    const { setNodes } = useReactFlow();
+import "./TableNode.css";
 
-    const columns = data?.columns || [];
+function SchemaTableNode({ id, data }) {
+const tableName = data?.tableName || "table";
+const columns = data?.columns || [];
 
-    const updateTable = useCallback(
-        (updates) => {
-            setNodes((currentNodes) =>
-                currentNodes.map((node) =>
-                    node.id === id
-                        ? {
-                              ...node,
-                              data: {
-                                  ...node.data,
-                                  ...updates,
-                              },
-                          }
-                        : node
-                )
-            );
-        },
-        [id, setNodes]
-    );
+const updateTable = data?.updateTable;
+const onAddColumn = data?.onAddColumn;
+const onDeleteColumn = data?.onDeleteColumn;
 
-    const updateColumn = useCallback(
-        (columnId, updates) => {
-            const updatedColumns = columns.map((column) =>
-                column.id === columnId
-                    ? {
-                          ...column,
-                          ...updates,
-                      }
-                    : column
-            );
+const toggleColumnProperty = (columnId, property) => {
+    if (!updateTable) return;
 
-            updateTable({
-                columns: updatedColumns,
-            });
-        },
-        [columns, updateTable]
-    );
+    const nextColumns = columns.map((column) => {
+    if (column.id !== columnId) return column;
 
-    const addColumn = useCallback(() => {
-        const newColumn = {
-            id: `${id}_column_${Date.now()}`,
-            name: "new_column",
-            type: "VARCHAR",
-            length: 255,
-            precision: 10,
-            scale: 2,
-            isPrimaryKey: false,
-            isNullable: true,
-            isUnique: false,
-            autoIncrement: false,
-        };
+    const nextValue = !column[property];
 
-        updateTable({
-            columns: [...columns, newColumn],
-        });
-    }, [columns, id, updateTable]);
+    const updated = {
+        ...column,
+        [property]: nextValue,
+    };
 
-    const removeColumn = useCallback(
-        (columnId) => {
-            if (columns.length <= 1) {
-                return;
-            }
+    if (property === "isPrimaryKey" && nextValue) {
+        updated.isNullable = false;
+    }
 
-            const updatedColumns = columns.filter(
-                (column) => column.id !== columnId
-            );
+    return updated;
+    });
 
-            updateTable({
-                columns: updatedColumns,
-            });
-        },
-        [columns, updateTable]
-    );
+    updateTable(id, {
+    columns: nextColumns,
+    });
+};
 
-    const handleTableNameChange = useCallback(
-        (event) => {
-            updateTable({
-                tableName: event.target.value,
-            });
-        },
-        [updateTable]
-    );
+return (
+    <div className="schema-table-node">
+    {/* RIGHT SOURCE HANDLE */}
+    <Handle
+        id="right"
+        type="source"
+        position={Position.Right}
+        className="schema-node-handle schema-node-handle-right"
+    />
 
-    const handleKeyChange = useCallback(
-        (column) => {
-            const isPrimaryKey = !column.isPrimaryKey;
+    {/* LEFT TARGET HANDLE */}
+    <Handle
+        id="left"
+        type="target"
+        position={Position.Left}
+        className="schema-node-handle schema-node-handle-left"
+    />
 
-            updateColumn(column.id, {
-                isPrimaryKey,
-                isUnique: isPrimaryKey
-                    ? true
-                    : column.isUnique,
-                isNullable: isPrimaryKey
-                    ? false
-                    : column.isNullable,
-            });
-        },
-        [updateColumn]
-    );
+    {/* TOP TARGET */}
+    <Handle
+        id="top"
+        type="target"
+        position={Position.Top}
+        className="schema-node-handle schema-node-handle-top"
+    />
 
-    const handleNullableChange = useCallback(
-        (column) => {
-            if (column.isPrimaryKey) {
-                return;
-            }
+    {/* BOTTOM SOURCE */}
+    <Handle
+        id="bottom"
+        type="source"
+        position={Position.Bottom}
+        className="schema-node-handle schema-node-handle-bottom"
+    />
 
-            updateColumn(column.id, {
-                isNullable: !column.isNullable,
-            });
-        },
-        [updateColumn]
-    );
+    <div className="schema-table-header">
+        <div className="schema-table-title">
+        <HiOutlineTable className="schema-table-icon" />
 
-    return (
-        <div className="table-node">
-            <div className="table-node-header">
-                <input
-                    type="text"
-                    className="table-node-name nodrag"
-                    value={data.tableName || ""}
-                    onChange={handleTableNameChange}
-                    onMouseDown={(event) =>
-                        event.stopPropagation()
-                    }
-                    onClick={(event) =>
-                        event.stopPropagation()
-                    }
-                    onKeyDown={(event) =>
-                        event.stopPropagation()
-                    }
-                    aria-label="Table name"
-                />
+        <span>{tableName}</span>
+        </div>
 
-                <span
-                    className="table-node-menu"
-                    aria-hidden="true"
-                >
-                    ⋮
-                </span>
+        <button
+        type="button"
+        className="schema-table-menu"
+        onClick={(event) => {
+            event.stopPropagation();
+            data?.onMenu?.(id);
+        }}
+        >
+        <FiMoreVertical />
+        </button>
+    </div>
+
+    <div className="schema-table-columns">
+        {columns.map((column) => (
+        <div
+            className="schema-column-row"
+            key={column.id}
+        >
+            <div className="schema-column-name">
+            {column.isPrimaryKey && (
+                <FiKey className="schema-column-key" />
+            )}
+
+            <span title={column.name}>
+                {column.name || "column"}
+            </span>
             </div>
 
-            <div className="table-node-columns">
-                {columns.map((column) => (
-                    <div
-                        className="table-column"
-                        key={column.id}
-                    >
-                        <Handle
-                            type="target"
-                            position={Position.Left}
-                            id={column.id}
-                            isConnectable={true}
-                            className="column-handle column-handle-target"
-                            aria-label={`Target ${column.name}`}
-                        />
+            <div className="schema-column-type">
+            {column.type || "TEXT"}
 
-                        <Handle
-                            type="source"
-                            position={Position.Right}
-                            id={column.id}
-                            isConnectable={true}
-                            className="column-handle column-handle-source"
-                            aria-label={`Source ${column.name}`}
-                        />
-
-                        <div className="column-key">
-                            {column.isPrimaryKey && (
-                                <span>PK</span>
-                            )}
-                        </div>
-
-                        <input
-                            type="text"
-                            className="column-name nodrag"
-                            value={column.name || ""}
-                            onChange={(event) =>
-                                updateColumn(
-                                    column.id,
-                                    {
-                                        name: event.target.value,
-                                    }
-                                )
-                            }
-                            onMouseDown={(event) =>
-                                event.stopPropagation()
-                            }
-                            onClick={(event) =>
-                                event.stopPropagation()
-                            }
-                            onKeyDown={(event) =>
-                                event.stopPropagation()
-                            }
-                            aria-label={`Column name for ${column.name}`}
-                        />
-
-                        <select
-                            className="column-type nodrag"
-                            value={column.type || "VARCHAR"}
-                            onChange={(event) =>
-                                updateColumn(
-                                    column.id,
-                                    {
-                                        type: event.target.value,
-                                    }
-                                )
-                            }
-                            onMouseDown={(event) =>
-                                event.stopPropagation()
-                            }
-                            onClick={(event) =>
-                                event.stopPropagation()
-                            }
-                            aria-label={`Data type for ${column.name}`}
-                        >
-                            <option value="INTEGER">
-                                INTEGER
-                            </option>
-                            <option value="BIGINT">
-                                BIGINT
-                            </option>
-                            <option value="VARCHAR">
-                                VARCHAR
-                            </option>
-                            <option value="TEXT">
-                                TEXT
-                            </option>
-                            <option value="BOOLEAN">
-                                BOOLEAN
-                            </option>
-                            <option value="DATE">
-                                DATE
-                            </option>
-                            <option value="TIMESTAMP">
-                                TIMESTAMP
-                            </option>
-                            <option value="DECIMAL">
-                                DECIMAL
-                            </option>
-                            <option value="FLOAT">
-                                FLOAT
-                            </option>
-                        </select>
-
-                        <button
-                            type="button"
-                            className={`column-property nodrag ${
-                                column.isPrimaryKey
-                                    ? "active"
-                                    : ""
-                            }`}
-                            title="Primary Key"
-                            aria-label={`Toggle primary key for ${column.name}`}
-                            onClick={() =>
-                                handleKeyChange(column)
-                            }
-                            onMouseDown={(event) =>
-                                event.stopPropagation()
-                            }
-                        >
-                            PK
-                        </button>
-
-                        <button
-                            type="button"
-                            className={`column-property nodrag ${
-                                column.isUnique
-                                    ? "active"
-                                    : ""
-                            }`}
-                            title="Unique"
-                            aria-label={`Toggle unique for ${column.name}`}
-                            onClick={() =>
-                                updateColumn(
-                                    column.id,
-                                    {
-                                        isUnique:
-                                            !column.isUnique,
-                                    }
-                                )
-                            }
-                            onMouseDown={(event) =>
-                                event.stopPropagation()
-                            }
-                        >
-                            UQ
-                        </button>
-
-                        <button
-                            type="button"
-                            className={`column-property nodrag ${
-                                !column.isNullable
-                                    ? "active"
-                                    : ""
-                            }`}
-                            title="Not Null"
-                            aria-label={`Toggle not null for ${column.name}`}
-                            onClick={() =>
-                                handleNullableChange(
-                                    column
-                                )
-                            }
-                            onMouseDown={(event) =>
-                                event.stopPropagation()
-                            }
-                        >
-                            NN
-                        </button>
-
-                        <button
-                            type="button"
-                            className="column-delete nodrag"
-                            title="Delete column"
-                            aria-label={`Delete ${column.name}`}
-                            disabled={
-                                columns.length <= 1
-                            }
-                            onClick={() =>
-                                removeColumn(column.id)
-                            }
-                            onMouseDown={(event) =>
-                                event.stopPropagation()
-                            }
-                        >
-                            ×
-                        </button>
-                    </div>
-                ))}
+            <FiChevronDown />
             </div>
+
+            <div className="schema-column-actions">
+            <button
+                type="button"
+                className={
+                column.isPrimaryKey
+                    ? "column-action active"
+                    : "column-action"
+                }
+                onClick={(event) => {
+                event.stopPropagation();
+                toggleColumnProperty(
+                    column.id,
+                    "isPrimaryKey"
+                );
+                }}
+                title="Primary key"
+            >
+                PK
+            </button>
 
             <button
                 type="button"
-                className="add-column nodrag"
-                onClick={addColumn}
-                onMouseDown={(event) =>
-                    event.stopPropagation()
+                className={
+                column.isUnique
+                    ? "column-action active"
+                    : "column-action"
                 }
+                onClick={(event) => {
+                event.stopPropagation();
+                toggleColumnProperty(
+                    column.id,
+                    "isUnique"
+                );
+                }}
+                title="Unique"
             >
-                <span>+</span>
-                Add column
+                UQ
             </button>
+
+            <button
+                type="button"
+                className={
+                column.isNullable === false
+                    ? "column-action active"
+                    : "column-action"
+                }
+                onClick={(event) => {
+                event.stopPropagation();
+
+                if (!updateTable) return;
+
+                updateTable(id, {
+                    columns: columns.map((item) =>
+                    item.id === column.id
+                        ? {
+                            ...item,
+                            isNullable:
+                            item.isNullable === false,
+                        }
+                        : item
+                    ),
+                });
+                }}
+                title="Not nullable"
+            >
+                NN
+            </button>
+
+            <button
+                type="button"
+                className="column-delete"
+                onClick={(event) => {
+                event.stopPropagation();
+                onDeleteColumn?.(id, column.id);
+                }}
+                title="Delete column"
+            >
+                ×
+            </button>
+            </div>
+
+            {/* COLUMN-LEVEL CONNECTION POINTS */}
+            <Handle
+            id={column.id}
+            type="source"
+            position={Position.Right}
+            className="column-handle column-handle-source"
+            />
+
+            <Handle
+            id={column.id}
+            type="target"
+            position={Position.Left}
+            className="column-handle column-handle-target"
+            />
         </div>
-    );
+        ))}
+
+        <button
+        type="button"
+        className="schema-add-column"
+        onClick={(event) => {
+            event.stopPropagation();
+            onAddColumn?.(id);
+        }}
+        >
+        <FiPlus />
+        <span>Add column</span>
+        </button>
+    </div>
+    </div>
+);
 }
 
-export default TableNode;
+export default SchemaTableNode;
