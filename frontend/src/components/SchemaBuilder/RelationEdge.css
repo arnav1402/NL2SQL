@@ -1,0 +1,125 @@
+.relation-edge-label {
+position: absolute;
+
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+
+height: 22px;
+padding: 0 8px;
+
+border: 1px solid #d6dce6;
+border-radius: 3px;
+
+background: #ffffff;
+color: #3654a6;
+
+font-family:
+    "IBM Plex Mono",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+
+font-size: 8px;
+font-weight: 700;
+letter-spacing: 0.06em;
+
+white-space: nowrap;
+
+cursor: pointer;
+pointer-events: all;
+
+box-shadow:
+    0 2px 8px rgba(43, 59, 99, 0.08);
+
+transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.relation-edge-label:hover {
+border-color: #3654a6;
+background: #eef2fc;
+color: #2b3b63;
+
+box-shadow:
+    0 3px 10px rgba(43, 59, 99, 0.12);
+}
+
+.relation-edge-label:focus-visible {
+outline: 2px solid rgba(54, 84, 166, 0.25);
+outline-offset: 2px;
+}
+
+.relation-edge-label:active {
+background: #e7ecfa;
+}
+
+.relation-edge-label.required {
+border-style: solid;
+}
+
+.relation-edge-label.optional {
+border-style: dashed;
+color: #71809a;
+background: #ffffff;
+}
+
+.relation-edge-label.optional:hover {
+border-color: #71809a;
+background: #f5f7fa;
+color: #53627b;
+}
+
+.relation-edge-dot {
+width: 4px;
+height: 4px;
+
+flex-shrink: 0;
+
+border-radius: 50%;
+
+background: #3654a6;
+}
+
+.relation-edge-label.optional .relation-edge-dot {
+background: #8994a5;
+}
+
+.relation-edge-text {
+line-height: 1;
+}
+
+/* React Flow edge styling */
+
+.react-flow__edge-path {
+stroke: #3654a6;
+stroke-width: 1.6;
+
+transition:
+    stroke 150ms ease,
+    stroke-width 150ms ease,
+    opacity 150ms ease;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+stroke: #2b448e;
+stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+stroke: #2b3b63;
+stroke-width: 2.2;
+}
+
+.react-flow__edge-text {
+font-family:
+    "IBM Plex Mono",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+}

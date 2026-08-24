@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 import Loader from "./components/Loader";
@@ -7,6 +8,7 @@ import ParticleText from "./components/ParticleText";
 import HelpPopover from "./components/HelpPopover";
 import DatabaseSelector from "./components/DatabaseSelector";
 import Workspace from "./components/Workspace";
+import SchemaBuilder from "./components/SchemaBuilder/SchemaBuilder";
 
 import "./App.css";
 
@@ -15,11 +17,26 @@ function App() {
   const [demoPhase, setDemoPhase] = useState("typing");
   const [helpOpen, setHelpOpen] = useState(false);
 
+  /*
+   * =========================================================
+   * DATABASE CONNECTION
+   * =========================================================
+   */
+
   const [databaseSelectorOpen, setDatabaseSelectorOpen] =
     useState(false);
 
   // Stores the real backend connection
   const [connection, setConnection] = useState(null);
+
+  /*
+   * =========================================================
+   * SCHEMA BUILDER
+   * =========================================================
+   */
+
+  const [schemaBuilderOpen, setSchemaBuilderOpen] =
+    useState(false);
 
   /*
    * =========================================================
@@ -50,6 +67,29 @@ function App() {
         database={connection}
         onExit={() => {
           setConnection(null);
+        }}
+      />
+    );
+  }
+
+  /*
+   * =========================================================
+   * SCHEMA BUILDER
+   * =========================================================
+   *
+   * The Schema Builder is a separate creation workflow.
+   *
+   * It does NOT require a live database connection.
+   * The user designs their database visually and
+   * generates SQL from the schema.
+   */
+
+  if (schemaBuilderOpen) {
+    return (
+      <SchemaBuilder
+        isOpen={schemaBuilderOpen}
+        onClose={() => {
+          setSchemaBuilderOpen(false);
         }}
       />
     );
@@ -110,6 +150,7 @@ function App() {
         </div>
 
         <nav className="nav-links">
+
           <span className="active">
             ASK
           </span>
@@ -121,6 +162,7 @@ function App() {
           <span>
             EXECUTE
           </span>
+
         </nav>
 
       </header>
@@ -206,20 +248,52 @@ function App() {
           </p>
 
 
-          <button
-            className="get-started"
-            onClick={() =>
-              setDatabaseSelectorOpen(true)
-            }
-          >
-            <span>
-              Connect your Database
-            </span>
+          {/* =================================================
+              DATABASE ACTIONS
+              ================================================= */}
 
-            <span className="button-arrow">
-              ↗
-            </span>
-          </button>
+          <div className="database-actions">
+
+            {/* -----------------------------------------------
+                CONNECT EXISTING DATABASE
+                ----------------------------------------------- */}
+
+            <button
+              className="get-started"
+              onClick={() =>
+                setDatabaseSelectorOpen(true)
+              }
+            >
+              <span>
+                Connect your Database
+              </span>
+
+              <span className="button-arrow">
+                ↗
+              </span>
+            </button>
+
+
+            {/* -----------------------------------------------
+                BUILD NEW DATABASE
+                ----------------------------------------------- */}
+
+            <button
+              className="get-started build-database"
+              onClick={() =>
+                setSchemaBuilderOpen(true)
+              }
+            >
+              <span>
+                Build your Database
+              </span>
+
+              <span className="button-arrow">
+                ↗
+              </span>
+            </button>
+
+          </div>
 
         </div>
 
@@ -385,11 +459,13 @@ function App() {
         className="footer-mark"
         aria-hidden="true"
       >
+
         <svg
           viewBox="0 0 24 24"
           width="14"
           height="14"
         >
+
           <circle
             cx="12"
             cy="10"
@@ -404,7 +480,9 @@ function App() {
             fill="none"
             strokeLinecap="round"
           />
+
         </svg>
+
       </div>
 
 
@@ -420,6 +498,7 @@ function App() {
         }}
 
         onConnect={(result) => {
+
           /*
            * DatabaseSelector gives us the RAW backend response:
            *
@@ -435,11 +514,13 @@ function App() {
             result
           );
 
+
           /*
            * Validate the backend response.
            */
 
           if (!result?.connection_id) {
+
             console.error(
               "Backend did not return a connection ID:",
               result
@@ -447,6 +528,7 @@ function App() {
 
             return;
           }
+
 
           /*
            * Store the complete backend connection object.
@@ -462,13 +544,13 @@ function App() {
 
           setConnection(result);
 
+
           /*
            * Close the database selector.
            */
 
           setDatabaseSelectorOpen(false);
         }}
-
       />
 
     </main>
@@ -476,3 +558,4 @@ function App() {
 }
 
 export default App;
+

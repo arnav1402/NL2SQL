@@ -1032,3 +1032,14 @@ button {
     bottom: 16px;
   }
 }
+
+.database-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.build-database {
+  background: transparent;
+}
