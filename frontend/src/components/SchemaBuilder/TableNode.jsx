@@ -1,234 +1,349 @@
 import { Handle, Position } from "@xyflow/react";
 import {
-FiMoreVertical,
-FiPlus,
-FiChevronDown,
-FiKey,
+    FiMoreVertical,
+    FiPlus,
+    FiKey,
+    FiCircle,
 } from "react-icons/fi";
 import { HiOutlineTable } from "react-icons/hi";
 
 import "./TableNode.css";
 
-function SchemaTableNode({ id, data }) {
-const tableName = data?.tableName || "table";
-const columns = data?.columns || [];
-
-const updateTable = data?.updateTable;
-const onAddColumn = data?.onAddColumn;
-const onDeleteColumn = data?.onDeleteColumn;
-
-const toggleColumnProperty = (columnId, property) => {
-    if (!updateTable) return;
-
-    const nextColumns = columns.map((column) => {
-    if (column.id !== columnId) return column;
-
-    const nextValue = !column[property];
-
-    const updated = {
-        ...column,
-        [property]: nextValue,
-    };
-
-    if (property === "isPrimaryKey" && nextValue) {
-        updated.isNullable = false;
-    }
-
-    return updated;
-    });
-
-    updateTable(id, {
-    columns: nextColumns,
-    });
-};
-
-return (
-    <div className="schema-table-node">
-    {/* RIGHT SOURCE HANDLE */}
-    <Handle
-        id="right"
-        type="source"
-        position={Position.Right}
-        className="schema-node-handle schema-node-handle-right"
-    />
-
-    {/* LEFT TARGET HANDLE */}
-    <Handle
-        id="left"
-        type="target"
-        position={Position.Left}
-        className="schema-node-handle schema-node-handle-left"
-    />
-
-    {/* TOP TARGET */}
-    <Handle
-        id="top"
-        type="target"
-        position={Position.Top}
-        className="schema-node-handle schema-node-handle-top"
-    />
-
-    {/* BOTTOM SOURCE */}
-    <Handle
-        id="bottom"
-        type="source"
-        position={Position.Bottom}
-        className="schema-node-handle schema-node-handle-bottom"
-    />
-
-    <div className="schema-table-header">
-        <div className="schema-table-title">
-        <HiOutlineTable className="schema-table-icon" />
-
-        <span>{tableName}</span>
-        </div>
-
-        <button
-        type="button"
-        className="schema-table-menu"
-        onClick={(event) => {
-            event.stopPropagation();
-            data?.onMenu?.(id);
-        }}
-        >
-        <FiMoreVertical />
-        </button>
-    </div>
-
-    <div className="schema-table-columns">
-        {columns.map((column) => (
-        <div
-            className="schema-column-row"
-            key={column.id}
-        >
-            <div className="schema-column-name">
-            {column.isPrimaryKey && (
-                <FiKey className="schema-column-key" />
-            )}
-
-            <span title={column.name}>
-                {column.name || "column"}
-            </span>
-            </div>
-
-            <div className="schema-column-type">
-            {column.type || "TEXT"}
-
-            <FiChevronDown />
-            </div>
-
-            <div className="schema-column-actions">
-            <button
-                type="button"
-                className={
-                column.isPrimaryKey
-                    ? "column-action active"
-                    : "column-action"
-                }
-                onClick={(event) => {
-                event.stopPropagation();
-                toggleColumnProperty(
-                    column.id,
-                    "isPrimaryKey"
-                );
-                }}
-                title="Primary key"
-            >
-                PK
-            </button>
-
-            <button
-                type="button"
-                className={
-                column.isUnique
-                    ? "column-action active"
-                    : "column-action"
-                }
-                onClick={(event) => {
-                event.stopPropagation();
-                toggleColumnProperty(
-                    column.id,
-                    "isUnique"
-                );
-                }}
-                title="Unique"
-            >
-                UQ
-            </button>
-
-            <button
-                type="button"
-                className={
-                column.isNullable === false
-                    ? "column-action active"
-                    : "column-action"
-                }
-                onClick={(event) => {
-                event.stopPropagation();
-
-                if (!updateTable) return;
-
-                updateTable(id, {
-                    columns: columns.map((item) =>
-                    item.id === column.id
-                        ? {
-                            ...item,
-                            isNullable:
-                            item.isNullable === false,
-                        }
-                        : item
-                    ),
-                });
-                }}
-                title="Not nullable"
-            >
-                NN
-            </button>
-
-            <button
-                type="button"
-                className="column-delete"
-                onClick={(event) => {
-                event.stopPropagation();
-                onDeleteColumn?.(id, column.id);
-                }}
-                title="Delete column"
-            >
-                ×
-            </button>
-            </div>
-
-            {/* COLUMN-LEVEL CONNECTION POINTS */}
-            <Handle
-            id={column.id}
-            type="source"
-            position={Position.Right}
-            className="column-handle column-handle-source"
-            />
-
-            <Handle
-            id={column.id}
-            type="target"
-            position={Position.Left}
-            className="column-handle column-handle-target"
-            />
-        </div>
-        ))}
-
-        <button
-        type="button"
-        className="schema-add-column"
-        onClick={(event) => {
-            event.stopPropagation();
-            onAddColumn?.(id);
-        }}
-        >
-        <FiPlus />
-        <span>Add column</span>
-        </button>
-    </div>
-    </div>
-);
+function stopFlowEvent(event) {
+    event.stopPropagation();
 }
 
-export default SchemaTableNode;
+function TableNode({ id, data }) {
+    const tableName = data?.tableName || "table";
+    const columns = data?.columns || [];
+
+    const updateTable = data?.updateTable;
+    const onAddColumn = data?.onAddColumn;
+    const onDeleteColumn = data?.onDeleteColumn;
+
+    const toggleColumnProperty = (columnId, property) => {
+        if (!updateTable) return;
+
+        const nextColumns = columns.map((column) => {
+            if (column.id !== columnId) {
+                return column;
+            }
+
+            const nextValue = !column[property];
+
+            const updated = {
+                ...column,
+                [property]: nextValue,
+            };
+
+            /*
+             * A primary key cannot be nullable.
+             */
+            if (property === "isPrimaryKey" && nextValue) {
+                updated.isNullable = false;
+            }
+
+            return updated;
+        });
+
+        updateTable(id, {
+            columns: nextColumns,
+        });
+    };
+
+    const toggleNullable = (columnId) => {
+        if (!updateTable) return;
+
+        const nextColumns = columns.map((column) => {
+            if (column.id !== columnId) {
+                return column;
+            }
+
+            /*
+             * PK is always NOT NULL.
+             */
+            if (column.isPrimaryKey) {
+                return {
+                    ...column,
+                    isNullable: false,
+                };
+            }
+
+            return {
+                ...column,
+                isNullable: column.isNullable === false,
+            };
+        });
+
+        updateTable(id, {
+            columns: nextColumns,
+        });
+    };
+
+    return (
+        <div className="schema-table-node">
+
+            {/* =====================================================
+                COLUMN CONNECTION HANDLES
+                ===================================================== */}
+
+            {columns.map((column) => (
+                <div
+                    key={`handles-${column.id}`}
+                    className="schema-column-connection"
+                >
+                    <Handle
+                        id={column.id}
+                        type="target"
+                        position={Position.Left}
+                        className="column-handle column-handle-target"
+                        isConnectable={true}
+                        isConnectableEnd={true}
+                    />
+
+                    <Handle
+                        id={column.id}
+                        type="source"
+                        position={Position.Right}
+                        className="column-handle column-handle-source"
+                        isConnectable={true}
+                        isConnectableStart={true}
+                    />
+                </div>
+            ))}
+
+            {/* =====================================================
+                TABLE HEADER
+                ===================================================== */}
+
+            <div
+                className="schema-table-header drag-handle"
+                onMouseDown={stopFlowEvent}
+            >
+                <div className="schema-table-title">
+                    <HiOutlineTable className="schema-table-icon" />
+
+                    <span title={tableName}>
+                        {tableName}
+                    </span>
+                </div>
+
+                <button
+                    type="button"
+                    className="schema-table-menu nodrag nopan"
+                    onPointerDown={stopFlowEvent}
+                    onMouseDown={stopFlowEvent}
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        data?.onMenu?.(id);
+                    }}
+                    aria-label={`Options for ${tableName}`}
+                >
+                    <FiMoreVertical />
+                </button>
+            </div>
+
+            {/* =====================================================
+                COLUMNS
+                ===================================================== */}
+
+            <div className="schema-table-columns">
+
+                {columns.map((column) => (
+                    <div
+                        className="schema-column-row nodrag"
+                        key={column.id}
+                        onMouseDown={stopFlowEvent}
+                        onPointerDown={stopFlowEvent}
+                    >
+
+                        {/* COLUMN NAME */}
+
+                        <div
+                            className="schema-column-name"
+                            title={column.name}
+                        >
+                            <span className="schema-column-property-icon">
+                                {column.isPrimaryKey ? (
+                                    <FiKey />
+                                ) : (
+                                    <FiCircle />
+                                )}
+                            </span>
+
+                            <span className="schema-column-name-text">
+                                {column.name || "column"}
+                            </span>
+                        </div>
+
+                        {/* TYPE */}
+
+                        <div
+                            className="schema-column-type"
+                            title={column.type || "TEXT"}
+                        >
+                            <span>
+                                {column.type || "TEXT"}
+                            </span>
+                        </div>
+
+                        {/* =================================================
+                            COLUMN PROPERTY BUTTONS
+                            ================================================= */}
+
+                        <div
+                            className="schema-column-actions nodrag nopan"
+                            onMouseDown={stopFlowEvent}
+                            onPointerDown={stopFlowEvent}
+                        >
+
+                            {/* PK */}
+
+                            <button
+                                type="button"
+                                className={
+                                    column.isPrimaryKey
+                                        ? "column-action pk active"
+                                        : "column-action pk"
+                                }
+                                onPointerDown={stopFlowEvent}
+                                onMouseDown={stopFlowEvent}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+
+                                    toggleColumnProperty(
+                                        column.id,
+                                        "isPrimaryKey"
+                                    );
+                                }}
+                                title={
+                                    column.isPrimaryKey
+                                        ? "Remove primary key"
+                                        : "Set primary key"
+                                }
+                                aria-label={
+                                    column.isPrimaryKey
+                                        ? `Remove primary key from ${column.name}`
+                                        : `Set ${column.name} as primary key`
+                                }
+                                aria-pressed={column.isPrimaryKey}
+                            >
+                                PK
+                            </button>
+
+                            {/* UNIQUE */}
+
+                            <button
+                                type="button"
+                                className={
+                                    column.isUnique
+                                        ? "column-action uq active"
+                                        : "column-action uq"
+                                }
+                                onPointerDown={stopFlowEvent}
+                                onMouseDown={stopFlowEvent}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+
+                                    toggleColumnProperty(
+                                        column.id,
+                                        "isUnique"
+                                    );
+                                }}
+                                title={
+                                    column.isUnique
+                                        ? "Remove unique constraint"
+                                        : "Set unique"
+                                }
+                                aria-label={
+                                    column.isUnique
+                                        ? `Remove unique from ${column.name}`
+                                        : `Set ${column.name} as unique`
+                                }
+                                aria-pressed={column.isUnique}
+                            >
+                                UQ
+                            </button>
+
+                            {/* NOT NULL */}
+
+                            <button
+                                type="button"
+                                className={
+                                    column.isNullable === false
+                                        ? "column-action nn active"
+                                        : "column-action nn"
+                                }
+                                onPointerDown={stopFlowEvent}
+                                onMouseDown={stopFlowEvent}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+
+                                    toggleNullable(column.id);
+                                }}
+                                title={
+                                    column.isNullable === false
+                                        ? "Allow NULL"
+                                        : "Set NOT NULL"
+                                }
+                                aria-label={
+                                    column.isNullable === false
+                                        ? `Allow null for ${column.name}`
+                                        : `Set ${column.name} as not null`
+                                }
+                                aria-pressed={
+                                    column.isNullable === false
+                                }
+                            >
+                                NN
+                            </button>
+
+                            {/* DELETE */}
+
+                            <button
+                                type="button"
+                                className="column-delete nodrag nopan"
+                                onPointerDown={stopFlowEvent}
+                                onMouseDown={stopFlowEvent}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+
+                                    onDeleteColumn?.(
+                                        id,
+                                        column.id
+                                    );
+                                }}
+                                title={`Delete ${column.name}`}
+                                aria-label={`Delete ${column.name}`}
+                            >
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                ))}
+
+                {/* =================================================
+                    ADD COLUMN
+                    ================================================= */}
+
+                <button
+                    type="button"
+                    className="schema-add-column nodrag nopan"
+                    onPointerDown={stopFlowEvent}
+                    onMouseDown={stopFlowEvent}
+                    onClick={(event) => {
+                        event.stopPropagation();
+
+                        onAddColumn?.(id);
+                    }}
+                >
+                    <FiPlus />
+
+                    <span>Add column</span>
+                </button>
+            </div>
+        </div>
+    );
+}
+
+export default TableNode;

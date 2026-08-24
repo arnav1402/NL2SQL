@@ -37,77 +37,136 @@ sqlite: {
 };
 
 
-/* -------------------------------------------------------
-Map a column type to the target dialect
-------------------------------------------------------- */
+/* =========================================================
+NORMALIZE DIALECT
+========================================================= */
+
+const normalizeDialect = (dialect) => {
+const normalized = String(
+    dialect || "postgresql"
+)
+    .trim()
+    .toLowerCase();
+
+return TYPE_MAP[normalized]
+    ? normalized
+    : "postgresql";
+};
+
+
+/* =========================================================
+NORMALIZE TYPE
+========================================================= */
+
+const normalizeType = (type) => {
+return String(
+    type || "TEXT"
+)
+    .trim()
+    .toUpperCase();
+};
+
+
+/* =========================================================
+MAP COLUMN TYPE
+========================================================= */
 
 export function mapType(
 type,
 dialect = "postgresql",
 options = {}
 ) {
-const normalizedDialect = String(
-    dialect || "postgresql"
-).toLowerCase();
+const normalizedDialect =
+    normalizeDialect(dialect);
 
-const normalizedType = String(
-    type || "TEXT"
-).toUpperCase();
+const normalizedType =
+    normalizeType(type);
 
 const dialectMap =
-    TYPE_MAP[normalizedDialect] ||
-    TYPE_MAP.postgresql;
+    TYPE_MAP[normalizedDialect];
 
 let mappedType =
-    dialectMap[normalizedType] || "TEXT";
+    dialectMap[normalizedType] ||
+    dialectMap.TEXT;
 
 
-/* -----------------------------------------------------
+/* -------------------------------------------------------
     VARCHAR
------------------------------------------------------ */
+------------------------------------------------------- */
 
-if (normalizedType === "VARCHAR") {
+if (
+    normalizedType === "VARCHAR"
+) {
     const length =
-    Number(options.length) > 0
-        ? Number(options.length)
+    Number(options.length);
+
+    const safeLength =
+    Number.isFinite(length) &&
+    length > 0
+        ? Math.floor(length)
         : 255;
 
-    if (normalizedDialect === "sqlite") {
+    /*
+    * SQLite does not enforce VARCHAR length.
+    */
+    if (
+    normalizedDialect === "sqlite"
+    ) {
     return "TEXT";
     }
 
-    return `VARCHAR(${length})`;
+    return `VARCHAR(${safeLength})`;
 }
 
 
-/* -----------------------------------------------------
+/* -------------------------------------------------------
     DECIMAL
------------------------------------------------------ */
+------------------------------------------------------- */
 
-if (normalizedType === "DECIMAL") {
+if (
+    normalizedType === "DECIMAL"
+) {
     const precision =
-    Number(options.precision) > 0
-        ? Number(options.precision)
-        : 10;
+    Number(options.precision);
 
     const scale =
-    Number(options.scale) >= 0
-        ? Number(options.scale)
+    Number(options.scale);
+
+    const safePrecision =
+    Number.isFinite(precision) &&
+    precision > 0
+        ? Math.floor(precision)
+        : 10;
+
+    const safeScale =
+    Number.isFinite(scale) &&
+    scale >= 0
+        ? Math.floor(scale)
         : 2;
 
-    return `DECIMAL(${precision},${scale})`;
+    /*
+    * SQLite uses REAL for DECIMAL.
+    */
+    if (
+    normalizedDialect === "sqlite"
+    ) {
+    return "REAL";
+    }
+
+    return `DECIMAL(${safePrecision},${safeScale})`;
 }
 
 
-/* -----------------------------------------------------
+/* -------------------------------------------------------
     INTEGER AUTO INCREMENT
------------------------------------------------------ */
+------------------------------------------------------- */
 
 if (
     options.autoIncrement &&
     normalizedType === "INTEGER"
 ) {
     switch (normalizedDialect) {
+
     case "postgresql":
         return "SERIAL";
 
@@ -123,15 +182,16 @@ if (
 }
 
 
-/* -----------------------------------------------------
+/* -------------------------------------------------------
     BIGINT AUTO INCREMENT
------------------------------------------------------ */
+------------------------------------------------------- */
 
 if (
     options.autoIncrement &&
     normalizedType === "BIGINT"
 ) {
     switch (normalizedDialect) {
+
     case "postgresql":
         return "BIGSERIAL";
 
@@ -151,40 +211,62 @@ return mappedType;
 }
 
 
-/* -------------------------------------------------------
-Get all supported logical types
-------------------------------------------------------- */
+/* =========================================================
+GET SUPPORTED TYPES
+========================================================= */
 
 export function getSupportedTypes(
 dialect = "postgresql"
 ) {
-const normalizedDialect = String(
-    dialect || "postgresql"
-).toLowerCase();
+const normalizedDialect =
+    normalizeDialect(dialect);
 
 return Object.keys(
-    TYPE_MAP[normalizedDialect] ||
-    TYPE_MAP.postgresql
+    TYPE_MAP[normalizedDialect]
 );
 }
 
 
-/* -------------------------------------------------------
-Get the dialect type mapping
-------------------------------------------------------- */
+/* =========================================================
+GET COMPLETE TYPE MAP
+========================================================= */
 
 export function getTypeMap(
 dialect = "postgresql"
 ) {
-const normalizedDialect = String(
-    dialect || "postgresql"
-).toLowerCase();
+const normalizedDialect =
+    normalizeDialect(dialect);
 
-return (
-    TYPE_MAP[normalizedDialect] ||
-    TYPE_MAP.postgresql
+return {
+    ...TYPE_MAP[normalizedDialect],
+};
+}
+
+
+/* =========================================================
+CHECK WHETHER A TYPE EXISTS
+========================================================= */
+
+export function isSupportedType(
+type,
+dialect = "postgresql"
+) {
+const normalizedDialect =
+    normalizeDialect(dialect);
+
+const normalizedType =
+    normalizeType(type);
+
+return Boolean(
+    TYPE_MAP[normalizedDialect][
+    normalizedType
+    ]
 );
 }
 
+
+/* =========================================================
+EXPORT
+========================================================= */
 
 export default TYPE_MAP;

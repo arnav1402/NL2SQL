@@ -1,389 +1,695 @@
+/* =========================================================
+   TABLE NODE
+   Sharp / dark / NL2SQL visual language
+   ========================================================= */
+
 .schema-table-node {
-position: relative;
-width: 350px;
+    position: relative;
 
-overflow: visible;
+    width: 390px;
 
-border: 1px solid #dce3ee;
-border-radius: 9px;
+    overflow: visible;
 
-background: #ffffff;
+    border: 1px solid #27334a;
 
-box-shadow:
-    0 8px 22px rgba(35, 52, 82, 0.08),
-    0 1px 3px rgba(35, 52, 82, 0.06);
+    border-radius: 2px;
 
-color: #25344f;
+    background: #0d131d;
 
-font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+    color: #dce5f4;
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.38),
+        0 2px 5px rgba(0, 0, 0, 0.28);
+
+    transition:
+        border-color 140ms ease,
+        box-shadow 140ms ease;
 }
 
-/* HEADER */
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .schema-table-header {
-height: 46px;
+    height: 46px;
 
-display: flex;
-align-items: center;
-justify-content: space-between;
+    display: flex;
 
-padding: 0 13px;
+    align-items: center;
 
-border-radius: 8px 8px 0 0;
+    justify-content: space-between;
 
-background:
-    linear-gradient(
-    135deg,
-    #3159b8 0%,
-    #294d9e 100%
-    );
+    padding: 0 13px;
 
-color: #ffffff;
+    border-bottom: 1px solid #2a3851;
+
+    background: #151e2d;
+
+    color: #f2f5fa;
+
+    cursor: grab;
+
+    user-select: none;
 }
+
+.schema-table-header:active {
+    cursor: grabbing;
+}
+
 
 .schema-table-title {
-display: flex;
-align-items: center;
-gap: 10px;
+    min-width: 0;
 
-min-width: 0;
+    display: flex;
 
-font-size: 14px;
-font-weight: 500;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #edf2fa;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.02em;
 }
+
 
 .schema-table-title span {
-overflow: hidden;
+    overflow: hidden;
 
-text-overflow: ellipsis;
-white-space: nowrap;
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
+
 
 .schema-table-icon {
-flex-shrink: 0;
+    flex-shrink: 0;
 
-width: 17px;
-height: 17px;
+    width: 15px;
 
-stroke-width: 1.8;
+    height: 15px;
+
+    color: #5475bd;
+
+    stroke-width: 1.7;
 }
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
 
 .schema-table-menu {
-width: 26px;
-height: 30px;
+    width: 27px;
+    height: 27px;
 
-display: flex;
-align-items: center;
-justify-content: center;
+    display: flex;
 
-padding: 0;
+    align-items: center;
+    justify-content: center;
 
-border: 0;
+    padding: 0;
 
-background: transparent;
+    border: 1px solid transparent;
 
-color: rgba(255, 255, 255, 0.92);
+    background: transparent;
 
-cursor: pointer;
-}
+    color: #71809a;
 
-.schema-table-menu svg {
-width: 17px;
-height: 17px;
+    cursor: pointer;
+
+    transition:
+        color 120ms ease,
+        border-color 120ms ease,
+        background 120ms ease;
 }
 
 .schema-table-menu:hover {
-color: #ffffff;
+    border-color: #33425c;
+
+    background: #1b2637;
+
+    color: #dbe5f5;
 }
 
-/* COLUMNS */
+.schema-table-menu svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* =========================================================
+   COLUMN AREA
+   ========================================================= */
 
 .schema-table-columns {
-background: #ffffff;
-
-border-radius: 0 0 8px 8px;
+    background: #0d131d;
 }
+
+
+/* =========================================================
+   COLUMN ROW
+   ========================================================= */
 
 .schema-column-row {
-position: relative;
+    position: relative;
 
-min-height: 47px;
+    min-height: 48px;
 
-display: grid;
+    display: grid;
 
-grid-template-columns:
-    minmax(85px, 1fr)
-    82px
-    auto;
+    grid-template-columns:
+        minmax(115px, 1fr)
+        76px
+        auto;
 
-align-items: center;
+    align-items: center;
 
-gap: 8px;
+    gap: 8px;
 
-padding: 0 13px;
+    padding: 0 13px;
 
-border-bottom: 1px solid #edf1f6;
+    border-bottom: 1px solid #1d2839;
+
+    background: #0d131d;
+
+    user-select: none;
+
+    transition:
+        background 120ms ease;
 }
 
-.schema-column-row:last-of-type {
-border-bottom: 1px solid #edf1f6;
+.schema-column-row:hover {
+    background: #111a28;
 }
 
-/* COLUMN NAME */
+
+/* =========================================================
+   COLUMN NAME
+   ========================================================= */
 
 .schema-column-name {
-min-width: 0;
+    min-width: 0;
 
-display: flex;
-align-items: center;
+    display: flex;
 
-gap: 7px;
+    align-items: center;
 
-color: #263750;
+    gap: 7px;
 
-font-size: 12px;
-font-weight: 500;
+    color: #cbd5e4;
+
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 10px;
+
+    font-weight: 500;
 }
 
-.schema-column-name span {
-overflow: hidden;
 
-text-overflow: ellipsis;
-white-space: nowrap;
+.schema-column-name-text {
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
 
-.schema-column-key {
-flex-shrink: 0;
 
-width: 12px;
-height: 12px;
+.schema-column-property-icon {
+    width: 13px;
+    height: 13px;
 
-color: #3159b8;
+    flex-shrink: 0;
 
-stroke-width: 2;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #48566d;
 }
 
-/* TYPE */
+
+.schema-column-property-icon svg {
+    width: 11px;
+    height: 11px;
+}
+
+
+.schema-column-row:has(.column-action.pk.active)
+.schema-column-property-icon {
+    color: #6f91df;
+}
+
+
+/* =========================================================
+   TYPE
+   ========================================================= */
 
 .schema-column-type {
-display: flex;
-align-items: center;
-justify-content: flex-end;
+    min-width: 0;
 
-gap: 5px;
+    display: flex;
 
-color: #929caf;
+    align-items: center;
 
-font-family:
-    "IBM Plex Mono",
-    "SFMono-Regular",
-    Consolas,
-    monospace;
+    justify-content: flex-start;
 
-font-size: 9px;
+    color: #65748c;
 
-white-space: nowrap;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+
+    font-size: 8px;
+
+    letter-spacing: 0.02em;
+
+    white-space: nowrap;
 }
 
-.schema-column-type svg {
-width: 11px;
-height: 11px;
+.schema-column-type span {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
 
-/* ACTIONS */
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 
 .schema-column-actions {
-display: flex;
-align-items: center;
+    display: flex;
 
-gap: 6px;
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 4px;
 }
+
+
+/* =========================================================
+   PK / UQ / NN
+   ========================================================= */
 
 .column-action {
-width: 32px;
-height: 27px;
+    width: 29px;
+    height: 24px;
 
-display: flex;
-align-items: center;
-justify-content: center;
+    display: flex;
 
-padding: 0;
+    align-items: center;
+    justify-content: center;
 
-border: 1px solid #d5dfed;
-border-radius: 5px;
+    padding: 0;
 
-background: #ffffff;
+    border: 1px solid #303d53;
 
-color: #3862b9;
+    border-radius: 2px;
 
-font-family:
-    "IBM Plex Mono",
-    monospace;
+    background: #111927;
 
-font-size: 9px;
-font-weight: 600;
+    color: #687891;
 
-cursor: pointer;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
 
-transition:
-    background 120ms ease,
-    border-color 120ms ease,
-    color 120ms ease,
-    box-shadow 120ms ease;
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.02em;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    transition:
+        background 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        box-shadow 120ms ease;
+
+    pointer-events: all;
 }
+
+
+/*
+ * IMPORTANT:
+ * React Flow must never treat these controls as
+ * node dragging.
+ */
+
+.column-action.nodrag,
+.column-action.nopan {
+    cursor: pointer;
+}
+
 
 .column-action:hover {
-border-color: #8da9df;
+    border-color: #52688f;
 
-background: #f5f8ff;
+    background: #172236;
+
+    color: #aebdd5;
 }
 
-.column-action.active {
-border-color: #3159b8;
 
-background: #3159b8;
+/* PK */
 
-color: #ffffff;
+.column-action.pk.active {
+    border-color: #4d6fbe;
 
-box-shadow:
-    0 2px 5px rgba(49, 89, 184, 0.18);
+    background: #2b4380;
+
+    color: #dce7ff;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(111, 145, 223, 0.16);
 }
+
+
+/* UNIQUE */
+
+.column-action.uq.active {
+    border-color: #526f9e;
+
+    background: #243653;
+
+    color: #c5d7f5;
+}
+
+
+/* NOT NULL */
+
+.column-action.nn.active {
+    border-color: #56687f;
+
+    background: #263342;
+
+    color: #d1dbe8;
+}
+
+
+/* =========================================================
+   DELETE
+   ========================================================= */
 
 .column-delete {
-width: 18px;
-height: 25px;
+    width: 20px;
+    height: 24px;
 
-padding: 0;
+    display: flex;
 
-border: 0;
+    align-items: center;
+    justify-content: center;
 
-background: transparent;
+    padding: 0;
 
-color: #b1bac8;
+    border: 0;
 
-font-size: 17px;
-line-height: 1;
+    background: transparent;
 
-cursor: pointer;
+    color: #4e5b70;
+
+    font-size: 16px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    pointer-events: all;
+
+    transition:
+        color 120ms ease,
+        background 120ms ease;
 }
 
 .column-delete:hover {
-color: #d0525e;
+    color: #d16b76;
+
+    background: rgba(209, 107, 118, 0.08);
 }
 
-/* ADD COLUMN */
+
+/* =========================================================
+   ADD COLUMN
+   ========================================================= */
 
 .schema-add-column {
-width: 100%;
-height: 44px;
+    width: 100%;
 
-display: flex;
-align-items: center;
+    height: 39px;
 
-gap: 8px;
+    display: flex;
 
-padding: 0 14px;
+    align-items: center;
 
-border: 0;
+    gap: 7px;
 
-border-radius: 0 0 8px 8px;
+    padding: 0 13px;
 
-background: #ffffff;
+    border: 0;
 
-color: #3159b8;
+    background: #0f1724;
 
-font-size: 11px;
-font-weight: 500;
+    color: #607db8;
 
-text-align: left;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
 
-cursor: pointer;
-}
+    font-size: 8px;
 
-.schema-add-column svg {
-width: 15px;
-height: 15px;
+    text-align: left;
+
+    cursor: pointer;
+
+    pointer-events: all;
+
+    transition:
+        background 120ms ease,
+        color 120ms ease;
 }
 
 .schema-add-column:hover {
-background: #f7f9fd;
+    background: #141e2e;
+
+    color: #86a5e3;
 }
 
-/* HANDLES */
-
-.schema-node-handle {
-width: 8px;
-height: 8px;
-
-border: 2px solid #3159b8;
-border-radius: 50%;
-
-background: #ffffff;
-
-opacity: 0;
-
-transition: opacity 120ms ease;
+.schema-add-column svg {
+    width: 13px;
+    height: 13px;
 }
 
-.schema-table-node:hover .schema-node-handle {
-opacity: 1;
+
+/* =========================================================
+   CONNECTION HANDLE WRAPPER
+   ========================================================= */
+
+.schema-column-connection {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    height: 48px;
+
+    pointer-events: none;
+
+    /*
+     * Each wrapper is positioned using the column's
+     * handle offset by React Flow.
+     */
 }
 
-/* Column handles */
+
+/* =========================================================
+   COLUMN HANDLES
+   ========================================================= */
 
 .column-handle {
-width: 9px;
-height: 9px;
+    width: 9px;
+    height: 9px;
 
-border: 2px solid #3159b8;
-border-radius: 50%;
+    border: 2px solid #496bb5;
 
-background: #ffffff;
+    border-radius: 50%;
 
-opacity: 0;
+    background: #0d131d;
 
-transition:
-    opacity 120ms ease,
-    transform 120ms ease;
+    opacity: 0;
+
+    pointer-events: all;
+
+    z-index: 10;
+
+    transition:
+        opacity 120ms ease,
+        transform 120ms ease,
+        background 120ms ease,
+        border-color 120ms ease;
 }
+
+
+/*
+ * Always expose handles when the table is hovered.
+ */
 
 .schema-table-node:hover .column-handle {
-opacity: 1;
+    opacity: 1;
 }
+
+
+/*
+ * Also expose a handle when the user is actively
+ * creating a connection.
+ */
+
+.schema-table-node:has(.column-handle:hover)
+.column-handle {
+    opacity: 1;
+}
+
 
 .column-handle:hover {
-transform: scale(1.3);
+    transform: scale(1.35);
+
+    border-color: #7597e1;
+
+    background: #243b70;
 }
+
+
+/* Source */
 
 .column-handle-source {
-right: -5px;
+    right: -5px;
 }
+
+
+/* Target */
 
 .column-handle-target {
-left: -5px;
+    left: -5px;
 }
 
-/* Do not show generic handles while using column connections */
 
-.schema-node-handle-right,
-.schema-node-handle-left,
-.schema-node-handle-top,
-.schema-node-handle-bottom {
-opacity: 0;
-pointer-events: none;
+/* =========================================================
+   CONNECTION HANDLE ACTIVE STATE
+   ========================================================= */
+
+.react-flow__handle.connecting {
+    opacity: 1;
+
+    border-color: #7898dc;
+
+    background: #3159b8;
 }
 
-/* Selected node */
+.react-flow__handle.valid {
+    opacity: 1;
+
+    border-color: #7b9be0;
+
+    background: #3654a6;
+}
+
+
+/* =========================================================
+   NODE SELECTION
+   ========================================================= */
 
 .react-flow__node.selected .schema-table-node {
-border-color: #3159b8;
+    border-color: #4265aa;
 
-box-shadow:
-    0 0 0 2px rgba(49, 89, 184, 0.12),
-    0 10px 25px rgba(35, 52, 82, 0.1);
+    box-shadow:
+        0 0 0 1px rgba(66, 101, 170, 0.45),
+        0 14px 32px rgba(0, 0, 0, 0.42);
+}
+
+
+/* =========================================================
+   NODE DRAGGING
+   ========================================================= */
+
+.react-flow__node.dragging .schema-table-node {
+    border-color: #5878bb;
+
+    box-shadow:
+        0 18px 38px rgba(0, 0, 0, 0.5);
+}
+
+
+/* =========================================================
+   PREVENT INTERACTIVE ELEMENTS FROM DRAGGING NODE
+   ========================================================= */
+
+.nodrag,
+.nopan {
+    touch-action: none;
+}
+
+
+/*
+ * React Flow's utility classes.
+ *
+ * Explicitly ensure buttons remain clickable.
+ */
+
+.schema-table-node button {
+    pointer-events: all;
+}
+
+
+/* =========================================================
+   SMALLER SCREENS
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .schema-table-node {
+        width: 340px;
+    }
+
+    .schema-column-row {
+        grid-template-columns:
+            minmax(100px, 1fr)
+            65px
+            auto;
+
+        gap: 5px;
+    }
+
+    .column-action {
+        width: 26px;
+    }
 }

@@ -1,15 +1,27 @@
-import "./SQLPreview.css";
 import { useState } from "react";
+import {
+FiCheck,
+FiClipboard,
+FiDownload,
+FiCode,
+} from "react-icons/fi";
 
-function SQLPreview({ sql, dialect }) {
+import "./SQLPreview.css";
+
+function SQLPreview({ sql = "", dialect = "postgresql" }) {
 const [copied, setCopied] = useState(false);
 
+const hasSQL = Boolean(sql?.trim());
+
 const handleCopy = async () => {
+    if (!hasSQL) return;
+
     try {
-    await navigator.clipboard.writeText(sql || "");
+    await navigator.clipboard.writeText(sql);
+
     setCopied(true);
 
-    setTimeout(() => {
+    window.setTimeout(() => {
         setCopied(false);
     }, 1500);
     } catch (error) {
@@ -18,7 +30,7 @@ const handleCopy = async () => {
 };
 
 const handleDownload = () => {
-    if (!sql) return;
+    if (!hasSQL) return;
 
     const blob = new Blob([sql], {
     type: "text/sql;charset=utf-8",
@@ -32,19 +44,24 @@ const handleDownload = () => {
 
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
 
     URL.revokeObjectURL(url);
 };
 
-const lines = (sql || "").split("\n");
-const hasSQL = Boolean(sql?.trim());
+const lines = sql.split("\n");
 
 return (
-    <div className="sql-preview">
+    <aside className="sql-preview">
+    {/* =====================================================
+        HEADER
+    ===================================================== */}
+
     <header className="sql-preview-header">
         <div className="sql-preview-title">
-        <span className="sql-preview-indicator" />
+        <div className="sql-preview-icon">
+            <FiCode />
+        </div>
 
         <div className="sql-preview-heading">
             <span className="sql-preview-eyebrow">
@@ -55,16 +72,23 @@ return (
         </div>
         </div>
 
-        <span className="sql-dialect">
-        {(dialect || "sql").toUpperCase()}
-        </span>
+        <div className="sql-dialect">
+        {dialect.toUpperCase()}
+        </div>
     </header>
+
+    {/* =====================================================
+        SQL BODY
+    ===================================================== */}
 
     <div className="sql-preview-body">
         {hasSQL ? (
         <div className="sql-code">
             {lines.map((line, index) => (
-            <div className="sql-line" key={`${index}-${line}`}>
+            <div
+                className="sql-line"
+                key={`${index}-${line}`}
+            >
                 <span className="sql-line-number">
                 {String(index + 1).padStart(2, "0")}
                 </span>
@@ -76,10 +100,10 @@ return (
         ) : (
         <div className="sql-empty">
             <div className="sql-empty-symbol">
-            {"</>"}
+            <FiCode />
             </div>
 
-            <h4>No SQL generated</h4>
+            <h4>NO SQL GENERATED</h4>
 
             <p>
             Add tables and columns to
@@ -89,31 +113,50 @@ return (
         )}
     </div>
 
+    {/* =====================================================
+        FOOTER
+    ===================================================== */}
+
     <footer className="sql-preview-footer">
-        <button
-        type="button"
-        className="sql-action"
-        onClick={handleCopy}
-        disabled={!hasSQL}
-        >
-        <span className="sql-action-icon">
-            {copied ? "✓" : "□"}
+        <div className="sql-preview-status">
+        <span className="sql-status-dot" />
+
+        <span>
+            {hasSQL ? "SCHEMA READY" : "WAITING FOR SCHEMA"}
         </span>
+        </div>
 
-        {copied ? "Copied" : "Copy SQL"}
+        <div className="sql-preview-actions">
+        <button
+            type="button"
+            className="sql-action"
+            onClick={handleCopy}
+            disabled={!hasSQL}
+        >
+            {copied ? (
+            <FiCheck className="sql-action-icon" />
+            ) : (
+            <FiClipboard className="sql-action-icon" />
+            )}
+
+            <span>
+            {copied ? "Copied" : "Copy SQL"}
+            </span>
         </button>
 
         <button
-        type="button"
-        className="sql-action sql-action-primary"
-        onClick={handleDownload}
-        disabled={!hasSQL}
+            type="button"
+            className="sql-action sql-action-primary"
+            onClick={handleDownload}
+            disabled={!hasSQL}
         >
-        Download .sql
-        <span className="sql-download-arrow">↗</span>
+            <FiDownload className="sql-action-icon" />
+
+            <span>Download</span>
         </button>
+        </div>
     </footer>
-    </div>
+    </aside>
 );
 }
 

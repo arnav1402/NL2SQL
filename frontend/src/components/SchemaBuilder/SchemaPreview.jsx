@@ -1,16 +1,28 @@
-import "./SchemaPreview.css";
 import { useMemo } from "react";
+import {
+FiCode,
+FiCopy,
+FiDownload,
+FiDatabase,
+FiLink,
+FiKey,
+} from "react-icons/fi";
+
+import "./SchemaPreview.css";
 
 function SchemaPreview({
 nodes = [],
 edges = [],
 dialect = "postgresql",
+sql = "",
+onCopy,
+onDownload,
 }) {
 const tables = useMemo(
     () =>
     nodes.map((node) => ({
         id: node.id,
-        name: node.data?.tableName || "table",
+        name: node.data?.tableName || node.id,
         columns: node.data?.columns || [],
     })),
     [nodes]
@@ -20,235 +32,247 @@ const relationships = useMemo(
     () =>
     edges
         .map((edge) => {
-        const sourceTable = nodes.find(
+        const source = nodes.find(
             (node) => node.id === edge.source
         );
 
-        const targetTable = nodes.find(
+        const target = nodes.find(
             (node) => node.id === edge.target
         );
 
-        const sourceColumn = sourceTable?.data?.columns?.find(
-            (column) => column.id === edge.sourceHandle
-        );
+        const sourceColumn =
+            source?.data?.columns?.find(
+            (column) =>
+                column.id === edge.sourceHandle
+            );
 
-        const targetColumn = targetTable?.data?.columns?.find(
-            (column) => column.id === edge.targetHandle
-        );
+        const targetColumn =
+            target?.data?.columns?.find(
+            (column) =>
+                column.id === edge.targetHandle
+            );
 
-        if (!sourceTable || !targetTable) {
+        if (!source || !target) {
             return null;
         }
 
         return {
             id: edge.id,
+
             sourceTable:
-            sourceTable.data?.tableName || edge.source,
+            source.data?.tableName ||
+            source.id,
+
             sourceColumn:
-            sourceColumn?.name || edge.sourceHandle || "column",
+            sourceColumn?.name ||
+            edge.sourceHandle ||
+            "unknown",
+
             targetTable:
-            targetTable.data?.tableName || edge.target,
+            target.data?.tableName ||
+            target.id,
+
             targetColumn:
-            targetColumn?.name || edge.targetHandle || "column",
-            relation: edge.data?.relation || "required",
+            targetColumn?.name ||
+            edge.targetHandle ||
+            "unknown",
+
+            relation:
+            edge.data?.relation === "optional"
+                ? "optional"
+                : "required",
         };
         })
         .filter(Boolean),
     [nodes, edges]
 );
 
+const totalColumns = useMemo(
+    () =>
+    tables.reduce(
+        (total, table) =>
+        total + table.columns.length,
+        0
+    ),
+    [tables]
+);
+
+const formattedDialect =
+    dialect.toUpperCase();
+
 return (
-    <div className="schema-preview">
+    <aside className="schema-preview">
+    {/* =========================================
+        HEADER
+    ========================================= */}
+
     <header className="schema-preview-header">
-        <div className="schema-preview-heading">
-        <span className="schema-preview-eyebrow">
-            DATABASE STRUCTURE
-        </span>
-
-        <h3>Schema Preview</h3>
-        </div>
-
-        <span className="schema-preview-dialect">
-        {dialect.toUpperCase()}
-        </span>
-    </header>
-
-    <div className="schema-preview-body">
-        {tables.length === 0 ? (
-        <div className="schema-preview-empty">
-            <div className="schema-preview-empty-icon">
-            <span>+</span>
-            </div>
-
-            <span className="schema-preview-empty-label">
-            NO TABLES
+        <div className="schema-preview-header-main">
+        <div className="schema-preview-title-row">
+            <span className="schema-preview-title-icon">
+            <FiCode />
             </span>
 
-            <p>
-            Add tables to preview
-            your database structure.
-            </p>
+            <div className="schema-preview-heading">
+            <span className="schema-preview-eyebrow">
+                GENERATED DDL
+            </span>
+
+            <h2>SQL Preview</h2>
+            </div>
+        </div>
+        </div>
+
+        <div className="schema-preview-dialect">
+        {formattedDialect}
+        </div>
+    </header>
+
+    {/* =========================================
+        CODE
+    ========================================= */}
+
+    <div className="schema-preview-code">
+        {sql ? (
+        <div className="schema-code-wrapper">
+            <pre className="schema-code">
+            {sql}
+            </pre>
         </div>
         ) : (
-        <>
-            <section className="schema-preview-section">
-            <div className="schema-preview-section-heading">
-                <span>TABLES</span>
-                <span>{tables.length}</span>
+        <div className="schema-preview-empty">
+            <div className="schema-preview-empty-icon">
+            <FiDatabase />
             </div>
 
-            <div className="schema-preview-tables">
-                {tables.map((table) => (
-                <article
-                    className="schema-preview-table"
-                    key={table.id}
-                >
-                    <div className="schema-preview-table-header">
-                    <span className="schema-preview-table-icon">
-                        ▦
-                    </span>
-
-                    <span className="schema-preview-table-name">
-                        {table.name}
-                    </span>
-
-                    <span className="schema-preview-column-count">
-                        {table.columns.length}
-                    </span>
-                    </div>
-
-                    <div className="schema-preview-columns">
-                    {table.columns.length === 0 ? (
-                        <div className="schema-preview-no-columns">
-                        No columns
-                        </div>
-                    ) : (
-                        table.columns.map((column) => (
-                        <div
-                            className="schema-preview-column"
-                            key={column.id}
-                        >
-                            <div className="schema-preview-column-info">
-                            <span
-                                className={`schema-preview-key ${
-                                column.isPrimaryKey
-                                    ? "pk"
-                                    : ""
-                                }`}
-                            >
-                                {column.isPrimaryKey ? "PK" : "—"}
-                            </span>
-
-                            <span className="schema-preview-column-name">
-                                {column.name || "unnamed"}
-                            </span>
-                            </div>
-
-                            <div className="schema-preview-column-meta">
-                            <span className="column-type">
-                                {column.type || "TEXT"}
-                                {column.type === "VARCHAR" &&
-                                column.length
-                                ? `(${column.length})`
-                                : ""}
-                            </span>
-
-                            {!column.isNullable && (
-                                <span className="column-badge">
-                                NN
-                                </span>
-                            )}
-
-                            {column.isUnique && (
-                                <span className="column-badge">
-                                UQ
-                                </span>
-                            )}
-                            </div>
-                        </div>
-                        ))
-                    )}
-                    </div>
-                </article>
-                ))}
+            <div className="schema-preview-empty-label">
+            NO DDL GENERATED
             </div>
-            </section>
 
-            {relationships.length > 0 && (
-            <section className="schema-preview-section schema-preview-relations">
-                <div className="schema-preview-section-heading">
-                <span>RELATIONSHIPS</span>
-                <span>{relationships.length}</span>
-                </div>
-
-                <div className="schema-preview-relation-list">
-                {relationships.map((relationship) => (
-                    <div
-                    className="schema-preview-relation"
-                    key={relationship.id}
-                    >
-                    <div className="relation-end">
-                        <span className="relation-table">
-                        {relationship.sourceTable}
-                        </span>
-
-                        <span className="relation-column">
-                        {relationship.sourceColumn}
-                        </span>
-                    </div>
-
-                    <div
-                        className={`relation-connector ${
-                        relationship.relation === "optional"
-                            ? "optional"
-                            : ""
-                        }`}
-                    >
-                        <span className="relation-line" />
-
-                        <span className="relation-arrow">
-                        →
-                        </span>
-                    </div>
-
-                    <div className="relation-end target">
-                        <span className="relation-table">
-                        {relationship.targetTable}
-                        </span>
-
-                        <span className="relation-column">
-                        {relationship.targetColumn}
-                        </span>
-                    </div>
-                    </div>
-                ))}
-                </div>
-            </section>
-            )}
-        </>
+            <p>
+            Add tables and relationships to
+            generate the SQL schema.
+            </p>
+        </div>
         )}
     </div>
 
-    <footer className="schema-preview-footer">
-        <div className="schema-preview-stat">
-        <span className="schema-preview-stat-value">
-            {tables.length}
-        </span>
-        <span>TABLE{tables.length === 1 ? "" : "S"}</span>
+    {/* =========================================
+        RELATIONSHIP INSPECTOR
+    ========================================= */}
+
+    {relationships.length > 0 && (
+        <section className="schema-preview-relations">
+        <div className="schema-preview-section-heading">
+            <div className="schema-preview-section-title">
+            <FiLink />
+            RELATIONSHIPS
+            </div>
+
+            <span>
+            {relationships.length}
+            </span>
         </div>
 
-        <span className="schema-preview-divider" />
+        <div className="schema-preview-relation-list">
+            {relationships.map((relation) => (
+            <div
+                key={relation.id}
+                className="schema-preview-relation"
+            >
+                <div className="relation-end">
+                <span className="relation-table">
+                    {relation.sourceTable}
+                </span>
 
-        <div className="schema-preview-stat">
-        <span className="schema-preview-stat-value">
-            {relationships.length}
-        </span>
+                <span className="relation-column">
+                    {relation.sourceColumn}
+                </span>
+                </div>
+
+                <div
+                className={`relation-connector ${
+                    relation.relation ===
+                    "optional"
+                    ? "optional"
+                    : "required"
+                }`}
+                >
+                <span className="relation-line" />
+
+                <span className="relation-arrow">
+                    →
+                </span>
+                </div>
+
+                <div className="relation-end target">
+                <span className="relation-table">
+                    {relation.targetTable}
+                </span>
+
+                <span className="relation-column">
+                    {relation.targetColumn}
+                </span>
+                </div>
+            </div>
+            ))}
+        </div>
+        </section>
+    )}
+
+    {/* =========================================
+        FOOTER
+    ========================================= */}
+
+    <footer className="schema-preview-footer">
+        <div className="schema-preview-stats">
         <span>
-            RELATION{relationships.length === 1 ? "" : "S"}
+            <FiDatabase />
+            {tables.length} TABLES
         </span>
+
+        <span className="schema-preview-footer-divider" />
+
+        <span>
+            <FiKey />
+            {totalColumns} COLUMNS
+        </span>
+
+        {relationships.length > 0 && (
+            <>
+            <span className="schema-preview-footer-divider" />
+
+            <span>
+                <FiLink />
+                {relationships.length} RELATIONS
+            </span>
+            </>
+        )}
+        </div>
+
+        <div className="schema-preview-actions">
+        <button
+            type="button"
+            className="preview-action"
+            onClick={onCopy}
+            disabled={!sql}
+        >
+            <FiCopy />
+            <span>Copy SQL</span>
+        </button>
+
+        <button
+            type="button"
+            className="preview-action primary"
+            onClick={onDownload}
+            disabled={!sql}
+        >
+            <FiDownload />
+            <span>Download .sql</span>
+        </button>
         </div>
     </footer>
-    </div>
+    </aside>
 );
 }
 

@@ -1,129 +1,291 @@
+/* =========================================================
+NL2SQL RELATION EDGE
+Sharp / technical / dark-schema-designer aesthetic
+========================================================= */
+
 .relation-edge-label {
 position: absolute;
 
-display: flex;
+display: inline-flex;
 align-items: center;
 justify-content: center;
-
 gap: 6px;
 
-height: 25px;
+min-width: 76px;
+height: 24px;
 
-padding: 0 10px;
+padding: 0 9px;
 
-border: 1px solid #b9c9e8;
-border-radius: 5px;
+border: 1px solid #33415f;
+border-radius: 3px;
 
-background: rgba(255, 255, 255, 0.97);
-
-color: #3159b8;
+background: #111827;
+color: #8fa9ff;
 
 font-family:
     "IBM Plex Mono",
     "SFMono-Regular",
     Consolas,
+    "Liberation Mono",
     monospace;
 
 font-size: 8px;
 font-weight: 700;
+line-height: 1;
 
-letter-spacing: 0.04em;
-
+letter-spacing: 0.08em;
 white-space: nowrap;
 
 cursor: pointer;
-
 pointer-events: all;
 
 box-shadow:
-    0 3px 10px rgba(41, 63, 104, 0.1);
+    0 4px 14px rgba(0, 0, 0, 0.35);
 
 transition:
     border-color 140ms ease,
-    background 140ms ease,
+    background-color 140ms ease,
     color 140ms ease,
-    box-shadow 140ms ease;
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
-.relation-edge-label:hover {
-border-color: #3159b8;
 
-background: #f5f8ff;
+/* ---------------------------------------------------------
+REQUIRED
+--------------------------------------------------------- */
 
-color: #234995;
+.relation-edge-label--required {
+border-color: #334d94;
+background: #111827;
+color: #7592ff;
+}
+
+.relation-edge-label--required:hover {
+border-color: #4c6fff;
+background: #17213a;
+color: #9bb0ff;
 
 box-shadow:
-    0 5px 14px rgba(41, 63, 104, 0.14);
+    0 5px 18px rgba(76, 111, 255, 0.18);
 }
 
-.relation-edge-label.optional {
+
+/* ---------------------------------------------------------
+OPTIONAL
+--------------------------------------------------------- */
+
+.relation-edge-label--optional {
+border-color: #3a465c;
 border-style: dashed;
 
-color: #61728e;
+background: #11161f;
+color: #7e8da7;
 }
 
-.relation-edge-label.optional:hover {
-border-color: #7890b7;
+.relation-edge-label--optional:hover {
+border-color: #657590;
+background: #171d28;
+color: #a0aec4;
 
-background: #f7f9fc;
-
-color: #4c607f;
+box-shadow:
+    0 5px 18px rgba(0, 0, 0, 0.3);
 }
+
+
+/* ---------------------------------------------------------
+SELECTED
+--------------------------------------------------------- */
+
+.relation-edge-label--selected {
+border-color: #6d8cff;
+
+background: #17213d;
+color: #a9baff;
+
+box-shadow:
+    0 0 0 1px rgba(109, 140, 255, 0.12),
+    0 5px 18px rgba(76, 111, 255, 0.22);
+}
+
+
+/* ---------------------------------------------------------
+DOT
+--------------------------------------------------------- */
 
 .relation-edge-dot {
 width: 5px;
 height: 5px;
 
-flex-shrink: 0;
+flex: 0 0 5px;
 
 border-radius: 50%;
 
-background: #3159b8;
+background: #4c6fff;
+
+box-shadow:
+    0 0 7px rgba(76, 111, 255, 0.45);
 }
 
-.relation-edge-label.optional
-.relation-edge-dot {
-background: #7f91ad;
+.relation-edge-label--optional .relation-edge-dot {
+background: #71809a;
+
+box-shadow:
+    0 0 6px rgba(113, 128, 154, 0.25);
 }
 
-/* React Flow edge */
+
+/* ---------------------------------------------------------
+TEXT
+--------------------------------------------------------- */
+
+.relation-edge-label-text {
+display: inline-block;
+}
+
+
+/* =========================================================
+REACT FLOW EDGES
+========================================================= */
 
 .react-flow__edge-path {
-stroke: #3159b8;
-
-stroke-width: 1.7px;
-
 fill: none;
+
+stroke: #4c6fff;
+stroke-width: 1.6px;
 
 transition:
     stroke 140ms ease,
-    stroke-width 140ms ease;
+    stroke-width 140ms ease,
+    opacity 140ms ease;
 }
 
-.react-flow__edge.selected
-.react-flow__edge-path {
-stroke: #234995;
 
-stroke-width: 2.3px;
+/* Required edge */
+
+.react-flow__edge:not(.selected) .react-flow__edge-path {
+stroke: #4c6fff;
 }
 
-/* Arrow */
+
+/* Selected edge */
+
+.react-flow__edge.selected .react-flow__edge-path {
+stroke: #6d8cff;
+stroke-width: 2px;
+}
+
+
+/* Hover */
+
+.react-flow__edge:hover .react-flow__edge-path {
+stroke: #7592ff;
+stroke-width: 1.9px;
+}
+
+
+/* =========================================================
+ARROW HEAD
+========================================================= */
 
 .react-flow__edge .react-flow__arrowhead {
-fill: #3159b8;
+fill: #4c6fff;
 }
 
-/* Connection being created */
+.react-flow__edge:hover .react-flow__arrowhead {
+fill: #7592ff;
+}
+
+.react-flow__edge.selected .react-flow__arrowhead {
+fill: #6d8cff;
+}
+
+
+/* =========================================================
+CONNECTION BEING CREATED
+========================================================= */
 
 .react-flow__connection-path {
-stroke: #3159b8;
+fill: none;
 
+stroke: #4c6fff;
 stroke-width: 1.8px;
+
+stroke-dasharray: 6 5;
+
+opacity: 0.95;
 }
 
-/* Better edge selection */
 
-.react-flow__edge:hover
-.react-flow__edge-path {
-stroke: #234995;
+/* =========================================================
+OPTIONAL EDGE
+========================================================= */
+
+/*
+* The React component already provides the actual
+* strokeDasharray through inline styles.
+*
+* This class is kept here for future customization.
+*/
+
+.relation-edge-optional {
+stroke-dasharray: 7 6;
+}
+
+
+/* =========================================================
+EDGE LABEL INTERACTION
+========================================================= */
+
+.react-flow__edge-label-renderer {
+pointer-events: none;
+}
+
+.react-flow__edge-label-renderer button {
+pointer-events: all;
+}
+
+
+/* =========================================================
+DARK CANVAS COMPATIBILITY
+========================================================= */
+
+.schema-canvas .react-flow {
+background: transparent;
+}
+
+.schema-canvas .react-flow__pane {
+background: transparent;
+}
+
+
+/* =========================================================
+ACCESSIBILITY
+========================================================= */
+
+.relation-edge-label:focus-visible {
+outline: 1px solid #6d8cff;
+outline-offset: 2px;
+}
+
+
+/* =========================================================
+SMALL SCREENS
+========================================================= */
+
+@media (max-width: 760px) {
+.relation-edge-label {
+    min-width: 70px;
+    height: 22px;
+
+    padding: 0 7px;
+
+    font-size: 7px;
+}
+
+.relation-edge-dot {
+    width: 4px;
+    height: 4px;
+    flex-basis: 4px;
+}
 }

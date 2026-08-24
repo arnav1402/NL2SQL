@@ -12,12 +12,12 @@ const VALID_ON_DELETE = [
 "RESTRICT",
 ];
 
-/* -------------------------------------------------------
-Identifier helpers
-------------------------------------------------------- */
+/* =========================================================
+IDENTIFIER HELPERS
+========================================================= */
 
 const quoteIdentifier = (name, dialect) => {
-if (!name) {
+if (name === undefined || name === null) {
     return "";
 }
 
@@ -39,17 +39,20 @@ switch (dialect) {
 };
 
 
-/* -------------------------------------------------------
-Data type mapping
-------------------------------------------------------- */
+/* =========================================================
+DATA TYPE MAPPING
+========================================================= */
 
-const mapType = (column, dialect) => {
-const type = (
-    column?.type || "TEXT"
-).toUpperCase();
+const mapType = (column = {}, dialect) => {
+const type = String(
+    column.type || "TEXT"
+).trim().toUpperCase();
 
 switch (dialect) {
-    /* ---------------- PostgreSQL ---------------- */
+
+    /* -----------------------------------------------------
+    POSTGRESQL
+    ----------------------------------------------------- */
 
     case "postgresql": {
     switch (type) {
@@ -90,7 +93,9 @@ switch (dialect) {
     }
 
 
-    /* ---------------- MySQL ---------------- */
+    /* -----------------------------------------------------
+    MYSQL
+    ----------------------------------------------------- */
 
     case "mysql": {
     switch (type) {
@@ -127,7 +132,9 @@ switch (dialect) {
     }
 
 
-    /* ---------------- SQLite ---------------- */
+    /* -----------------------------------------------------
+    SQLITE
+    ----------------------------------------------------- */
 
     case "sqlite": {
     switch (type) {
@@ -166,9 +173,9 @@ switch (dialect) {
 };
 
 
-/* -------------------------------------------------------
-Find a column from a React Flow handle
-------------------------------------------------------- */
+/* =========================================================
+FIND COLUMN FROM REACT FLOW HANDLE
+========================================================= */
 
 const findColumn = (
 nodes,
@@ -200,240 +207,51 @@ return {
 };
 
 
-/* -------------------------------------------------------
-Generate CREATE TABLE
-------------------------------------------------------- */
+/* =========================================================
+NORMALIZE DELETE ACTION
+========================================================= */
 
-const generateCreateTable = (
-node,
-dialect
+const getOnDelete = (
+edge,
+sourceColumn
 ) => {
-const tableName =
-    node.data?.tableName || node.id;
+let onDelete =
+    edge.data?.onDelete ||
+    "NO ACTION";
 
-const columns =
-    node.data?.columns || [];
+onDelete = String(
+    onDelete
+).trim().toUpperCase();
 
-const quotedTableName =
-    quoteIdentifier(
-    tableName,
-    dialect
-    );
-
-/*
-* Empty table
-*/
-if (!columns.length) {
-    return [
-    `CREATE TABLE ${quotedTableName} (`,
-    ");",
-    ].join("\n");
-}
-
-
-/*
-* Collect primary keys.
-*/
-const primaryKeys = columns
-    .filter(
-    (column) =>
-        column.isPrimaryKey
-    )
-    .map(
-    (column) =>
-        quoteIdentifier(
-        column.name,
-        dialect
-        )
-    );
-
-
-/*
-* Generate column definitions.
-*/
-const columnDefinitions =
-    columns.map((column) => {
-    const parts = [];
-
-    const columnName =
-        quoteIdentifier(
-        column.name,
-        dialect
-        );
-
-    const isPrimaryKey =
-        Boolean(column.isPrimaryKey);
-
-    const isAutoIncrement =
-        Boolean(column.autoIncrement);
-
-
-    parts.push(
-        `  ${columnName}`
-    );
-
-
-    /*
-    * SQLite
-    *
-    * INTEGER PRIMARY KEY AUTOINCREMENT
-    * must be inline.
-    */
-    if (
-        dialect === "sqlite" &&
-        isPrimaryKey &&
-        isAutoIncrement &&
-        column.type?.toUpperCase() ===
-        "INTEGER"
-    ) {
-        parts.push(
-        "INTEGER PRIMARY KEY AUTOINCREMENT"
-        );
-
-        return parts.join(" ");
-    }
-
-
-    /*
-    * Normal type.
-    */
-    parts.push(
-        mapType(
-        column,
-        dialect
-        )
-    );
-
-
-    /*
-    * MySQL auto increment.
-    */
-    if (
-        dialect === "mysql" &&
-        isAutoIncrement
-    ) {
-        parts.push(
-        "AUTO_INCREMENT"
-        );
-    }
-
-
-    /*
-    * PostgreSQL generated SERIAL /
-    * BIGSERIAL already handles
-    * auto increment.
-    */
-
-
-    /*
-    * Primary key.
-    *
-    * PostgreSQL/MySQL use a table-level
-    * constraint below.
-    */
-    if (
-        isPrimaryKey &&
-        dialect === "sqlite"
-    ) {
-        parts.push(
-        "PRIMARY KEY"
-        );
-    }
-
-
-    /*
-    * NOT NULL
-    */
-    const shouldBeNotNull =
-        column.isNullable === false ||
-        isPrimaryKey;
-
-    if (
-        shouldBeNotNull &&
-        !(
-        dialect === "sqlite" &&
-        isAutoIncrement &&
-        isPrimaryKey
-        )
-    ) {
-        parts.push(
-        "NOT NULL"
-        );
-    }
-
-
-    /*
-    * UNIQUE
-    *
-    * Primary keys are already unique.
-    */
-    if (
-        column.isUnique &&
-        !isPrimaryKey
-    ) {
-        parts.push(
-        "UNIQUE"
-        );
-    }
-
-    return parts.join(" ");
-    });
-
-
-/*
-* PostgreSQL / MySQL
-* table-level primary key.
-*/
 if (
-    primaryKeys.length > 0 &&
-    (
-    dialect === "postgresql" ||
-    dialect === "mysql"
+    !VALID_ON_DELETE.includes(
+    onDelete
     )
 ) {
-    columnDefinitions.push(
-    `  PRIMARY KEY (${primaryKeys.join(
-        ", "
-    )})`
-    );
+    onDelete = "NO ACTION";
 }
-
 
 /*
-* SQLite composite primary keys.
-*
-* A single auto-increment primary key
-* was already handled inline.
+* SET NULL requires a nullable FK column.
 */
 if (
-    dialect === "sqlite" &&
-    primaryKeys.length > 1
+    onDelete === "SET NULL" &&
+    sourceColumn?.isNullable === false
 ) {
-    columnDefinitions.push(
-    `  PRIMARY KEY (${primaryKeys.join(
-        ", "
-    )})`
-    );
+    return "NO ACTION";
 }
 
-
-return [
-    `CREATE TABLE ${quotedTableName} (`,
-    columnDefinitions.join(",\n"),
-    ");",
-].join("\n");
+return onDelete;
 };
 
 
-/* -------------------------------------------------------
-Generate FOREIGN KEY
-------------------------------------------------------- */
+/* =========================================================
+FOREIGN KEY INFORMATION
+========================================================= */
 
-const generateForeignKey = (
+const resolveRelationship = (
 edge,
-nodes,
-dialect,
-index
+nodes
 ) => {
 const source = findColumn(
     nodes,
@@ -447,115 +265,497 @@ const target = findColumn(
     edge.targetHandle
 );
 
-
-/*
-* Invalid relationship.
-*/
 if (!source || !target) {
     return null;
 }
 
+return {
+    edge,
 
-const constraintName =
-    `fk_${source.tableName}_${source.column.name}_${index}`;
+    sourceTable:
+    source.tableName,
 
+    sourceColumn:
+    source.column,
+
+    targetTable:
+    target.tableName,
+
+    targetColumn:
+    target.column,
+
+    onDelete:
+    getOnDelete(
+        edge,
+        source.column
+    ),
+};
+};
+
+
+/* =========================================================
+CONSTRAINT NAME
+========================================================= */
+
+const createConstraintName = (
+relationship,
+index
+) => {
+const sourceTable =
+    relationship.sourceTable;
+
+const sourceColumn =
+    relationship.sourceColumn?.name ||
+    "column";
+
+const targetTable =
+    relationship.targetTable;
+
+const targetColumn =
+    relationship.targetColumn?.name ||
+    "column";
 
 /*
-* Use explicitly configured action
-* when available.
+* Keep generated constraint names predictable.
 */
-let onDelete =
-    edge.data?.onDelete ||
-    "NO ACTION";
+return [
+    "fk",
+    sourceTable,
+    sourceColumn,
+    targetTable,
+    targetColumn,
+    index,
+]
+    .join("_")
+    .replace(/[^a-zA-Z0-9_]/g, "_");
+};
 
 
-onDelete =
-    String(onDelete).toUpperCase();
+/* =========================================================
+COLUMN DEFINITION
+========================================================= */
+
+const generateColumnDefinition = (
+column,
+dialect
+) => {
+const name =
+    quoteIdentifier(
+    column.name || "column",
+    dialect
+    );
+
+const type =
+    String(
+    column.type || "TEXT"
+    ).trim().toUpperCase();
+
+const isPrimaryKey =
+    Boolean(column.isPrimaryKey);
+
+const isAutoIncrement =
+    Boolean(column.autoIncrement);
+
+const parts = [
+    name,
+];
 
 
-/*
-* Prevent invalid SQL.
-*/
+/* -------------------------------------------------------
+    SQLITE AUTOINCREMENT
+
+    SQLite requires:
+
+    INTEGER PRIMARY KEY AUTOINCREMENT
+
+    This must be inline.
+------------------------------------------------------- */
+
 if (
-    !VALID_ON_DELETE.includes(
-    onDelete
-    )
+    dialect === "sqlite" &&
+    isPrimaryKey &&
+    isAutoIncrement &&
+    type === "INTEGER"
 ) {
-    onDelete = "NO ACTION";
+    parts.push(
+    "INTEGER",
+    "PRIMARY KEY",
+    "AUTOINCREMENT"
+    );
+
+    return parts.join(" ");
 }
 
 
-/*
-* SET NULL only makes sense when
-* the source column can actually
-* accept NULL.
-*/
+/* -------------------------------------------------------
+    NORMAL TYPE
+------------------------------------------------------- */
+
+parts.push(
+    mapType(
+    column,
+    dialect
+    )
+);
+
+
+/* -------------------------------------------------------
+    MYSQL AUTO_INCREMENT
+------------------------------------------------------- */
+
 if (
-    onDelete === "SET NULL" &&
-    source.column.isNullable === false
+    dialect === "mysql" &&
+    isAutoIncrement
 ) {
-    onDelete = "NO ACTION";
+    parts.push(
+    "AUTO_INCREMENT"
+    );
+}
+
+
+/* -------------------------------------------------------
+    SQLITE PRIMARY KEY
+
+    Only inline for normal SQLite PKs.
+------------------------------------------------------- */
+
+if (
+    dialect === "sqlite" &&
+    isPrimaryKey
+) {
+    parts.push(
+    "PRIMARY KEY"
+    );
+}
+
+
+/* -------------------------------------------------------
+    NOT NULL
+
+    PK columns are always NOT NULL.
+------------------------------------------------------- */
+
+const shouldBeNotNull =
+    column.isNullable === false ||
+    isPrimaryKey;
+
+if (
+    shouldBeNotNull &&
+    !(
+    dialect === "sqlite" &&
+    isPrimaryKey &&
+    isAutoIncrement &&
+    type === "INTEGER"
+    )
+) {
+    parts.push(
+    "NOT NULL"
+    );
+}
+
+
+/* -------------------------------------------------------
+    UNIQUE
+------------------------------------------------------- */
+
+if (
+    column.isUnique &&
+    !isPrimaryKey
+) {
+    parts.push(
+    "UNIQUE"
+    );
+}
+
+
+/* -------------------------------------------------------
+    DEFAULT VALUE
+
+    Supports defaultValue if your column model
+    contains it.
+------------------------------------------------------- */
+
+if (
+    column.defaultValue !== undefined &&
+    column.defaultValue !== null &&
+    String(column.defaultValue).trim() !== ""
+) {
+    const defaultValue =
+    String(
+        column.defaultValue
+    ).trim();
+
+    parts.push(
+    `DEFAULT ${defaultValue}`
+    );
+}
+
+return parts.join(" ");
+};
+
+
+/* =========================================================
+CREATE TABLE
+========================================================= */
+
+const generateCreateTable = (
+node,
+dialect,
+relationships = [],
+tableIndex = 0
+) => {
+const tableName =
+    node.data?.tableName ||
+    node.id ||
+    `table_${tableIndex + 1}`;
+
+const columns =
+    node.data?.columns || [];
+
+const quotedTableName =
+    quoteIdentifier(
+    tableName,
+    dialect
+    );
+
+
+/* -------------------------------------------------------
+    EMPTY TABLE
+------------------------------------------------------- */
+
+if (!columns.length) {
+    return [
+    `CREATE TABLE ${quotedTableName} (`,
+    ");",
+    ].join("\n");
+}
+
+
+/* -------------------------------------------------------
+    PRIMARY KEYS
+------------------------------------------------------- */
+
+const primaryKeys =
+    columns
+    .filter(
+        (column) =>
+        column.isPrimaryKey
+    )
+    .map(
+        (column) =>
+        quoteIdentifier(
+            column.name,
+            dialect
+        )
+    );
+
+
+/* -------------------------------------------------------
+    COLUMN DEFINITIONS
+------------------------------------------------------- */
+
+const columnDefinitions =
+    columns.map(
+    (column) =>
+        generateColumnDefinition(
+        column,
+        dialect
+        )
+    );
+
+
+/* -------------------------------------------------------
+    POSTGRESQL / MYSQL PRIMARY KEY
+    Table-level constraint.
+
+    This also correctly supports
+    composite primary keys.
+------------------------------------------------------- */
+
+if (
+    primaryKeys.length > 0 &&
+    (
+    dialect === "postgresql" ||
+    dialect === "mysql"
+    )
+) {
+    columnDefinitions.push(
+    `PRIMARY KEY (${primaryKeys.join(", ")})`
+    );
+}
+
+
+/* -------------------------------------------------------
+    SQLITE COMPOSITE PRIMARY KEY
+
+    A single SQLite PK is already inline.
+
+    Composite PK must be table-level.
+------------------------------------------------------- */
+
+if (
+    dialect === "sqlite" &&
+    primaryKeys.length > 1
+) {
+    columnDefinitions.push(
+    `PRIMARY KEY (${primaryKeys.join(", ")})`
+    );
+}
+
+
+/* -------------------------------------------------------
+    SQLITE FOREIGN KEYS
+
+    IMPORTANT:
+
+    SQLite does NOT support:
+
+    ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY
+
+    Therefore SQLite foreign keys must be included
+    inside CREATE TABLE.
+------------------------------------------------------- */
+
+if (
+    dialect === "sqlite" &&
+    relationships.length > 0
+) {
+    relationships
+    .filter(
+        (relationship) =>
+        relationship.sourceTable ===
+        tableName
+    )
+    .forEach(
+        (
+        relationship,
+        relationshipIndex
+        ) => {
+        const constraintName =
+            createConstraintName(
+            relationship,
+            relationshipIndex + 1
+            );
+
+        columnDefinitions.push(
+            `CONSTRAINT ${quoteIdentifier(
+            constraintName,
+            dialect
+            )} FOREIGN KEY (${quoteIdentifier(
+            relationship.sourceColumn.name,
+            dialect
+            )}) REFERENCES ${quoteIdentifier(
+            relationship.targetTable,
+            dialect
+            )} (${quoteIdentifier(
+            relationship.targetColumn.name,
+            dialect
+            )}) ON DELETE ${
+            relationship.onDelete
+            }`
+        );
+        }
+    );
 }
 
 
 return [
-    `ALTER TABLE ${quoteIdentifier(
-    source.tableName,
-    dialect
-    )}`,
+    `CREATE TABLE ${quotedTableName} (`,
+    columnDefinitions.join(",\n"),
+    ");",
+].join("\n");
+};
 
-    `ADD CONSTRAINT ${quoteIdentifier(
+
+/* =========================================================
+POSTGRESQL / MYSQL FOREIGN KEY
+========================================================= */
+
+const generateForeignKey = (
+relationship,
+dialect,
+index
+) => {
+if (!relationship) {
+    return null;
+}
+
+const constraintName =
+    createConstraintName(
+    relationship,
+    index
+    );
+
+const sourceTable =
+    quoteIdentifier(
+    relationship.sourceTable,
+    dialect
+    );
+
+const sourceColumn =
+    quoteIdentifier(
+    relationship.sourceColumn.name,
+    dialect
+    );
+
+const targetTable =
+    quoteIdentifier(
+    relationship.targetTable,
+    dialect
+    );
+
+const targetColumn =
+    quoteIdentifier(
+    relationship.targetColumn.name,
+    dialect
+    );
+
+const constraint =
+    quoteIdentifier(
     constraintName,
     dialect
-    )}`,
+    );
 
-    `FOREIGN KEY (${quoteIdentifier(
-    source.column.name,
-    dialect
-    )})`,
 
-    `REFERENCES ${quoteIdentifier(
-    target.tableName,
-    dialect
-    )} (${quoteIdentifier(
-    target.column.name,
-    dialect
-    )})`,
-
-    `ON DELETE ${onDelete};`,
+return [
+    `ALTER TABLE ${sourceTable}`,
+    `ADD CONSTRAINT ${constraint}`,
+    `FOREIGN KEY (${sourceColumn})`,
+    `REFERENCES ${targetTable} (${targetColumn})`,
+    `ON DELETE ${relationship.onDelete};`,
 ].join(" ");
 };
 
 
-/* -------------------------------------------------------
-Main SQL generator
-------------------------------------------------------- */
+/* =========================================================
+MAIN SQL GENERATOR
+========================================================= */
 
 export function generateSQL(
 nodes = [],
 edges = [],
 dialect = "postgresql"
 ) {
-/*
-* Empty schema.
-*/
-if (!nodes.length) {
+/* -------------------------------------------------------
+    EMPTY SCHEMA
+------------------------------------------------------- */
+
+if (!Array.isArray(nodes) || nodes.length === 0) {
     return "-- Add tables to generate SQL.";
 }
 
 
-/*
-* Normalize dialect.
-*/
+/* -------------------------------------------------------
+    NORMALIZE DIALECT
+------------------------------------------------------- */
+
 const normalizedDialect =
-    String(dialect || "postgresql")
+    String(
+    dialect || "postgresql"
+    )
+    .trim()
     .toLowerCase();
 
-
-/*
-* Fallback to PostgreSQL if
-* an unsupported dialect is passed.
-*/
 const safeDialect =
     SUPPORTED_DIALECTS.includes(
     normalizedDialect
@@ -564,37 +764,79 @@ const safeDialect =
     : "postgresql";
 
 
-/*
-* CREATE TABLE statements.
-*/
+/* -------------------------------------------------------
+    RESOLVE ALL VALID RELATIONSHIPS
+
+    Only edges whose sourceHandle and targetHandle
+    actually point to existing columns are used.
+------------------------------------------------------- */
+
+const relationships =
+    Array.isArray(edges)
+    ? edges
+        .map((edge) =>
+            resolveRelationship(
+            edge,
+            nodes
+            )
+        )
+        .filter(Boolean)
+    : [];
+
+
+/* -------------------------------------------------------
+    CREATE TABLE STATEMENTS
+------------------------------------------------------- */
+
 const createStatements =
-    nodes.map((node) =>
-    generateCreateTable(
+    nodes.map(
+    (node, index) =>
+        generateCreateTable(
         node,
-        safeDialect
-    )
+        safeDialect,
+        relationships,
+        index
+        )
     );
 
 
-/*
-* FOREIGN KEY statements.
-*/
-const foreignKeyStatements =
-    edges
-    .map((edge, index) =>
-        generateForeignKey(
-        edge,
-        nodes,
-        safeDialect,
-        index + 1
+/* -------------------------------------------------------
+    FOREIGN KEYS
+
+    PostgreSQL + MySQL:
+    Generated after CREATE TABLE.
+
+    SQLite:
+    Already generated inside CREATE TABLE.
+------------------------------------------------------- */
+
+let foreignKeyStatements = [];
+
+if (
+    safeDialect === "postgresql" ||
+    safeDialect === "mysql"
+) {
+    foreignKeyStatements =
+    relationships
+        .map(
+        (
+            relationship,
+            index
+        ) =>
+            generateForeignKey(
+            relationship,
+            safeDialect,
+            index + 1
+            )
         )
-    )
-    .filter(Boolean);
+        .filter(Boolean);
+}
 
 
-/*
-* Combine the complete schema.
-*/
+/* -------------------------------------------------------
+    FINAL SQL
+------------------------------------------------------- */
+
 return [
     ...createStatements,
     ...foreignKeyStatements,
@@ -602,11 +844,15 @@ return [
 }
 
 
-/*
-* Export type mapper if another
-* component needs it.
-*/
+/* =========================================================
+EXPORT HELPERS
+========================================================= */
+
 export {
+SUPPORTED_DIALECTS,
+VALID_ON_DELETE,
 mapType,
 quoteIdentifier,
+findColumn,
+resolveRelationship,
 };
