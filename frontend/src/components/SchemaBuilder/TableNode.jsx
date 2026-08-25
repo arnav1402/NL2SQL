@@ -14,6 +14,9 @@ function stopFlowEvent(event) {
     event.stopPropagation();
 }
 
+export const TABLE_HEADER_HEIGHT = 46;
+export const COLUMN_ROW_HEIGHT = 48;
+
 function TableNode({ id, data }) {
     const tableName = data?.tableName || "table";
     const columns = Array.isArray(data?.columns) ? data.columns : [];

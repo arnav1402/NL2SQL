@@ -7,6 +7,9 @@ const TYPE_MAP = {
         BOOLEAN: "BOOLEAN",
         DATE: "DATE",
         TIMESTAMP: "TIMESTAMP",
+        DATETIME: "TIMESTAMP",
+        TIME: "TIME",
+        JSON: "JSON",
         DECIMAL: "DECIMAL",
         FLOAT: "DOUBLE PRECISION",
     },
@@ -19,6 +22,9 @@ const TYPE_MAP = {
         BOOLEAN: "BOOLEAN",
         DATE: "DATE",
         TIMESTAMP: "TIMESTAMP",
+        DATETIME: "DATETIME",
+        TIME: "TIME",
+        JSON: "JSON",
         DECIMAL: "DECIMAL",
         FLOAT: "DOUBLE",
     },
@@ -31,9 +37,26 @@ const TYPE_MAP = {
         BOOLEAN: "INTEGER",
         DATE: "TEXT",
         TIMESTAMP: "TEXT",
+        DATETIME: "TEXT",
+        TIME: "TEXT",
+        JSON: "TEXT",
         DECIMAL: "REAL",
         FLOAT: "REAL",
     },
+};
+
+// Common synonyms users may type/store on a column that should resolve
+// to one of the canonical keys above instead of silently falling back to TEXT.
+const TYPE_ALIASES = {
+    INT: "INTEGER",
+    INT4: "INTEGER",
+    INT8: "BIGINT",
+    BOOL: "BOOLEAN",
+    DOUBLE: "FLOAT",
+    "DOUBLE PRECISION": "FLOAT",
+    NUMERIC: "DECIMAL",
+    CHAR: "VARCHAR",
+    STRING: "VARCHAR",
 };
 
 const DEFAULT_DIALECT = "postgresql";
@@ -53,10 +76,13 @@ const normalizeDialect = (dialect) => {
         : DEFAULT_DIALECT;
 };
 
-const normalizeType = (type) =>
-    String(type ?? "TEXT")
+const normalizeType = (type) => {
+    const upper = String(type ?? "TEXT")
         .trim()
         .toUpperCase();
+
+    return TYPE_ALIASES[upper] || upper;
+};
 
 const toPositiveInteger = (
     value,
@@ -212,6 +238,6 @@ export function isSupportedType(
     );
 }
 
-export { TYPE_MAP };
+export { TYPE_MAP, TYPE_ALIASES };
 
 export default TYPE_MAP;

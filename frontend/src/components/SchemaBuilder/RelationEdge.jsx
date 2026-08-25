@@ -2,14 +2,56 @@ import {
     BaseEdge,
     EdgeLabelRenderer,
     MarkerType,
+    Position,
     getSmoothStepPath,
     useReactFlow,
+    useInternalNode,
 } from "@xyflow/react";
 
 import "./RelationEdge.css";
+import { TABLE_HEADER_HEIGHT, COLUMN_ROW_HEIGHT } from "./TableNode";
+
+function getHandleY(node, handleId, fallbackY) {
+    const columns = Array.isArray(node?.data?.columns)
+        ? node.data.columns
+        : [];
+
+    const index = columns.findIndex((column) => column.id === handleId);
+
+    if (index === -1) {
+        return fallbackY;
+    }
+
+    const nodeTop =
+        node?.internals?.positionAbsolute?.y ??
+        node?.position?.y ??
+        0;
+
+    return (
+        nodeTop +
+        TABLE_HEADER_HEIGHT +
+        index * COLUMN_ROW_HEIGHT +
+        COLUMN_ROW_HEIGHT / 2
+    );
+}
+
+function getNodeBox(node, fallbackX, fallbackWidth = 390) {
+    const nodeLeft =
+        node?.internals?.positionAbsolute?.x ??
+        node?.position?.x ??
+        fallbackX;
+
+    const width = node?.measured?.width ?? node?.width ?? fallbackWidth;
+
+    return { left: nodeLeft, width, right: nodeLeft + width };
+}
 
 function RelationEdge({
     id,
+    source,
+    target,
+    sourceHandleId,
+    targetHandleId,
     sourceX,
     sourceY,
     sourcePosition,
@@ -21,28 +63,58 @@ function RelationEdge({
 }) {
     const { setEdges } = useReactFlow();
 
-    const relation =
-        data?.relation === "optional" ? "optional" : "required";
+    const sourceNode = useInternalNode(source);
+    const targetNode = useInternalNode(target);
 
+    // Floating edge: recompute which side of each table is actually
+    // closer to the other table on every render, instead of trusting
+    // the fixed handle side (Left=target, Right=source) baked into
+    // TableNode. Without this, an edge whose FK table has been dragged
+    // left of its PK table is still forced to leave from the right and
+    // enter from the left, forcing getSmoothStepPath to route all the
+    // way around both nodes.
+    let resolvedSourceX = sourceX;
+    let resolvedSourceY = sourceY;
+    let resolvedSourcePosition = sourcePosition;
+    let resolvedTargetX = targetX;
+    let resolvedTargetY = targetY;
+    let resolvedTargetPosition = targetPosition;
+
+    if (sourceNode && targetNode) {
+        const sourceBox = getNodeBox(sourceNode, sourceX);
+        const targetBox = getNodeBox(targetNode, targetX);
+
+        const sourceCenter = sourceBox.left + sourceBox.width / 2;
+        const targetCenter = targetBox.left + targetBox.width / 2;
+
+        const sourceOnLeft = sourceCenter <= targetCenter;
+
+        resolvedSourcePosition = sourceOnLeft ? Position.Right : Position.Left;
+        resolvedTargetPosition = sourceOnLeft ? Position.Left : Position.Right;
+
+        resolvedSourceX = sourceOnLeft ? sourceBox.right : sourceBox.left;
+        resolvedTargetX = sourceOnLeft ? targetBox.left : targetBox.right;
+
+        resolvedSourceY = getHandleY(sourceNode, sourceHandleId, sourceY);
+        resolvedTargetY = getHandleY(targetNode, targetHandleId, targetY);
+    }
+
+    const relation = data?.relation === "optional" ? "optional" : "required";
     const optional = relation === "optional";
 
     const cardinality =
-        data?.cardinality ||
-        (data?.isOneToOne ? "1:1" : "1:N");
+        data?.cardinality || (data?.isOneToOne ? "1:1" : "1:N");
 
-    const onDelete =
-        data?.onDelete || "NO ACTION";
-
-    const onUpdate =
-        data?.onUpdate || "NO ACTION";
+    const onDelete = data?.onDelete || "NO ACTION";
+    const onUpdate = data?.onUpdate || "NO ACTION";
 
     const [edgePath, labelX, labelY] = getSmoothStepPath({
-        sourceX,
-        sourceY,
-        sourcePosition,
-        targetX,
-        targetY,
-        targetPosition,
+        sourceX: resolvedSourceX,
+        sourceY: resolvedSourceY,
+        sourcePosition: resolvedSourcePosition,
+        targetX: resolvedTargetX,
+        targetY: resolvedTargetY,
+        targetPosition: resolvedTargetPosition,
         borderRadius: 4,
         offset: 24,
     });
@@ -111,9 +183,7 @@ function RelationEdge({
                         optional
                             ? "relation-edge-label--optional"
                             : "relation-edge-label--required",
-                        selected
-                            ? "relation-edge-label--selected"
-                            : "",
+                        selected ? "relation-edge-label--selected" : "",
                     ]
                         .filter(Boolean)
                         .join(" ")}
@@ -142,9 +212,7 @@ function RelationEdge({
                             {cardinality}
                         </span>
 
-                        <span className="relation-edge-label-divider">
-                            ·
-                        </span>
+                        <span className="relation-edge-label-divider">·</span>
 
                         <span className="relation-edge-label-text">
                             {optional ? "OPTIONAL" : "REQUIRED"}
@@ -155,9 +223,7 @@ function RelationEdge({
                         className="relation-edge-cascade"
                         title={`On delete: ${onDelete}. On update: ${onUpdate}.`}
                     >
-                        {onDelete === "CASCADE"
-                            ? "CASCADE"
-                            : onDelete}
+                        {onDelete === "CASCADE" ? "CASCADE" : onDelete}
                     </span>
 
                     {selected && (

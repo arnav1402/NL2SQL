@@ -13,13 +13,10 @@ import {
 } from "@xyflow/react";
 
 import {
-    FiArrowLeft,
-    FiCode,
     FiDatabase,
     FiHelpCircle,
     FiMaximize2,
     FiPlus,
-    FiTrash2,
     FiX,
 } from "react-icons/fi";
 
@@ -29,6 +26,7 @@ import TableNode from "./TableNode";
 import RelationEdge from "./RelationEdge";
 import SQLPreview from "./SQLPreview";
 import SchemaPreview from "./SchemaPreview";
+import SchemaToolbar from "./SchemaToolbar";
 import { generateSQL } from "../../utils/generateSQL";
 
 import "./SchemaBuilder.css";
@@ -510,53 +508,16 @@ function SchemaBuilder({ isOpen = true, onClose }) {
                 </div>
             </header>
 
-            <div className="schema-toolbar">
-                <div className="schema-toolbar-left">
-                    <button type="button" className="schema-toolbar-button primary" onClick={handleAddTable}>
-                        <FiPlus />
-                        <span>Add Table</span>
-                    </button>
-                    <div className="toolbar-divider" />
-                    <button type="button" className="schema-toolbar-button" onClick={handleClose}>
-                        <FiArrowLeft />
-                        <span>Back</span>
-                    </button>
-                    <button type="button" className="schema-toolbar-button danger" onClick={handleClear}>
-                        <FiTrash2 />
-                        <span>Clear</span>
-                    </button>
-                </div>
-
-                <div className="schema-toolbar-center">
-                    <div className="dialect-selector">
-                        <span className="dialect-label">TARGET</span>
-                        <select value={dialect} onChange={(event) => setDialect(event.target.value)}>
-                            <option value="postgresql">PostgreSQL</option>
-                            <option value="mysql">MySQL</option>
-                            <option value="sqlite">SQLite</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div className="schema-toolbar-right">
-                    <button
-                        type="button"
-                        className={`schema-toolbar-button sql-button ${sqlPreviewOpen ? "active" : ""}`}
-                        onClick={() => setSqlPreviewOpen((value) => !value)}
-                    >
-                        <FiCode />
-                        <span>SQL Preview</span>
-                    </button>
-                    <button
-                        type="button"
-                        className="schema-help-button"
-                        onClick={() => setShowHelp(true)}
-                        aria-label="Schema builder help"
-                    >
-                        <FiHelpCircle />
-                    </button>
-                </div>
-            </div>
+            <SchemaToolbar
+                onAddTable={handleAddTable}
+                onClear={handleClear}
+                dialect={dialect}
+                onDialectChange={setDialect}
+                sqlPreviewOpen={sqlPreviewOpen}
+                onToggleSQLPreview={() => setSqlPreviewOpen((value) => !value)}
+                onHelp={() => setShowHelp(true)}
+                onBack={handleClose}
+            />
 
             <main className="schema-builder-content">
                 <section className={`schema-canvas ${sqlPreviewOpen ? "with-sql" : ""}`}>

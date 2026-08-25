@@ -1,3 +1,5 @@
+import { mapType } from "./mapTypes";
+
 const normalize = (value) =>
     String(value ?? "").trim().toLowerCase();
 
@@ -31,85 +33,12 @@ const getColumnType = (column) =>
         .trim()
         .toUpperCase();
 
-const getColumnTypeSQL = (column, dialect) => {
-    const type = getColumnType(column);
-
-    if (type === "VARCHAR") {
-        const length = Number(column?.length);
-
-        if (Number.isFinite(length) && length > 0) {
-            return `VARCHAR(${length})`;
-        }
-
-        return "VARCHAR(255)";
-    }
-
-    if (type === "DECIMAL" || type === "NUMERIC") {
-        const precision = Number(column?.precision ?? 10);
-        const scale = Number(column?.scale ?? 2);
-
-        if (
-            Number.isFinite(precision) &&
-            Number.isFinite(scale) &&
-            precision > 0 &&
-            scale >= 0 &&
-            scale <= precision
-        ) {
-            return `DECIMAL(${precision}, ${scale})`;
-        }
-
-        return "DECIMAL(10, 2)";
-    }
-
-    if (
-        type === "INT" ||
-        type === "INTEGER" ||
-        type === "BIGINT" ||
-        type === "SMALLINT"
-    ) {
-        return type;
-    }
-
-    if (type === "TEXT") {
-        return "TEXT";
-    }
-
-    if (type === "BOOLEAN" || type === "BOOL") {
-        return dialect === "mysql" ? "BOOLEAN" : "BOOLEAN";
-    }
-
-    if (type === "DATE") {
-        return "DATE";
-    }
-
-    if (type === "DATETIME") {
-        return dialect === "postgresql"
-            ? "TIMESTAMP"
-            : "DATETIME";
-    }
-
-    if (type === "TIMESTAMP") {
-        return "TIMESTAMP";
-    }
-
-    if (type === "TIME") {
-        return "TIME";
-    }
-
-    if (type === "FLOAT") {
-        return "FLOAT";
-    }
-
-    if (type === "DOUBLE") {
-        return "DOUBLE";
-    }
-
-    if (type === "JSON") {
-        return "JSON";
-    }
-
-    return type || "VARCHAR(255)";
-};
+const getColumnTypeSQL = (column, dialect) =>
+    mapType(getColumnType(column), dialect, {
+        length: column?.length,
+        precision: column?.precision,
+        scale: column?.scale,
+    });
 
 const getDefaultValue = (column) => {
     if (
