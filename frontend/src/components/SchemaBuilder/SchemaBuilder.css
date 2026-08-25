@@ -1,8 +1,3 @@
-/* =========================================================
-NL2SQL SCHEMA BUILDER
-Dark / technical / sharp UI
-========================================================= */
-
 .schema-builder {
 --bg: #05070b;
 --surface: #090d14;
@@ -41,11 +36,6 @@ font-family:
     "Segoe UI",
     sans-serif;
 }
-
-
-/* =========================================================
-HEADER
-========================================================= */
 
 .schema-builder-header {
 height: 64px;
@@ -193,11 +183,6 @@ color: #dce6ff;
 background: #10182a;
 }
 
-
-/* =========================================================
-TOOLBAR
-========================================================= */
-
 .schema-toolbar {
 height: 62px;
 flex-shrink: 0;
@@ -239,11 +224,6 @@ justify-content: center;
 justify-content: flex-end;
 gap: 7px;
 }
-
-
-/* =========================================================
-BUTTONS
-========================================================= */
 
 .schema-toolbar-button {
 height: 34px;
@@ -325,11 +305,6 @@ margin: 0 5px;
 background: #202938;
 }
 
-
-/* =========================================================
-DIALECT SELECTOR
-========================================================= */
-
 .dialect-selector {
 height: 34px;
 
@@ -389,11 +364,6 @@ background: #0b1018;
 color: #d7deea;
 }
 
-
-/* =========================================================
-SQL BUTTON
-========================================================= */
-
 .sql-button {
 min-width: 130px;
 }
@@ -405,11 +375,6 @@ background: #10182a;
 
 color: #7692ea;
 }
-
-
-/* =========================================================
-HELP
-========================================================= */
 
 .schema-help-button {
 width: 34px;
@@ -443,11 +408,6 @@ color: #7e99eb;
 background: #10182a;
 }
 
-
-/* =========================================================
-MAIN
-========================================================= */
-
 .schema-builder-content {
 flex: 1;
 
@@ -459,11 +419,6 @@ overflow: hidden;
 
 background: #05070b;
 }
-
-
-/* =========================================================
-CANVAS
-========================================================= */
 
 .schema-canvas {
 position: relative;
@@ -478,13 +433,6 @@ overflow: hidden;
 background: #05070b;
 }
 
-
-/*
-React Flow itself must stay transparent.
-This prevents the default white canvas from
-fighting the dark theme.
-*/
-
 .schema-canvas .react-flow {
 background: #05070b;
 }
@@ -497,20 +445,10 @@ background: transparent;
 background: #05070b !important;
 }
 
-
-/* =========================================================
-DARK GRID
-========================================================= */
-
 .react-flow__background pattern line,
 .react-flow__background pattern circle {
 stroke: #1b2432;
 }
-
-
-/* =========================================================
-REACT FLOW CONTROLS
-========================================================= */
 
 .react-flow__controls {
 overflow: hidden;
@@ -550,11 +488,6 @@ background: #111925;
 color: #91a9ec;
 }
 
-
-/* =========================================================
-MINIMAP
-========================================================= */
-
 .react-flow__minimap {
 overflow: hidden;
 
@@ -578,11 +511,6 @@ fill: #3654a6;
 stroke: #5274d8;
 }
 
-
-/* =========================================================
-CONNECTION LINE
-========================================================= */
-
 .react-flow__connection-path {
 stroke: #5274d8;
 
@@ -590,11 +518,6 @@ stroke-width: 1.8px;
 
 fill: none;
 }
-
-
-/* =========================================================
-EDGE
-========================================================= */
 
 .react-flow__edge-path {
 stroke: #5274d8;
@@ -615,11 +538,6 @@ stroke-width: 2.2px;
 .react-flow__edge-path {
 stroke: #7590ed;
 }
-
-
-/* =========================================================
-EMPTY STATE
-========================================================= */
 
 .schema-empty-state {
 position: absolute;
@@ -746,11 +664,6 @@ width: 13px;
 height: 13px;
 }
 
-
-/* =========================================================
-SQL PANEL
-========================================================= */
-
 .schema-sql-panel {
 width: 405px;
 
@@ -768,22 +681,11 @@ background: #080c13;
 color: #dce4ef;
 }
 
-
-/*
-SQLPreview may have its own styles.
-These provide the surrounding shell.
-*/
-
 .schema-sql-panel > * {
 min-height: 0;
 
 flex: 1;
 }
-
-
-/* =========================================================
-FOOTER
-========================================================= */
 
 .schema-builder-footer {
 height: 40px;
@@ -843,11 +745,6 @@ color: #6885df;
 
 font-weight: 600;
 }
-
-
-/* =========================================================
-HELP OVERLAY
-========================================================= */
 
 .schema-help-overlay,
 .schema-preview-overlay {
@@ -1029,11 +926,6 @@ font-size: 8px;
 line-height: 1.6;
 }
 
-
-/* =========================================================
-PREVIEW MODAL
-========================================================= */
-
 .schema-preview-modal {
 position: relative;
 
@@ -1081,19 +973,9 @@ color: white;
 border-color: #465571;
 }
 
-
-/* =========================================================
-REMOVE DEFAULT ATTRIBUTION
-========================================================= */
-
 .react-flow__attribution {
 display: none !important;
 }
-
-
-/* =========================================================
-RESPONSIVE
-========================================================= */
 
 @media (max-width: 1100px) {
 .schema-sql-panel {
@@ -1173,4 +1055,80 @@ RESPONSIVE
 .schema-sql-panel {
     width: 92vw;
 }
+}
+
+.schema-canvas .react-flow__edge {
+    cursor: pointer;
+}
+
+.schema-canvas .react-flow__edge-path {
+    pointer-events: stroke;
+}
+
+.schema-canvas .react-flow__connection-path {
+    pointer-events: none;
+}
+
+.schema-canvas .react-flow__node {
+    overflow: visible;
+}
+
+.schema-canvas .react-flow__pane {
+    cursor: grab;
+}
+
+.schema-canvas .react-flow__pane:active {
+    cursor: grabbing;
+}
+
+.schema-canvas .react-flow__selection {
+    background: rgba(54, 84, 166, 0.12);
+    border: 1px solid rgba(82, 116, 216, 0.45);
+}
+
+.schema-canvas .react-flow__node.selected {
+    z-index: 10;
+}
+
+.schema-canvas .react-flow__edge.selected {
+    z-index: 20;
+}
+
+.schema-canvas .react-flow__pane {
+    cursor: default;
+}
+
+.schema-canvas .react-flow__node {
+    overflow: visible;
+}
+
+.schema-canvas .react-flow__edge {
+    cursor: pointer;
+}
+
+.schema-canvas .react-flow__edge-interaction {
+    stroke-width: 24px;
+}
+
+.schema-canvas .react-flow__edge.selected .react-flow__edge-path {
+    stroke: #7590ed;
+    stroke-width: 2.4px;
+}
+
+.schema-canvas .react-flow__edge-textbg {
+    fill: #0b1018;
+}
+
+.schema-canvas .react-flow__handle {
+    cursor: crosshair;
+}
+
+.schema-sql-panel {
+    min-width: 0;
+}
+
+@media (max-width: 650px) {
+    .schema-builder-footer {
+        padding: 0 10px;
+    }
 }

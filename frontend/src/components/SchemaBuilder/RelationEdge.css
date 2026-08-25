@@ -1,291 +1,272 @@
-/* =========================================================
-NL2SQL RELATION EDGE
-Sharp / technical / dark-schema-designer aesthetic
-========================================================= */
-
 .relation-edge-label {
-position: absolute;
-
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 6px;
-
-min-width: 76px;
-height: 24px;
-
-padding: 0 9px;
-
-border: 1px solid #33415f;
-border-radius: 3px;
-
-background: #111827;
-color: #8fa9ff;
-
-font-family:
-    "IBM Plex Mono",
-    "SFMono-Regular",
-    Consolas,
-    "Liberation Mono",
-    monospace;
-
-font-size: 8px;
-font-weight: 700;
-line-height: 1;
-
-letter-spacing: 0.08em;
-white-space: nowrap;
-
-cursor: pointer;
-pointer-events: all;
-
-box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.35);
-
-transition:
-    border-color 140ms ease,
-    background-color 140ms ease,
-    color 140ms ease,
-    box-shadow 140ms ease,
-    transform 140ms ease;
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 76px;
+    min-height: 24px;
+    padding: 4px 7px;
+    border: 1px solid #33415f;
+    border-radius: 3px;
+    background: #111827;
+    color: #8fa9ff;
+    font-family:
+        "IBM Plex Mono",
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    pointer-events: all;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    transition:
+        border-color 140ms ease,
+        background-color 140ms ease,
+        color 140ms ease,
+        box-shadow 140ms ease;
 }
 
-
-/* ---------------------------------------------------------
-REQUIRED
---------------------------------------------------------- */
-
 .relation-edge-label--required {
-border-color: #334d94;
-background: #111827;
-color: #7592ff;
+    border-color: #334d94;
+    background: #111827;
+    color: #7592ff;
 }
 
 .relation-edge-label--required:hover {
-border-color: #4c6fff;
-background: #17213a;
-color: #9bb0ff;
-
-box-shadow:
-    0 5px 18px rgba(76, 111, 255, 0.18);
+    border-color: #4c6fff;
+    background: #17213a;
+    color: #9bb0ff;
+    box-shadow: 0 5px 18px rgba(76, 111, 255, 0.18);
 }
 
-
-/* ---------------------------------------------------------
-OPTIONAL
---------------------------------------------------------- */
-
 .relation-edge-label--optional {
-border-color: #3a465c;
-border-style: dashed;
-
-background: #11161f;
-color: #7e8da7;
+    border-color: #3a465c;
+    border-style: dashed;
+    background: #11161f;
+    color: #7e8da7;
 }
 
 .relation-edge-label--optional:hover {
-border-color: #657590;
-background: #171d28;
-color: #a0aec4;
-
-box-shadow:
-    0 5px 18px rgba(0, 0, 0, 0.3);
+    border-color: #657590;
+    background: #171d28;
+    color: #a0aec4;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
 }
-
-
-/* ---------------------------------------------------------
-SELECTED
---------------------------------------------------------- */
 
 .relation-edge-label--selected {
-border-color: #6d8cff;
-
-background: #17213d;
-color: #a9baff;
-
-box-shadow:
-    0 0 0 1px rgba(109, 140, 255, 0.12),
-    0 5px 18px rgba(76, 111, 255, 0.22);
+    border-color: #6d8cff;
+    background: #17213d;
+    color: #a9baff;
+    box-shadow:
+        0 0 0 1px rgba(109, 140, 255, 0.12),
+        0 5px 18px rgba(76, 111, 255, 0.22);
 }
 
+.relation-edge-label-main {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: 1;
+    letter-spacing: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
 
-/* ---------------------------------------------------------
-DOT
---------------------------------------------------------- */
+.relation-edge-label-main:hover {
+    color: inherit;
+}
+
+.relation-edge-label-divider {
+    color: #4d5b73;
+    font-weight: 500;
+}
 
 .relation-edge-dot {
-width: 5px;
-height: 5px;
-
-flex: 0 0 5px;
-
-border-radius: 50%;
-
-background: #4c6fff;
-
-box-shadow:
-    0 0 7px rgba(76, 111, 255, 0.45);
+    width: 5px;
+    height: 5px;
+    flex: 0 0 5px;
+    border-radius: 50%;
+    background: #4c6fff;
+    box-shadow: 0 0 7px rgba(76, 111, 255, 0.45);
 }
 
 .relation-edge-label--optional .relation-edge-dot {
-background: #71809a;
-
-box-shadow:
-    0 0 6px rgba(113, 128, 154, 0.25);
+    background: #71809a;
+    box-shadow: 0 0 6px rgba(113, 128, 154, 0.25);
 }
-
-
-/* ---------------------------------------------------------
-TEXT
---------------------------------------------------------- */
 
 .relation-edge-label-text {
-display: inline-block;
+    display: inline-block;
 }
 
+.relation-edge-cascade {
+    display: inline-flex;
+    align-items: center;
+    min-height: 15px;
+    padding: 2px 4px;
+    border: 1px solid #3c4f78;
+    border-radius: 2px;
+    background: #18233a;
+    color: #7893d1;
+    font-family:
+        "IBM Plex Mono",
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+    font-size: 6px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    pointer-events: none;
+}
 
-/* =========================================================
-REACT FLOW EDGES
-========================================================= */
+.relation-edge-label--optional .relation-edge-cascade {
+    border-color: #394354;
+    background: #171d27;
+    color: #77849a;
+}
+
+.relation-edge-delete {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 18px;
+    padding: 0;
+    border: 1px solid #593943;
+    border-radius: 2px;
+    background: #21171c;
+    color: #bd6c79;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    pointer-events: all;
+    transition:
+        border-color 120ms ease,
+        background 120ms ease,
+        color 120ms ease;
+}
+
+.relation-edge-delete:hover {
+    border-color: #a85b6a;
+    background: #321b22;
+    color: #ef9aa7;
+}
+
+.relation-edge-label:focus-within {
+    outline: 1px solid #6d8cff;
+    outline-offset: 2px;
+}
+
+.relation-edge-label button:focus-visible {
+    outline: 1px solid #6d8cff;
+    outline-offset: 2px;
+}
 
 .react-flow__edge-path {
-fill: none;
-
-stroke: #4c6fff;
-stroke-width: 1.6px;
-
-transition:
-    stroke 140ms ease,
-    stroke-width 140ms ease,
-    opacity 140ms ease;
+    fill: none;
+    stroke: #4c6fff;
+    stroke-width: 1.6px;
+    transition:
+        stroke 140ms ease,
+        stroke-width 140ms ease,
+        opacity 140ms ease;
 }
-
-
-/* Required edge */
 
 .react-flow__edge:not(.selected) .react-flow__edge-path {
-stroke: #4c6fff;
+    stroke: #4c6fff;
 }
-
-
-/* Selected edge */
 
 .react-flow__edge.selected .react-flow__edge-path {
-stroke: #6d8cff;
-stroke-width: 2px;
+    stroke: #6d8cff;
+    stroke-width: 2px;
 }
-
-
-/* Hover */
 
 .react-flow__edge:hover .react-flow__edge-path {
-stroke: #7592ff;
-stroke-width: 1.9px;
+    stroke: #7592ff;
+    stroke-width: 1.9px;
 }
 
-
-/* =========================================================
-ARROW HEAD
-========================================================= */
-
 .react-flow__edge .react-flow__arrowhead {
-fill: #4c6fff;
+    fill: #4c6fff;
 }
 
 .react-flow__edge:hover .react-flow__arrowhead {
-fill: #7592ff;
+    fill: #7592ff;
 }
 
 .react-flow__edge.selected .react-flow__arrowhead {
-fill: #6d8cff;
+    fill: #6d8cff;
 }
-
-
-/* =========================================================
-CONNECTION BEING CREATED
-========================================================= */
 
 .react-flow__connection-path {
-fill: none;
-
-stroke: #4c6fff;
-stroke-width: 1.8px;
-
-stroke-dasharray: 6 5;
-
-opacity: 0.95;
+    fill: none;
+    stroke: #4c6fff;
+    stroke-width: 1.8px;
+    stroke-dasharray: 6 5;
+    opacity: 0.95;
 }
-
-
-/* =========================================================
-OPTIONAL EDGE
-========================================================= */
-
-/*
-* The React component already provides the actual
-* strokeDasharray through inline styles.
-*
-* This class is kept here for future customization.
-*/
 
 .relation-edge-optional {
-stroke-dasharray: 7 6;
+    stroke-dasharray: 7 6;
 }
-
-
-/* =========================================================
-EDGE LABEL INTERACTION
-========================================================= */
 
 .react-flow__edge-label-renderer {
-pointer-events: none;
+    pointer-events: none;
 }
 
-.react-flow__edge-label-renderer button {
-pointer-events: all;
+.react-flow__edge-label-renderer .relation-edge-label {
+    pointer-events: all;
 }
-
-
-/* =========================================================
-DARK CANVAS COMPATIBILITY
-========================================================= */
 
 .schema-canvas .react-flow {
-background: transparent;
+    background: transparent;
 }
 
 .schema-canvas .react-flow__pane {
-background: transparent;
+    background: transparent;
 }
 
-
-/* =========================================================
-ACCESSIBILITY
-========================================================= */
-
-.relation-edge-label:focus-visible {
-outline: 1px solid #6d8cff;
-outline-offset: 2px;
+.nodrag,
+.nopan {
+    touch-action: none;
 }
-
-
-/* =========================================================
-SMALL SCREENS
-========================================================= */
 
 @media (max-width: 760px) {
-.relation-edge-label {
-    min-width: 70px;
-    height: 22px;
+    .relation-edge-label {
+        min-width: 70px;
+        min-height: 22px;
+        padding: 3px 6px;
+        font-size: 7px;
+    }
 
-    padding: 0 7px;
+    .relation-edge-dot {
+        width: 4px;
+        height: 4px;
+        flex-basis: 4px;
+    }
 
-    font-size: 7px;
-}
+    .relation-edge-cascade {
+        font-size: 5.5px;
+    }
 
-.relation-edge-dot {
-    width: 4px;
-    height: 4px;
-    flex-basis: 4px;
-}
+    .relation-edge-delete {
+        width: 17px;
+        height: 17px;
+        flex-basis: 17px;
+    }
 }

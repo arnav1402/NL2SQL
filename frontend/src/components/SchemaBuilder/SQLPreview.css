@@ -1,520 +1,380 @@
 /* =========================================================
-SQL PREVIEW
-========================================================= */
+   SQL PREVIEW
+   ========================================================= */
 
 .sql-preview {
-width: 100%;
-height: 100%;
-min-width: 0;
-
-display: flex;
-flex-direction: column;
-
-overflow: hidden;
-
-background: #0b0f16;
-color: #dce4f2;
-
-font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #0b0f16;
+    color: #dce4f2;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
-
 
 /* =========================================================
-HEADER
-========================================================= */
+   HEADER
+   ========================================================= */
 
 .sql-preview-header {
-min-height: 68px;
-height: 68px;
-
-flex-shrink: 0;
-
-display: flex;
-align-items: center;
-justify-content: space-between;
-
-padding: 0 18px;
-
-border-bottom: 1px solid #202a3a;
-
-background: #101722;
+    min-height: 68px;
+    height: 68px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 1px solid #202a3a;
+    background: #101722;
 }
-
 
 .sql-preview-title {
-min-width: 0;
-
-display: flex;
-align-items: center;
-
-gap: 10px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-
 
 .sql-preview-icon {
-width: 28px;
-height: 28px;
-
-display: flex;
-align-items: center;
-justify-content: center;
-
-border: 1px solid #2a3850;
-
-background: #131c2a;
-
-color: #4d73c7;
-
-font-size: 13px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #2a3850;
+    background: #131c2a;
+    color: #4d73c7;
+    font-size: 13px;
 }
-
 
 .sql-preview-icon svg {
-width: 14px;
-height: 14px;
+    width: 14px;
+    height: 14px;
 }
-
 
 .sql-preview-heading {
-min-width: 0;
-
-display: flex;
-flex-direction: column;
-
-gap: 3px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
-
 
 .sql-preview-eyebrow {
-display: block;
-
-color: #68768d;
-
-font-family:
-    "IBM Plex Mono",
-    "SFMono-Regular",
-    Consolas,
-    monospace;
-
-font-size: 7px;
-font-weight: 600;
-
-letter-spacing: 0.16em;
-line-height: 1;
+    display: block;
+    color: #68768d;
+    font-family:
+        "IBM Plex Mono",
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+    font-size: 7px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1;
 }
-
 
 .sql-preview-title h3 {
-margin: 0;
-
-color: #e8edf5;
-
-font-family:
-    "IBM Plex Mono",
-    "SFMono-Regular",
-    Consolas,
-    monospace;
-
-font-size: 12px;
-font-weight: 500;
-
-letter-spacing: 0.02em;
-line-height: 1.2;
+    margin: 0;
+    color: #e8edf5;
+    font-family:
+        "IBM Plex Mono",
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
 }
-
 
 .sql-dialect {
-flex-shrink: 0;
-
-height: 24px;
-
-display: flex;
-align-items: center;
-
-padding: 0 8px;
-
-border: 1px solid #2b3850;
-
-background: #111a28;
-
-color: #7893c9;
-
-font-family:
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 7px;
-font-weight: 600;
-
-letter-spacing: 0.12em;
+    flex-shrink: 0;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border: 1px solid #2b3850;
+    background: #111a28;
+    color: #7893c9;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+    font-size: 7px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
 }
 
-
 /* =========================================================
-BODY
-========================================================= */
+   BODY
+   ========================================================= */
 
 .sql-preview-body {
-flex: 1;
-min-height: 0;
-
-overflow: auto;
-
-background: #0b0f16;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    background: #0b0f16;
 }
-
 
 .sql-preview-body::-webkit-scrollbar {
-width: 7px;
-height: 7px;
+    width: 7px;
+    height: 7px;
 }
-
 
 .sql-preview-body::-webkit-scrollbar-track {
-background: #090d13;
+    background: #090d13;
 }
-
 
 .sql-preview-body::-webkit-scrollbar-thumb {
-background: #29354a;
+    background: #29354a;
 }
-
 
 .sql-preview-body::-webkit-scrollbar-thumb:hover {
-background: #3a4b66;
+    background: #3a4b66;
 }
 
-
 /* =========================================================
-SQL CODE
-========================================================= */
+   SQL CODE
+   ========================================================= */
 
 .sql-code {
-min-width: max-content;
-
-padding: 14px 0 28px;
+    min-width: max-content;
+    padding: 14px 0 28px;
 }
-
 
 .sql-line {
-min-height: 22px;
-
-display: flex;
-align-items: flex-start;
-
-padding-right: 20px;
-
-border-left: 2px solid transparent;
-
-transition:
-    background 120ms ease,
-    border-color 120ms ease;
+    min-height: 22px;
+    display: flex;
+    align-items: flex-start;
+    padding-right: 20px;
+    border-left: 2px solid transparent;
+    transition:
+        background 120ms ease,
+        border-color 120ms ease;
 }
-
 
 .sql-line:hover {
-border-left-color: #3654a6;
-
-background: rgba(54, 84, 166, 0.08);
+    border-left-color: #3654a6;
+    background: rgba(54, 84, 166, 0.08);
 }
-
 
 .sql-line-number {
-width: 42px;
-
-flex-shrink: 0;
-
-padding-right: 12px;
-
-color: #3d485b;
-
-text-align: right;
-user-select: none;
-
-font-family:
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 8px;
-line-height: 22px;
+    width: 42px;
+    flex-shrink: 0;
+    padding-right: 12px;
+    color: #3d485b;
+    text-align: right;
+    user-select: none;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+    font-size: 8px;
+    line-height: 22px;
 }
-
 
 .sql-line code {
-display: block;
-
-color: #c7d1e1;
-
-white-space: pre;
-
-font-family:
-    "JetBrains Mono",
-    "Fira Code",
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 9px;
-line-height: 22px;
-
-letter-spacing: 0.01em;
+    display: block;
+    color: #c7d1e1;
+    white-space: pre;
+    font-family:
+        "JetBrains Mono",
+        "Fira Code",
+        "IBM Plex Mono",
+        monospace;
+    font-size: 9px;
+    line-height: 22px;
+    letter-spacing: 0.01em;
 }
 
-
 /* =========================================================
-EMPTY STATE
-========================================================= */
+   EMPTY STATE
+   ========================================================= */
 
 .sql-empty {
-width: 100%;
-height: 100%;
-
-min-height: 300px;
-
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-
-padding: 30px;
-
-box-sizing: border-box;
-
-text-align: center;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    box-sizing: border-box;
+    text-align: center;
 }
-
 
 .sql-empty-symbol {
-width: 38px;
-height: 38px;
-
-display: flex;
-align-items: center;
-justify-content: center;
-
-margin-bottom: 14px;
-
-border: 1px dashed #34445f;
-
-color: #3654a6;
-
-font-family:
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 15px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    border: 1px dashed #34445f;
+    color: #3654a6;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+    font-size: 15px;
 }
-
 
 .sql-empty-symbol svg {
-width: 16px;
-height: 16px;
+    width: 16px;
+    height: 16px;
 }
-
 
 .sql-empty h4 {
-margin: 0 0 7px;
-
-color: #9daabd;
-
-font-family:
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 9px;
-font-weight: 500;
-
-letter-spacing: 0.1em;
+    margin: 0 0 7px;
+    color: #9daabd;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
 }
-
 
 .sql-empty p {
-max-width: 210px;
-
-margin: 0;
-
-color: #5e6c82;
-
-font-family:
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 8px;
-
-line-height: 1.7;
+    max-width: 210px;
+    margin: 0;
+    color: #5e6c82;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+    font-size: 8px;
+    line-height: 1.7;
 }
-
 
 /* =========================================================
-FOOTER
-========================================================= */
+   FOOTER
+   ========================================================= */
 
 .sql-preview-footer {
-min-height: 54px;
-height: 54px;
-
-flex-shrink: 0;
-
-display: flex;
-align-items: center;
-justify-content: space-between;
-
-gap: 12px;
-
-padding: 0 14px;
-
-border-top: 1px solid #202a3a;
-
-background: #101722;
+    min-height: 54px;
+    height: 54px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 14px;
+    border-top: 1px solid #202a3a;
+    background: #101722;
 }
-
 
 .sql-preview-status {
-display: flex;
-align-items: center;
-
-gap: 7px;
-
-color: #58677d;
-
-font-family:
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 7px;
-
-letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #58677d;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+    font-size: 7px;
+    letter-spacing: 0.06em;
 }
-
 
 .sql-status-dot {
-width: 5px;
-height: 5px;
-
-flex-shrink: 0;
-
-background: #3654a6;
-
-box-shadow:
-    0 0 7px rgba(54, 84, 166, 0.55);
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
+    background: #3654a6;
+    box-shadow:
+        0 0 7px rgba(54, 84, 166, 0.55);
 }
-
 
 .sql-preview-actions {
-display: flex;
-align-items: center;
-
-gap: 7px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
 }
-
 
 .sql-action {
-height: 30px;
-
-display: inline-flex;
-align-items: center;
-justify-content: center;
-
-gap: 6px;
-
-padding: 0 10px;
-
-border: 1px solid #303d53;
-
-background: transparent;
-
-color: #8b98ac;
-
-font-family:
-    "IBM Plex Mono",
-    monospace;
-
-font-size: 8px;
-
-cursor: pointer;
-
-transition:
-    background 120ms ease,
-    border-color 120ms ease,
-    color 120ms ease;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 10px;
+    border: 1px solid #303d53;
+    background: transparent;
+    color: #8b98ac;
+    font-family:
+        "IBM Plex Mono",
+        monospace;
+    font-size: 8px;
+    cursor: pointer;
+    transition:
+        background 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease;
 }
-
 
 .sql-action svg {
-width: 12px;
-height: 12px;
+    width: 12px;
+    height: 12px;
 }
-
 
 .sql-action:hover:not(:disabled) {
-border-color: #536b9d;
-
-background: #151f30;
-
-color: #dbe4f2;
+    border-color: #536b9d;
+    background: #151f30;
+    color: #dbe4f2;
 }
-
 
 .sql-action:active:not(:disabled) {
-transform: translateY(1px);
+    transform: translateY(1px);
 }
-
 
 .sql-action:disabled {
-opacity: 0.3;
-
-cursor: not-allowed;
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
-
 /* =========================================================
-PRIMARY DOWNLOAD
-========================================================= */
+   PRIMARY DOWNLOAD
+   ========================================================= */
 
 .sql-action-primary {
-border-color: #3654a6;
-
-background: #3654a6;
-
-color: #ffffff;
+    border-color: #3654a6;
+    background: #3654a6;
+    color: #ffffff;
 }
-
 
 .sql-action-primary:hover:not(:disabled) {
-border-color: #4566bd;
-
-background: #4566bd;
-
-color: #ffffff;
+    border-color: #4566bd;
+    background: #4566bd;
+    color: #ffffff;
 }
-
 
 /* =========================================================
-RESPONSIVE
-========================================================= */
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 700px) {
-.sql-preview-header {
-    padding: 0 12px;
-}
+    .sql-preview-header {
+        padding: 0 12px;
+    }
 
-.sql-preview-footer {
-    padding: 0 10px;
-}
+    .sql-preview-footer {
+        padding: 0 10px;
+    }
 
-.sql-preview-status {
-    display: none;
-}
+    .sql-preview-status {
+        display: none;
+    }
 
-.sql-action {
-    padding: 0 9px;
-}
+    .sql-action {
+        padding: 0 9px;
+    }
 
-.sql-dialect {
-    display: none;
-}
+    .sql-dialect {
+        display: none;
+    }
 }

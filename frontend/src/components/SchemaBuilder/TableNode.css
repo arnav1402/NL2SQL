@@ -1,63 +1,36 @@
-/* =========================================================
-   TABLE NODE
-   Sharp / dark / NL2SQL visual language
-   ========================================================= */
-
 .schema-table-node {
     position: relative;
-
     width: 390px;
-
     overflow: visible;
-
     border: 1px solid #27334a;
-
     border-radius: 2px;
-
     background: #0d131d;
-
     color: #dce5f4;
-
     font-family:
         Inter,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-
     box-shadow:
         0 12px 28px rgba(0, 0, 0, 0.38),
         0 2px 5px rgba(0, 0, 0, 0.28);
-
     transition:
         border-color 140ms ease,
         box-shadow 140ms ease;
 }
 
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
 .schema-table-header {
+    position: relative;
     height: 46px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 0 13px;
-
     border-bottom: 1px solid #2a3851;
-
     background: #151e2d;
-
     color: #f2f5fa;
-
     cursor: grab;
-
     user-select: none;
 }
 
@@ -65,75 +38,45 @@
     cursor: grabbing;
 }
 
-
 .schema-table-title {
     min-width: 0;
-
     display: flex;
-
     align-items: center;
-
     gap: 9px;
-
     color: #edf2fa;
-
-    font-family:
-        "IBM Plex Mono",
-        monospace;
-
+    font-family: "IBM Plex Mono", monospace;
     font-size: 11px;
-
     font-weight: 600;
-
     letter-spacing: 0.02em;
 }
 
-
 .schema-table-title span {
     overflow: hidden;
-
     text-overflow: ellipsis;
-
     white-space: nowrap;
 }
 
-
 .schema-table-icon {
     flex-shrink: 0;
-
     width: 15px;
-
     height: 15px;
-
     color: #5475bd;
-
     stroke-width: 1.7;
 }
-
-
-/* =========================================================
-   MENU
-   ========================================================= */
 
 .schema-table-menu {
     width: 27px;
     height: 27px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: 1px solid transparent;
-
+    border-radius: 2px;
     background: transparent;
-
     color: #71809a;
-
     cursor: pointer;
-
+    pointer-events: all;
     transition:
         color 120ms ease,
         border-color 120ms ease,
@@ -142,9 +85,7 @@
 
 .schema-table-menu:hover {
     border-color: #33425c;
-
     background: #1b2637;
-
     color: #dbe5f5;
 }
 
@@ -153,301 +94,187 @@
     height: 15px;
 }
 
-
-/* =========================================================
-   COLUMN AREA
-   ========================================================= */
-
 .schema-table-columns {
+    position: relative;
     background: #0d131d;
 }
 
-
-/* =========================================================
-   COLUMN ROW
-   ========================================================= */
-
 .schema-column-row {
     position: relative;
-
     min-height: 48px;
-
+    height: 48px;
     display: grid;
-
     grid-template-columns:
         minmax(115px, 1fr)
         76px
         auto;
-
     align-items: center;
-
     gap: 8px;
-
     padding: 0 13px;
-
     border-bottom: 1px solid #1d2839;
-
     background: #0d131d;
-
     user-select: none;
-
-    transition:
-        background 120ms ease;
+    transition: background 120ms ease;
 }
 
 .schema-column-row:hover {
     background: #111a28;
 }
 
-
-/* =========================================================
-   COLUMN NAME
-   ========================================================= */
-
 .schema-column-name {
     min-width: 0;
-
     display: flex;
-
     align-items: center;
-
     gap: 7px;
-
     color: #cbd5e4;
-
-    font-family:
-        "IBM Plex Mono",
-        monospace;
-
+    font-family: "IBM Plex Mono", monospace;
     font-size: 10px;
-
     font-weight: 500;
 }
 
-
 .schema-column-name-text {
     min-width: 0;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
-
     white-space: nowrap;
 }
-
 
 .schema-column-property-icon {
     width: 13px;
     height: 13px;
-
     flex-shrink: 0;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     color: #48566d;
 }
-
 
 .schema-column-property-icon svg {
     width: 11px;
     height: 11px;
 }
 
-
 .schema-column-row:has(.column-action.pk.active)
 .schema-column-property-icon {
     color: #6f91df;
 }
 
-
-/* =========================================================
-   TYPE
-   ========================================================= */
+.schema-column-row:has(.column-action.fk.active)
+.schema-column-property-icon {
+    color: #6d8cff;
+}
 
 .schema-column-type {
     min-width: 0;
-
     display: flex;
-
     align-items: center;
-
     justify-content: flex-start;
-
     color: #65748c;
-
-    font-family:
-        "IBM Plex Mono",
-        monospace;
-
+    font-family: "IBM Plex Mono", monospace;
     font-size: 8px;
-
     letter-spacing: 0.02em;
-
     white-space: nowrap;
 }
 
 .schema-column-type span {
     overflow: hidden;
-
     text-overflow: ellipsis;
-
     white-space: nowrap;
 }
 
-
-/* =========================================================
-   ACTIONS
-   ========================================================= */
-
 .schema-column-actions {
     display: flex;
-
     align-items: center;
-
     justify-content: flex-end;
-
     gap: 4px;
 }
-
-
-/* =========================================================
-   PK / UQ / NN
-   ========================================================= */
 
 .column-action {
     width: 29px;
     height: 24px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: 1px solid #303d53;
-
     border-radius: 2px;
-
     background: #111927;
-
     color: #687891;
-
-    font-family:
-        "IBM Plex Mono",
-        monospace;
-
+    font-family: "IBM Plex Mono", monospace;
     font-size: 7px;
-
     font-weight: 700;
-
     letter-spacing: 0.02em;
-
     cursor: pointer;
-
     user-select: none;
-
     -webkit-user-select: none;
-
+    pointer-events: all;
     transition:
         background 120ms ease,
         border-color 120ms ease,
         color 120ms ease,
         box-shadow 120ms ease;
-
-    pointer-events: all;
 }
-
-
-/*
- * IMPORTANT:
- * React Flow must never treat these controls as
- * node dragging.
- */
 
 .column-action.nodrag,
 .column-action.nopan {
     cursor: pointer;
 }
 
-
 .column-action:hover {
     border-color: #52688f;
-
     background: #172236;
-
     color: #aebdd5;
 }
 
-
-/* PK */
-
 .column-action.pk.active {
     border-color: #4d6fbe;
-
     background: #2b4380;
-
     color: #dce7ff;
-
     box-shadow:
         inset 0 0 0 1px rgba(111, 145, 223, 0.16);
 }
 
-
-/* UNIQUE */
-
 .column-action.uq.active {
     border-color: #526f9e;
-
     background: #243653;
-
     color: #c5d7f5;
 }
 
-
-/* NOT NULL */
-
 .column-action.nn.active {
     border-color: #56687f;
-
     background: #263342;
-
     color: #d1dbe8;
 }
 
+.column-action.fk {
+    border-color: #344b79;
+    background: #111a2b;
+    color: #718ed0;
+}
 
-/* =========================================================
-   DELETE
-   ========================================================= */
+.column-action.fk.active {
+    border-color: #4c6fff;
+    background: #263e78;
+    color: #dce7ff;
+    box-shadow:
+        inset 0 0 0 1px rgba(109, 140, 255, 0.16);
+}
 
 .column-delete {
     width: 20px;
     height: 24px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: 0;
-
+    border-radius: 2px;
     background: transparent;
-
     color: #4e5b70;
-
     font-size: 16px;
-
     line-height: 1;
-
     cursor: pointer;
-
     pointer-events: all;
-
     transition:
         color 120ms ease,
         background 120ms ease;
@@ -455,46 +282,24 @@
 
 .column-delete:hover {
     color: #d16b76;
-
     background: rgba(209, 107, 118, 0.08);
 }
 
-
-/* =========================================================
-   ADD COLUMN
-   ========================================================= */
-
 .schema-add-column {
     width: 100%;
-
     height: 39px;
-
     display: flex;
-
     align-items: center;
-
     gap: 7px;
-
     padding: 0 13px;
-
     border: 0;
-
     background: #0f1724;
-
     color: #607db8;
-
-    font-family:
-        "IBM Plex Mono",
-        monospace;
-
+    font-family: "IBM Plex Mono", monospace;
     font-size: 8px;
-
     text-align: left;
-
     cursor: pointer;
-
     pointer-events: all;
-
     transition:
         background 120ms ease,
         color 120ms ease;
@@ -502,7 +307,6 @@
 
 .schema-add-column:hover {
     background: #141e2e;
-
     color: #86a5e3;
 }
 
@@ -511,48 +315,28 @@
     height: 13px;
 }
 
-
-/* =========================================================
-   CONNECTION HANDLE WRAPPER
-   ========================================================= */
+/* Column connection area */
 
 .schema-column-connection {
     position: absolute;
-
+    top: 0;
     left: 0;
     right: 0;
-
+    width: 100%;
     height: 48px;
-
     pointer-events: none;
-
-    /*
-     * Each wrapper is positioned using the column's
-     * handle offset by React Flow.
-     */
+    z-index: 5;
 }
-
-
-/* =========================================================
-   COLUMN HANDLES
-   ========================================================= */
 
 .column-handle {
     width: 9px;
     height: 9px;
-
     border: 2px solid #496bb5;
-
     border-radius: 50%;
-
     background: #0d131d;
-
     opacity: 0;
-
     pointer-events: all;
-
     z-index: 10;
-
     transition:
         opacity 120ms ease,
         transform 120ms ease,
@@ -560,120 +344,75 @@
         border-color 120ms ease;
 }
 
-
-/*
- * Always expose handles when the table is hovered.
- */
-
 .schema-table-node:hover .column-handle {
     opacity: 1;
 }
 
-
-/*
- * Also expose a handle when the user is actively
- * creating a connection.
- */
-
-.schema-table-node:has(.column-handle:hover)
-.column-handle {
+.schema-column-row:hover .column-handle {
     opacity: 1;
 }
 
-
 .column-handle:hover {
     transform: scale(1.35);
-
     border-color: #7597e1;
-
     background: #243b70;
 }
-
-
-/* Source */
 
 .column-handle-source {
     right: -5px;
 }
 
-
-/* Target */
-
 .column-handle-target {
     left: -5px;
 }
 
-
-/* =========================================================
-   CONNECTION HANDLE ACTIVE STATE
-   ========================================================= */
-
 .react-flow__handle.connecting {
     opacity: 1;
-
     border-color: #7898dc;
-
     background: #3159b8;
 }
 
 .react-flow__handle.valid {
     opacity: 1;
-
     border-color: #7b9be0;
-
     background: #3654a6;
 }
 
-
-/* =========================================================
-   NODE SELECTION
-   ========================================================= */
+.react-flow__handle.invalid {
+    opacity: 0.35;
+    border-color: #6a4852;
+    background: #24171b;
+}
 
 .react-flow__node.selected .schema-table-node {
     border-color: #4265aa;
-
     box-shadow:
         0 0 0 1px rgba(66, 101, 170, 0.45),
         0 14px 32px rgba(0, 0, 0, 0.42);
 }
 
-
-/* =========================================================
-   NODE DRAGGING
-   ========================================================= */
-
 .react-flow__node.dragging .schema-table-node {
     border-color: #5878bb;
-
     box-shadow:
         0 18px 38px rgba(0, 0, 0, 0.5);
 }
 
+.react-flow__node {
+    overflow: visible;
+}
 
-/* =========================================================
-   PREVENT INTERACTIVE ELEMENTS FROM DRAGGING NODE
-   ========================================================= */
+.react-flow__node .schema-table-node {
+    overflow: visible;
+}
 
 .nodrag,
 .nopan {
     touch-action: none;
 }
 
-
-/*
- * React Flow's utility classes.
- *
- * Explicitly ensure buttons remain clickable.
- */
-
 .schema-table-node button {
     pointer-events: all;
 }
-
-
-/* =========================================================
-   SMALLER SCREENS
-   ========================================================= */
 
 @media (max-width: 700px) {
     .schema-table-node {
@@ -685,7 +424,6 @@
             minmax(100px, 1fr)
             65px
             auto;
-
         gap: 5px;
     }
 

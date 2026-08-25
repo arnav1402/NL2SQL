@@ -33,9 +33,9 @@ const DIALECTS = {
 function SchemaToolbar({
     onAddTable,
     onClear,
-    dialect,
+    dialect = "postgresql",
     onDialectChange,
-    sqlPreviewOpen,
+    sqlPreviewOpen = false,
     onToggleSQLPreview,
     onHelp,
 }) {
@@ -44,22 +44,35 @@ function SchemaToolbar({
 
     const DialectIcon = currentDialect.icon;
 
+    const handleBack = () => {
+        if (typeof window !== "undefined") {
+            window.history.back();
+        }
+    };
+
+    const handleClear = () => {
+        if (typeof onClear === "function") {
+            onClear();
+        }
+    };
+
+    const handleDialectChange = (event) => {
+        if (typeof onDialectChange === "function") {
+            onDialectChange(event.target.value);
+        }
+    };
+
     return (
-        <div className="schema-toolbar">
-
-            {/* =====================================================
-                LEFT ACTIONS
-            ===================================================== */}
-
+        <header className="schema-toolbar">
             <div className="schema-toolbar-left">
-
                 <button
                     type="button"
                     className="schema-toolbar-button primary"
                     onClick={onAddTable}
+                    disabled={typeof onAddTable !== "function"}
+                    aria-label="Add a new table"
                 >
                     <FiPlus className="toolbar-button-icon" />
-
                     <span>Add Table</span>
                 </button>
 
@@ -68,95 +81,79 @@ function SchemaToolbar({
                 <button
                     type="button"
                     className="schema-toolbar-button"
-                    onClick={() => window.history.back()}
+                    onClick={handleBack}
+                    aria-label="Go back"
                 >
                     <FiArrowLeft className="toolbar-button-icon" />
-
                     <span>Back</span>
                 </button>
 
                 <button
                     type="button"
                     className="schema-toolbar-button danger"
-                    onClick={onClear}
+                    onClick={handleClear}
+                    disabled={typeof onClear !== "function"}
+                    aria-label="Clear all tables and relationships"
                 >
                     <FiTrash2 className="toolbar-button-icon" />
-
                     <span>Clear</span>
                 </button>
-
             </div>
 
-
-            {/* =====================================================
-                CENTER — DATABASE DIALECT
-            ===================================================== */}
-
             <div className="schema-toolbar-center">
-
                 <div className="dialect-selector">
-
-                    <span className="dialect-label">
-                        TARGET
-                    </span>
+                    <span className="dialect-label">TARGET</span>
 
                     <div className="dialect-select-wrapper">
-
                         <DialectIcon
                             className="dialect-icon"
                             aria-hidden="true"
                         />
 
                         <select
-                            value={dialect}
-                            onChange={(event) =>
-                                onDialectChange(
-                                    event.target.value
-                                )
+                            value={
+                                DIALECTS[dialect]
+                                    ? dialect
+                                    : "postgresql"
                             }
+                            onChange={handleDialectChange}
                             aria-label="SQL dialect"
+                            title={`Target database: ${currentDialect.label}`}
                         >
-                            <option value="postgresql">
-                                PostgreSQL
-                            </option>
-
-                            <option value="mysql">
-                                MySQL
-                            </option>
-
-                            <option value="sqlite">
-                                SQLite
-                            </option>
+                            {Object.entries(DIALECTS).map(
+                                ([value, option]) => (
+                                    <option
+                                        key={value}
+                                        value={value}
+                                    >
+                                        {option.label}
+                                    </option>
+                                )
+                            )}
                         </select>
 
                         <FiChevronDown
                             className="dialect-chevron"
                             aria-hidden="true"
                         />
-
                     </div>
-
                 </div>
-
             </div>
 
-
-            {/* =====================================================
-                RIGHT ACTIONS
-            ===================================================== */}
-
             <div className="schema-toolbar-right">
-
                 <button
                     type="button"
                     className={`schema-toolbar-button sql-button ${
                         sqlPreviewOpen ? "active" : ""
                     }`}
                     onClick={onToggleSQLPreview}
+                    disabled={
+                        typeof onToggleSQLPreview !== "function"
+                    }
                     aria-pressed={sqlPreviewOpen}
+                    aria-label="Toggle SQL preview"
                 >
                     <FiCode className="toolbar-button-icon" />
-
                     <span>SQL Preview</span>
                 </button>
 
@@ -164,15 +161,14 @@ function SchemaToolbar({
                     type="button"
                     className="schema-help-button"
                     onClick={onHelp}
+                    disabled={typeof onHelp !== "function"}
                     title="How to use Schema Builder"
                     aria-label="How to use Schema Builder"
                 >
                     <FiHelpCircle />
                 </button>
-
             </div>
-
-        </div>
+        </header>
     );
 }
 

@@ -1,26 +1,26 @@
 import { useCallback, useMemo, useState } from "react";
 
 import {
-ReactFlow,
-Background,
-Controls,
-MiniMap,
-MarkerType,
-addEdge,
-useNodesState,
-useEdgesState,
-BackgroundVariant,
+    ReactFlow,
+    Background,
+    Controls,
+    MiniMap,
+    MarkerType,
+    addEdge,
+    useNodesState,
+    useEdgesState,
+    BackgroundVariant,
 } from "@xyflow/react";
 
 import {
-FiArrowLeft,
-FiCode,
-FiDatabase,
-FiHelpCircle,
-FiMaximize2,
-FiPlus,
-FiTrash2,
-FiX,
+    FiArrowLeft,
+    FiCode,
+    FiDatabase,
+    FiHelpCircle,
+    FiMaximize2,
+    FiPlus,
+    FiTrash2,
+    FiX,
 } from "react-icons/fi";
 
 import "@xyflow/react/dist/style.css";
@@ -29,985 +29,700 @@ import TableNode from "./TableNode";
 import RelationEdge from "./RelationEdge";
 import SQLPreview from "./SQLPreview";
 import SchemaPreview from "./SchemaPreview";
-
 import { generateSQL } from "../../utils/generateSQL";
 
 import "./SchemaBuilder.css";
 
-const nodeTypes = {
-table: TableNode,
-};
+const nodeTypes = { table: TableNode };
+const edgeTypes = { relation: RelationEdge };
 
-const edgeTypes = {
-relation: RelationEdge,
-};
-
-/* =========================================================
-INITIAL DEMO SCHEMA
-========================================================= */
+const createColumn = (tableId, index = 1) => ({
+    id: `${tableId}_column_${Date.now()}_${index}`,
+    name: `column_${index}`,
+    type: "TEXT",
+    isPrimaryKey: false,
+    isNullable: true,
+    isUnique: false,
+    autoIncrement: false,
+});
 
 const initialNodes = [
-{
-    id: "users",
-    type: "table",
-    position: {
-    x: 120,
-    y: 100,
+    {
+        id: "users",
+        type: "table",
+        position: { x: 120, y: 100 },
+        data: {
+            tableName: "users",
+            columns: [
+                {
+                    id: "users_id",
+                    name: "id",
+                    type: "INTEGER",
+                    isPrimaryKey: true,
+                    isNullable: false,
+                    isUnique: true,
+                    autoIncrement: true,
+                },
+                {
+                    id: "users_name",
+                    name: "name",
+                    type: "VARCHAR",
+                    length: 100,
+                    isPrimaryKey: false,
+                    isNullable: false,
+                    isUnique: false,
+                    autoIncrement: false,
+                },
+                {
+                    id: "users_email",
+                    name: "email",
+                    type: "VARCHAR",
+                    length: 255,
+                    isPrimaryKey: false,
+                    isNullable: true,
+                    isUnique: true,
+                    autoIncrement: false,
+                },
+            ],
+        },
     },
-    data: {
-    tableName: "users",
-    columns: [
-        {
-        id: "users_id",
-        name: "id",
-        type: "INTEGER",
-        isPrimaryKey: true,
-        isNullable: false,
-        isUnique: true,
-        autoIncrement: true,
+    {
+        id: "orders",
+        type: "table",
+        position: { x: 620, y: 120 },
+        data: {
+            tableName: "orders",
+            columns: [
+                {
+                    id: "orders_id",
+                    name: "id",
+                    type: "INTEGER",
+                    isPrimaryKey: true,
+                    isNullable: false,
+                    isUnique: true,
+                    autoIncrement: true,
+                },
+                {
+                    id: "orders_user_id",
+                    name: "user_id",
+                    type: "INTEGER",
+                    isPrimaryKey: false,
+                    isNullable: false,
+                    isUnique: false,
+                    autoIncrement: false,
+                },
+                {
+                    id: "orders_amount",
+                    name: "amount",
+                    type: "DECIMAL",
+                    precision: 10,
+                    scale: 2,
+                    isPrimaryKey: false,
+                    isNullable: false,
+                    isUnique: false,
+                    autoIncrement: false,
+                },
+            ],
         },
-        {
-        id: "users_name",
-        name: "name",
-        type: "VARCHAR",
-        length: 100,
-        isPrimaryKey: false,
-        isNullable: false,
-        isUnique: false,
-        autoIncrement: false,
-        },
-        {
-        id: "users_email",
-        name: "email",
-        type: "VARCHAR",
-        length: 255,
-        isPrimaryKey: false,
-        isNullable: true,
-        isUnique: true,
-        autoIncrement: false,
-        },
-    ],
     },
-},
-
-{
-    id: "orders",
-    type: "table",
-    position: {
-    x: 620,
-    y: 120,
-    },
-    data: {
-    tableName: "orders",
-    columns: [
-        {
-        id: "orders_id",
-        name: "id",
-        type: "INTEGER",
-        isPrimaryKey: true,
-        isNullable: false,
-        isUnique: true,
-        autoIncrement: true,
-        },
-        {
-        id: "orders_user_id",
-        name: "user_id",
-        type: "INTEGER",
-        isPrimaryKey: false,
-        isNullable: false,
-        isUnique: false,
-        autoIncrement: false,
-        },
-        {
-        id: "orders_amount",
-        name: "amount",
-        type: "DECIMAL",
-        precision: 10,
-        scale: 2,
-        isPrimaryKey: false,
-        isNullable: false,
-        isUnique: false,
-        autoIncrement: false,
-        },
-    ],
-    },
-},
 ];
 
 const initialEdges = [
-{
-    id: "orders-user",
-    source: "orders",
-    sourceHandle: "orders_user_id-source",
-    target: "users",
-    targetHandle: "users_id-target",
-    type: "relation",
-    data: {
-    relation: "required",
-    onDelete: "CASCADE",
+    {
+        id: "orders-user",
+        source: "orders",
+        sourceHandle: "orders_user_id",
+        target: "users",
+        targetHandle: "users_id",
+        type: "relation",
+        data: {
+            relation: "required",
+            onDelete: "CASCADE",
+        },
     },
-},
 ];
 
-/* =========================================================
-HELPERS
-========================================================= */
-
-const getColumnIdFromHandle = (handleId) => {
-if (!handleId) {
-    return null;
-}
-
-return handleId
-    .replace(/-source$/, "")
-    .replace(/-target$/, "");
+const findColumn = (nodes, nodeId, columnId) => {
+    const node = nodes.find((item) => item.id === nodeId);
+    return node?.data?.columns?.find((column) => column.id === columnId) || null;
 };
 
-const findColumn = (nodes, nodeId, handleId) => {
-const node = nodes.find((item) => item.id === nodeId);
+const getUniqueTableName = (nodes, baseName) => {
+    const names = new Set(
+        nodes.map((node) => String(node.data?.tableName || node.id).toLowerCase())
+    );
 
-if (!node) {
-    return null;
-}
+    if (!names.has(baseName.toLowerCase())) {
+        return baseName;
+    }
 
-const columnId = getColumnIdFromHandle(handleId);
+    let index = 2;
+    while (names.has(`${baseName}_${index}`.toLowerCase())) {
+        index += 1;
+    }
 
-return (
-    node.data?.columns?.find(
-    (column) => column.id === columnId
-    ) || null
-);
+    return `${baseName}_${index}`;
 };
 
-/* =========================================================
-COMPONENT
-========================================================= */
-
-function SchemaBuilder({
-isOpen = true,
-onClose,
-}) {
-const [nodes, setNodes, onNodesChange] =
-    useNodesState(initialNodes);
-
-const [edges, setEdges, onEdgesChange] =
-    useEdgesState(initialEdges);
-
-const [dialect, setDialect] =
-    useState("postgresql");
-
-const [sqlPreviewOpen, setSqlPreviewOpen] =
-    useState(true);
-
-const [schemaPreviewOpen, setSchemaPreviewOpen] =
-    useState(false);
-
-const [showHelp, setShowHelp] =
-    useState(false);
-
-/* =======================================================
-    CONNECTION HANDLER
-======================================================= */
-
-const onConnect = useCallback(
-    (connection) => {
-    if (
-        !connection?.source ||
-        !connection?.target ||
-        !connection?.sourceHandle ||
-        !connection?.targetHandle
-    ) {
-        return;
-    }
-
-    /*
-    * React Flow should normally give us:
-    *
-    * FK column -> source handle
-    * PK column -> target handle
-    *
-    * This fallback also protects against older TableNode
-    * versions where the handles were reversed.
-    */
-
-    let source = connection.source;
-    let target = connection.target;
-    let sourceHandle = connection.sourceHandle;
-    let targetHandle = connection.targetHandle;
-
-    const sourceIsTargetHandle =
-        sourceHandle.endsWith("-target");
-
-    const targetIsSourceHandle =
-        targetHandle.endsWith("-source");
-
-    if (
-        sourceIsTargetHandle &&
-        targetIsSourceHandle
-    ) {
-        source = connection.target;
-        target = connection.source;
-
-        sourceHandle = connection.targetHandle;
-        targetHandle = connection.sourceHandle;
-    }
-
-    const sourceColumn = findColumn(
-        nodes,
-        source,
-        sourceHandle
-    );
-
-    const targetColumn = findColumn(
-        nodes,
-        target,
-        targetHandle
-    );
-
-    if (!sourceColumn || !targetColumn) {
-        return;
-    }
-
-    /*
-    * A relationship should terminate at a PK or UNIQUE
-    * column. This prevents accidental connections.
-    */
-
-    if (
-        !targetColumn.isPrimaryKey &&
-        !targetColumn.isUnique
-    ) {
-        return;
-    }
-
-    /*
-    * Prevent self-linking the same column.
-    */
-
-    if (
-        source === target &&
-        sourceHandle === targetHandle
-    ) {
-        return;
-    }
-
-    /*
-    * Prevent duplicate relationships.
-    */
-
-    const duplicate = edges.some(
-        (edge) =>
-        edge.source === source &&
-        edge.sourceHandle === sourceHandle &&
-        edge.target === target &&
-        edge.targetHandle === targetHandle
-    );
-
-    if (duplicate) {
-        return;
-    }
-
-    const newEdge = {
-        id: `relation-${Date.now()}`,
-        source,
-        sourceHandle,
-        target,
-        targetHandle,
-        type: "relation",
-
-        /*
-        * Keep the marker here as a fallback.
-        * RelationEdge also renders its own marker.
-        */
-
-        markerEnd: {
-        type: MarkerType.ArrowClosed,
-        width: 18,
-        height: 18,
-        color: "#5274D8",
-        },
-
-        data: {
-        relation:
-            sourceColumn.isNullable === false
-            ? "required"
-            : "optional",
-
-        onDelete:
-            sourceColumn.isNullable === false
-            ? "CASCADE"
-            : "SET NULL",
-        },
-    };
-
-    setEdges((currentEdges) =>
-        addEdge(newEdge, currentEdges)
-    );
-    },
-    [edges, nodes, setEdges]
-);
-
-/* =======================================================
-    SQL
-======================================================= */
-
-const sql = useMemo(() => {
-    try {
-    return generateSQL(
-        nodes,
-        edges,
-        dialect
-    );
-    } catch (error) {
-    console.error(
-        "SQL generation failed:",
-        error
-    );
-
-    return "-- Unable to generate SQL.";
-    }
-}, [nodes, edges, dialect]);
-
-/* =======================================================
-    ADD TABLE
-======================================================= */
-
-const handleAddTable = useCallback(() => {
-    const tableNumber =
-    nodes.length + 1;
-
-    const tableId =
-    `table_${Date.now()}`;
-
-    const columnsPerRow = 3;
-
-    const newTable = {
-    id: tableId,
-    type: "table",
-
-    position: {
-        x:
-        120 +
-        (nodes.length % columnsPerRow) *
-            430,
-
-        y:
-        100 +
-        Math.floor(
-            nodes.length /
-            columnsPerRow
-        ) *
-            300,
-    },
-
-    data: {
-        tableName:
-        `table_${tableNumber}`,
-
-        columns: [
-        {
-            id: `${tableId}_id`,
-            name: "id",
-            type: "INTEGER",
-            isPrimaryKey: true,
-            isNullable: false,
-            isUnique: true,
-            autoIncrement: true,
-        },
-        ],
-    },
-    };
-
-    setNodes((currentNodes) => [
-    ...currentNodes,
-    newTable,
-    ]);
-}, [nodes.length, setNodes]);
-
-/* =======================================================
-    CLEAR
-======================================================= */
-
-const handleClear = useCallback(() => {
-    const confirmed = window.confirm(
-    "Clear the entire database design?"
-    );
-
-    if (!confirmed) {
-    return;
-    }
-
-    setNodes([]);
-    setEdges([]);
-}, [setNodes, setEdges]);
-
-/* =======================================================
-    CLOSE
-======================================================= */
-
-const handleClose = useCallback(() => {
-    if (onClose) {
-    onClose();
-    return;
-    }
-
-    window.history.back();
-}, [onClose]);
-
-/* =======================================================
-    HELP
-======================================================= */
-
-const handleOpenHelp = useCallback(() => {
-    setShowHelp(true);
-}, []);
-
-const handleCloseHelp = useCallback(() => {
-    setShowHelp(false);
-}, []);
-
-if (!isOpen) {
-    return null;
-}
-
-/* =======================================================
-    RENDER
-======================================================= */
-
-return (
-    <div className="schema-builder">
-
-    {/* ===================================================
-        HEADER
-    =================================================== */}
-
-    <header className="schema-builder-header">
-
-        <div className="schema-builder-brand">
-        <FiDatabase
-            className="schema-brand-icon"
-        />
-
-        <span>NL2SQL</span>
-        <i>.</i>
-        </div>
-
-        <div className="schema-builder-heading">
-        <span className="schema-builder-eyebrow">
-            DATABASE DESIGN
-        </span>
-
-        <span className="schema-builder-title">
-            Schema Builder
-        </span>
-        </div>
-
-        <div className="schema-builder-header-actions">
-
-        <button
-            type="button"
-            className="schema-header-icon"
-            title="Fullscreen"
-            aria-label="Fullscreen"
-        >
-            <FiMaximize2 />
-        </button>
-
-        <button
-            type="button"
-            className="schema-header-icon"
-            title="Help"
-            aria-label="Help"
-            onClick={handleOpenHelp}
-        >
-            <FiHelpCircle />
-        </button>
-
-        <button
-            type="button"
-            className="schema-builder-close"
-            onClick={handleClose}
-            aria-label="Close schema builder"
-            title="Close"
-        >
-            <FiX />
-        </button>
-
-        </div>
-    </header>
-
-    {/* ===================================================
-        TOOLBAR
-    =================================================== */}
-
-    <div className="schema-toolbar">
-
-        <div className="schema-toolbar-left">
-
-        <button
-            type="button"
-            className="schema-toolbar-button primary"
-            onClick={handleAddTable}
-        >
-            <FiPlus />
-            <span>Add Table</span>
-        </button>
-
-        <div className="toolbar-divider" />
-
-        <button
-            type="button"
-            className="schema-toolbar-button"
-            onClick={handleClose}
-        >
-            <FiArrowLeft />
-            <span>Back</span>
-        </button>
-
-        <button
-            type="button"
-            className="schema-toolbar-button danger"
-            onClick={handleClear}
-        >
-            <FiTrash2 />
-            <span>Clear</span>
-        </button>
-
-        </div>
-
-        <div className="schema-toolbar-center">
-
-        <div className="dialect-selector">
-
-            <span className="dialect-label">
-            TARGET
-            </span>
-
-            <select
-            value={dialect}
-            onChange={(event) =>
-                setDialect(event.target.value)
+function SchemaBuilder({ isOpen = true, onClose }) {
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [dialect, setDialect] = useState("postgresql");
+    const [sqlPreviewOpen, setSqlPreviewOpen] = useState(true);
+    const [schemaPreviewOpen, setSchemaPreviewOpen] = useState(false);
+    const [showHelp, setShowHelp] = useState(false);
+
+    const handleNodesChange = useCallback(
+        (changes) => {
+            const removedNodeIds = changes
+                .filter((change) => change.type === "remove")
+                .map((change) => change.id);
+
+            if (removedNodeIds.length) {
+                setEdges((currentEdges) =>
+                    currentEdges.filter(
+                        (edge) =>
+                            !removedNodeIds.includes(edge.source) &&
+                            !removedNodeIds.includes(edge.target)
+                    )
+                );
             }
-            >
-            <option value="postgresql">
-                PostgreSQL
-            </option>
 
-            <option value="mysql">
-                MySQL
-            </option>
+            onNodesChange(changes);
+        },
+        [onNodesChange, setEdges]
+    );
 
-            <option value="sqlite">
-                SQLite
-            </option>
-            </select>
-
-        </div>
-
-        </div>
-
-        <div className="schema-toolbar-right">
-
-        <button
-            type="button"
-            className={`schema-toolbar-button sql-button ${
-            sqlPreviewOpen
-                ? "active"
-                : ""
-            }`}
-            onClick={() =>
-            setSqlPreviewOpen(
-                (value) => !value
+    const updateTable = useCallback((nodeId, patch) => {
+        setNodes((currentNodes) =>
+            currentNodes.map((node) =>
+                node.id === nodeId
+                    ? {
+                          ...node,
+                          data: {
+                              ...node.data,
+                              ...patch,
+                          },
+                      }
+                    : node
             )
-            }
-        >
-            <FiCode />
-            <span>SQL Preview</span>
-        </button>
+        );
+    }, [setNodes]);
 
-        <button
-            type="button"
-            className="schema-help-button"
-            onClick={handleOpenHelp}
-            aria-label="Schema builder help"
-        >
-            <FiHelpCircle />
-        </button>
+    const handleAddColumn = useCallback((nodeId) => {
+        setNodes((currentNodes) =>
+            currentNodes.map((node) => {
+                if (node.id !== nodeId) {
+                    return node;
+                }
 
-        </div>
+                const columns = node.data?.columns || [];
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        columns: [
+                            ...columns,
+                            createColumn(node.id, columns.length + 1),
+                        ],
+                    },
+                };
+            })
+        );
+    }, [setNodes]);
 
-    </div>
+    const handleDeleteColumn = useCallback((nodeId, columnId) => {
+        setNodes((currentNodes) =>
+            currentNodes.map((node) => {
+                if (node.id !== nodeId) {
+                    return node;
+                }
 
-    {/* ===================================================
-        WORKSPACE
-    =================================================== */}
+                const columns = node.data?.columns || [];
+                if (columns.length <= 1) {
+                    return node;
+                }
 
-    <main className="schema-builder-content">
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        columns: columns.filter((column) => column.id !== columnId),
+                    },
+                };
+            })
+        );
 
-        <section
-        className={`schema-canvas ${
-            sqlPreviewOpen
-            ? "with-sql"
-            : ""
-        }`}
-        >
+        setEdges((currentEdges) =>
+            currentEdges.filter(
+                (edge) =>
+                    !(edge.source === nodeId && edge.sourceHandle === columnId) &&
+                    !(edge.target === nodeId && edge.targetHandle === columnId)
+            )
+        );
+    }, [setNodes, setEdges]);
 
-        <ReactFlow
-            nodes={nodes}
-            edges={edges}
+    const handleRenameTable = useCallback((nodeId) => {
+        const node = nodes.find((item) => item.id === nodeId);
+        if (!node) return;
 
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
+        const currentName = node.data?.tableName || node.id;
+        const nextName = window.prompt("Table name", currentName);
 
-            onNodesChange={
-            onNodesChange
-            }
+        if (nextName === null) return;
 
-            onEdgesChange={
-            onEdgesChange
-            }
+        const trimmedName = nextName.trim();
+        if (!trimmedName) {
+            window.alert("Table name cannot be empty.");
+            return;
+        }
 
-            onConnect={onConnect}
+        const duplicate = nodes.some(
+            (item) =>
+                item.id !== nodeId &&
+                String(item.data?.tableName || item.id).toLowerCase() ===
+                    trimmedName.toLowerCase()
+        );
 
-            fitView
+        if (duplicate) {
+            window.alert("A table with that name already exists.");
+            return;
+        }
 
-            fitViewOptions={{
-            padding: 0.12,
-            maxZoom: 1.15,
-            }}
+        updateTable(nodeId, { tableName: trimmedName });
+    }, [nodes, updateTable]);
 
-            minZoom={0.25}
-            maxZoom={2}
+    const handleDeleteTable = useCallback((nodeId) => {
+        const node = nodes.find((item) => item.id === nodeId);
+        if (!node) return;
 
-            defaultEdgeOptions={{
-            type: "relation",
+        const tableName = node.data?.tableName || node.id;
+        const confirmed = window.confirm(`Delete table "${tableName}"?`);
+        if (!confirmed) return;
 
-            markerEnd: {
-                type:
-                MarkerType.ArrowClosed,
-                width: 18,
-                height: 18,
-                color: "#5274D8",
+        setNodes((currentNodes) =>
+            currentNodes.filter((item) => item.id !== nodeId)
+        );
+
+        setEdges((currentEdges) =>
+            currentEdges.filter(
+                (edge) => edge.source !== nodeId && edge.target !== nodeId
+            )
+        );
+    }, [nodes, setNodes, setEdges]);
+
+    const handleNodeMenu = useCallback((nodeId) => {
+        const action = window.prompt(
+            "Table action: rename or delete",
+            "rename"
+        );
+
+        if (!action) return;
+
+        if (action.trim().toLowerCase() === "rename") {
+            handleRenameTable(nodeId);
+        }
+
+        if (action.trim().toLowerCase() === "delete") {
+            handleDeleteTable(nodeId);
+        }
+    }, [handleDeleteTable, handleRenameTable]);
+
+    const onConnect = useCallback((connection) => {
+        if (
+            !connection?.source ||
+            !connection?.target ||
+            !connection?.sourceHandle ||
+            !connection?.targetHandle
+        ) {
+            return;
+        }
+
+        const sourceColumn = findColumn(
+            nodes,
+            connection.source,
+            connection.sourceHandle
+        );
+        const targetColumn = findColumn(
+            nodes,
+            connection.target,
+            connection.targetHandle
+        );
+
+        if (!sourceColumn || !targetColumn) return;
+        if (!targetColumn.isPrimaryKey && !targetColumn.isUnique) return;
+        if (sourceColumn.id === targetColumn.id && connection.source === connection.target) return;
+
+        const duplicate = edges.some(
+            (edge) =>
+                edge.source === connection.source &&
+                edge.sourceHandle === connection.sourceHandle &&
+                edge.target === connection.target &&
+                edge.targetHandle === connection.targetHandle
+        );
+
+        if (duplicate) return;
+
+        const relation = sourceColumn.isNullable === false ? "required" : "optional";
+        const onDelete = sourceColumn.isNullable === false ? "NO ACTION" : "SET NULL";
+
+        setEdges((currentEdges) =>
+            addEdge(
+                {
+                    id: `relation-${Date.now()}`,
+                    source: connection.source,
+                    sourceHandle: connection.sourceHandle,
+                    target: connection.target,
+                    targetHandle: connection.targetHandle,
+                    type: "relation",
+                    markerEnd: {
+                        type: MarkerType.ArrowClosed,
+                        width: 18,
+                        height: 18,
+                        color: "#5274D8",
+                    },
+                    data: {
+                        relation,
+                        onDelete,
+                        onUpdate: "NO ACTION",
+                    },
+                },
+                currentEdges
+            )
+        );
+    }, [edges, nodes, setEdges]);
+
+    const sql = useMemo(() => {
+        try {
+            return generateSQL(nodes, edges, dialect);
+        } catch (error) {
+            console.error("SQL generation failed:", error);
+            return "-- Unable to generate SQL.";
+        }
+    }, [nodes, edges, dialect]);
+
+    const handleAddTable = useCallback(() => {
+        const tableId = `table_${Date.now()}`;
+        const tableName = getUniqueTableName(nodes, "table");
+        const index = nodes.length;
+
+        const newTable = {
+            id: tableId,
+            type: "table",
+            position: {
+                x: 120 + (index % 3) * 430,
+                y: 100 + Math.floor(index / 3) * 300,
             },
-            }}
+            data: {
+                tableName,
+                columns: [
+                    {
+                        id: `${tableId}_id`,
+                        name: "id",
+                        type: "INTEGER",
+                        isPrimaryKey: true,
+                        isNullable: false,
+                        isUnique: true,
+                        autoIncrement: true,
+                    },
+                ],
+            },
+        };
 
-            connectionLineStyle={{
-            stroke: "#5274D8",
-            strokeWidth: 1.8,
-            }}
+        setNodes((currentNodes) => [...currentNodes, newTable]);
+    }, [nodes, setNodes]);
 
-            snapToGrid
-            snapGrid={[16, 16]}
+    const handleClear = useCallback(() => {
+        if (!window.confirm("Clear the entire database design?")) return;
+        setNodes([]);
+        setEdges([]);
+    }, [setNodes, setEdges]);
 
-            proOptions={{
-            hideAttribution: true,
-            }}
-        >
+    const handleClose = useCallback(() => {
+        if (onClose) {
+            onClose();
+            return;
+        }
+        window.history.back();
+    }, [onClose]);
 
-            <Background
-            id="schema-grid"
-            variant={BackgroundVariant.Cross}
-            gap={24}
-            size={3}
-            color="#222B3B"
-            />
+    const flowNodes = useMemo(
+        () =>
+            nodes.map((node) => ({
+                ...node,
+                data: {
+                    ...node.data,
+                    updateTable,
+                    onAddColumn: handleAddColumn,
+                    onDeleteColumn: handleDeleteColumn,
+                    onMenu: handleNodeMenu,
+                    onDeleteTable: handleDeleteTable,
+                },
+            })),
+        [
+            nodes,
+            updateTable,
+            handleAddColumn,
+            handleDeleteColumn,
+            handleNodeMenu,
+            handleDeleteTable,
+        ]
+    );
 
-            <Controls
-            showInteractive={false}
-            position="bottom-left"
-            />
+    if (!isOpen) return null;
 
-            <MiniMap
-            position="bottom-right"
-            pannable
-            zoomable
+    return (
+        <div className="schema-builder">
+            <header className="schema-builder-header">
+                <div className="schema-builder-brand">
+                    <FiDatabase className="schema-brand-icon" />
+                    <span>NL2SQL</span>
+                    <i>.</i>
+                </div>
 
-            nodeColor="#3654A6"
+                <div className="schema-builder-heading">
+                    <span className="schema-builder-eyebrow">DATABASE DESIGN</span>
+                    <span className="schema-builder-title">Schema Builder</span>
+                </div>
 
-            maskColor="rgba(5, 8, 14, 0.72)"
+                <div className="schema-builder-header-actions">
+                    <button type="button" className="schema-header-icon" title="Fullscreen" aria-label="Fullscreen">
+                        <FiMaximize2 />
+                    </button>
+                    <button
+                        type="button"
+                        className="schema-header-icon"
+                        title="Help"
+                        aria-label="Help"
+                        onClick={() => setShowHelp(true)}
+                    >
+                        <FiHelpCircle />
+                    </button>
+                    <button
+                        type="button"
+                        className="schema-builder-close"
+                        onClick={handleClose}
+                        aria-label="Close schema builder"
+                        title="Close"
+                    >
+                        <FiX />
+                    </button>
+                </div>
+            </header>
 
-            style={{
-                background:
-                "#0B0F17",
-            }}
-            />
+            <div className="schema-toolbar">
+                <div className="schema-toolbar-left">
+                    <button type="button" className="schema-toolbar-button primary" onClick={handleAddTable}>
+                        <FiPlus />
+                        <span>Add Table</span>
+                    </button>
+                    <div className="toolbar-divider" />
+                    <button type="button" className="schema-toolbar-button" onClick={handleClose}>
+                        <FiArrowLeft />
+                        <span>Back</span>
+                    </button>
+                    <button type="button" className="schema-toolbar-button danger" onClick={handleClear}>
+                        <FiTrash2 />
+                        <span>Clear</span>
+                    </button>
+                </div>
 
-        </ReactFlow>
+                <div className="schema-toolbar-center">
+                    <div className="dialect-selector">
+                        <span className="dialect-label">TARGET</span>
+                        <select value={dialect} onChange={(event) => setDialect(event.target.value)}>
+                            <option value="postgresql">PostgreSQL</option>
+                            <option value="mysql">MySQL</option>
+                            <option value="sqlite">SQLite</option>
+                        </select>
+                    </div>
+                </div>
 
-        {/* EMPTY STATE */}
-
-        {nodes.length === 0 && (
-            <div className="schema-empty-state">
-
-            <div className="schema-empty-icon">
-                <FiDatabase />
-            </div>
-
-            <div className="schema-empty-kicker">
-                SCHEMA DESIGNER
-            </div>
-
-            <h3>
-                Build your database
-            </h3>
-
-            <p>
-                Add a table to start
-                designing your schema.
-            </p>
-
-            <button
-                type="button"
-                onClick={handleAddTable}
-            >
-                <FiPlus />
-                Add your first table
-            </button>
-
-            </div>
-        )}
-
-        </section>
-
-        {/* =================================================
-            SQL PREVIEW
-        ================================================= */}
-
-        {sqlPreviewOpen && (
-        <aside className="schema-sql-panel">
-
-            <SQLPreview
-            sql={sql}
-            dialect={dialect}
-            />
-
-        </aside>
-        )}
-
-    </main>
-
-    {/* ===================================================
-        SCHEMA PREVIEW
-    =================================================== */}
-
-    {schemaPreviewOpen && (
-        <div className="schema-preview-overlay">
-
-        <div className="schema-preview-modal">
-
-            <button
-            type="button"
-            className="schema-preview-close"
-            onClick={() =>
-                setSchemaPreviewOpen(
-                false
-                )
-            }
-            aria-label="Close schema preview"
-            >
-            <FiX />
-            </button>
-
-            <SchemaPreview
-            nodes={nodes}
-            edges={edges}
-            dialect={dialect}
-            />
-
-        </div>
-
-        </div>
-    )}
-
-    {/* ===================================================
-        HELP
-    =================================================== */}
-
-    {showHelp && (
-        <div
-        className="schema-help-overlay"
-        onClick={handleCloseHelp}
-        >
-
-        <div
-            className="schema-help-panel"
-            onClick={(event) =>
-            event.stopPropagation()
-            }
-        >
-
-            <div className="schema-help-header">
-
-            <div>
-                <span className="schema-help-kicker">
-                SCHEMA BUILDER
-                </span>
-
-                <h2>
-                How to design your database
-                </h2>
-            </div>
-
-            <button
-                type="button"
-                className="schema-help-close"
-                onClick={handleCloseHelp}
-                aria-label="Close help"
-            >
-                <FiX />
-            </button>
-
-            </div>
-
-            <div className="schema-help-content">
-
-            <div className="help-step">
-                <span>01</span>
-
-                <div>
-                <strong>
-                    Add a table
-                </strong>
-
-                <p>
-                    Create tables and place
-                    them anywhere on the
-                    canvas.
-                </p>
+                <div className="schema-toolbar-right">
+                    <button
+                        type="button"
+                        className={`schema-toolbar-button sql-button ${sqlPreviewOpen ? "active" : ""}`}
+                        onClick={() => setSqlPreviewOpen((value) => !value)}
+                    >
+                        <FiCode />
+                        <span>SQL Preview</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="schema-help-button"
+                        onClick={() => setShowHelp(true)}
+                        aria-label="Schema builder help"
+                    >
+                        <FiHelpCircle />
+                    </button>
                 </div>
             </div>
 
-            <div className="help-step">
-                <span>02</span>
+            <main className="schema-builder-content">
+                <section className={`schema-canvas ${sqlPreviewOpen ? "with-sql" : ""}`}>
+                    <ReactFlow
+                        nodes={flowNodes}
+                        edges={edges}
+                        nodeTypes={nodeTypes}
+                        edgeTypes={edgeTypes}
+                        onNodesChange={handleNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onConnect={onConnect}
+                        deleteKeyCode={["Backspace", "Delete"]}
+                        fitView
+                        fitViewOptions={{ padding: 0.12, maxZoom: 1.15 }}
+                        minZoom={0.25}
+                        maxZoom={2}
+                        defaultEdgeOptions={{
+                            type: "relation",
+                            markerEnd: {
+                                type: MarkerType.ArrowClosed,
+                                width: 18,
+                                height: 18,
+                                color: "#5274D8",
+                            },
+                        }}
+                        connectionLineStyle={{ stroke: "#5274D8", strokeWidth: 1.8 }}
+                        snapToGrid
+                        snapGrid={[16, 16]}
+                        proOptions={{ hideAttribution: true }}
+                    >
+                        <Background
+                            id="schema-grid"
+                            variant={BackgroundVariant.Cross}
+                            gap={24}
+                            size={3}
+                            color="#222B3B"
+                        />
+                        <Controls showInteractive={false} position="bottom-left" />
+                        <MiniMap
+                            position="bottom-right"
+                            pannable
+                            zoomable
+                            nodeColor="#3654A6"
+                            maskColor="rgba(5, 8, 14, 0.72)"
+                            style={{ background: "#0B0F17" }}
+                        />
+                    </ReactFlow>
 
-                <div>
-                <strong>
-                    Define columns
-                </strong>
+                    {nodes.length === 0 && (
+                        <div className="schema-empty-state">
+                            <div className="schema-empty-icon">
+                                <FiDatabase />
+                            </div>
+                            <div className="schema-empty-kicker">SCHEMA DESIGNER</div>
+                            <h3>Build your database</h3>
+                            <p>Add a table to start designing your schema.</p>
+                            <button type="button" onClick={handleAddTable}>
+                                <FiPlus />
+                                Add your first table
+                            </button>
+                        </div>
+                    )}
+                </section>
 
-                <p>
-                    Add columns and configure
-                    their data types and
-                    constraints.
-                </p>
+                {sqlPreviewOpen && (
+                    <aside className="schema-sql-panel">
+                        <SQLPreview sql={sql} dialect={dialect} />
+                    </aside>
+                )}
+            </main>
+
+            {schemaPreviewOpen && (
+                <div className="schema-preview-overlay">
+                    <div className="schema-preview-modal">
+                        <button
+                            type="button"
+                            className="schema-preview-close"
+                            onClick={() => setSchemaPreviewOpen(false)}
+                            aria-label="Close schema preview"
+                        >
+                            <FiX />
+                        </button>
+                        <SchemaPreview nodes={nodes} edges={edges} dialect={dialect} />
+                    </div>
                 </div>
-            </div>
+            )}
 
-            <div className="help-step">
-                <span>03</span>
+            {showHelp && (
+                <div className="schema-help-overlay" onClick={() => setShowHelp(false)}>
+                    <div className="schema-help-panel" onClick={(event) => event.stopPropagation()}>
+                        <div className="schema-help-header">
+                            <div>
+                                <span className="schema-help-kicker">SCHEMA BUILDER</span>
+                                <h2>How to design your database</h2>
+                            </div>
+                            <button
+                                type="button"
+                                className="schema-help-close"
+                                onClick={() => setShowHelp(false)}
+                                aria-label="Close help"
+                            >
+                                <FiX />
+                            </button>
+                        </div>
 
-                <div>
-                <strong>
-                    Create relationships
-                </strong>
+                        <div className="schema-help-content">
+                            <div className="help-step">
+                                <span>01</span>
+                                <div>
+                                    <strong>Add a table</strong>
+                                    <p>Create tables and place them anywhere on the canvas.</p>
+                                </div>
+                            </div>
+                            <div className="help-step">
+                                <span>02</span>
+                                <div>
+                                    <strong>Define columns</strong>
+                                    <p>Add columns and configure their data types and constraints.</p>
+                                </div>
+                            </div>
+                            <div className="help-step">
+                                <span>03</span>
+                                <div>
+                                    <strong>Create relationships</strong>
+                                    <p>Drag from a foreign-key column to a primary-key or unique column.</p>
+                                </div>
+                            </div>
+                            <div className="help-step">
+                                <span>04</span>
+                                <div>
+                                    <strong>Edit relationships</strong>
+                                    <p>Select a relationship to change its options or delete it.</p>
+                                </div>
+                            </div>
+                            <div className="help-step">
+                                <span>05</span>
+                                <div>
+                                    <strong>Generate SQL</strong>
+                                    <p>Select your target database and inspect the generated DDL.</p>
+                                </div>
+                            </div>
+                        </div>
 
-                <p>
-                    Drag from a foreign-key
-                    column to a primary-key
-                    or unique column.
-                </p>
+                        <div className="schema-help-footer">
+                            <span>TIP</span>
+                            <p>Connect foreign-key columns directly to PK or unique columns.</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
 
-            <div className="help-step">
-                <span>04</span>
-
-                <div>
-                <strong>
-                    Required / optional
-                </strong>
-
-                <p>
-                    Click a relationship
-                    label to switch its
-                    cardinality requirement.
-                </p>
+            <footer className="schema-builder-footer">
+                <div className="schema-builder-status">
+                    <span className="schema-status-dot" />
+                    <span>SCHEMA DESIGNER</span>
+                    <span className="schema-status-divider" />
+                    <span>{nodes.length} TABLE{nodes.length === 1 ? "" : "S"}</span>
+                    <span className="schema-status-divider" />
+                    <span>{edges.length} RELATION{edges.length === 1 ? "" : "S"}</span>
                 </div>
-            </div>
-
-            <div className="help-step">
-                <span>05</span>
-
-                <div>
-                <strong>
-                    Generate SQL
-                </strong>
-
-                <p>
-                    Select your target
-                    database and inspect
-                    the generated DDL.
-                </p>
+                <div className="schema-builder-dialect">
+                    TARGET <strong>{dialect.toUpperCase()}</strong>
                 </div>
-            </div>
-
-            </div>
-
-            <div className="schema-help-footer">
-
-            <span>TIP</span>
-
-            <p>
-                Connect foreign-key columns
-                directly to PK or unique
-                columns.
-            </p>
-
-            </div>
-
+            </footer>
         </div>
-
-        </div>
-    )}
-
-    {/* ===================================================
-        FOOTER
-    =================================================== */}
-
-    <footer className="schema-builder-footer">
-
-        <div className="schema-builder-status">
-
-        <span className="schema-status-dot" />
-
-        <span>
-            SCHEMA DESIGNER
-        </span>
-
-        <span className="schema-status-divider" />
-
-        <span>
-            {nodes.length} TABLE
-            {nodes.length === 1
-            ? ""
-            : "S"}
-        </span>
-
-        <span className="schema-status-divider" />
-
-        <span>
-            {edges.length} RELATION
-            {edges.length === 1
-            ? ""
-            : "S"}
-        </span>
-
-        </div>
-
-        <div className="schema-builder-dialect">
-
-        TARGET{" "}
-
-        <strong>
-            {dialect.toUpperCase()}
-        </strong>
-
-        </div>
-
-    </footer>
-
-    </div>
-);
+    );
 }
 
 export default SchemaBuilder;
