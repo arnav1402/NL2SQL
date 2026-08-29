@@ -120,3 +120,9 @@ export async function checkSession(connectionId) {
 await getConnection(connectionId);
 return "connected";
 }
+
+//visualizing the data base
+/** Returns: { connection_id, database_name, db_type, dialect, schema_version, tables: [...] } */
+export function getSchemaStructure(connectionId) {
+    return request(`/schema/${connectionId}`);
+}

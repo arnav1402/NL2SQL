@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import WorkspaceSidebar from "./WorkspaceSidebar";
 import ChatView from "./ChatView";
-import DatabaseCanvas from "./DatabaseCanvas";
+import DatabaseVisualizer from "./DatabaseVisualizer";
 import DatabaseSelector from "./DatabaseSelector";
 
 import "./Workspace.css";
@@ -229,12 +229,12 @@ export default function Workspace({
                     )}
 
                     {/* =================================================
-                        DATABASE
+                        DATABASE — real schema visualizer, wired to
+                        GET /schema/{connection_id}
                     ================================================= */}
 
                     {activeView === "database" && (
-                        <DatabaseCanvas
-                            database={connection}
+                        <DatabaseVisualizer
                             connectionId={
                                 connection?.connection_id
                             }
