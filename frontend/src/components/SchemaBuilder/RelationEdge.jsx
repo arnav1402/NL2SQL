@@ -46,6 +46,11 @@ function getNodeBox(node, fallbackX, fallbackWidth = 390) {
     return { left: nodeLeft, width, right: nodeLeft + width };
 }
 
+function findColumn(node, columnId) {
+    const columns = Array.isArray(node?.data?.columns) ? node.data.columns : [];
+    return columns.find((column) => column.id === columnId) || null;
+}
+
 function RelationEdge({
     id,
     source,
@@ -107,6 +112,23 @@ function RelationEdge({
 
     const onDelete = data?.onDelete || "NO ACTION";
     const onUpdate = data?.onUpdate || "NO ACTION";
+
+    // Human-readable description of what this connection means, shown as
+    // a native tooltip on the label. The arrowhead always points from the
+    // foreign-key column (source) into the primary/unique column it
+    // references (target) — this spells that out explicitly rather than
+    // leaving the direction implicit in the arrow alone.
+    const sourceTableName = sourceNode?.data?.tableName || source;
+    const targetTableName = targetNode?.data?.tableName || target;
+    const sourceColumnName =
+        findColumn(sourceNode, sourceHandleId)?.name || sourceHandleId || "?";
+    const targetColumnName =
+        findColumn(targetNode, targetHandleId)?.name || targetHandleId || "?";
+
+    const connectionDescription =
+        `${sourceTableName}.${sourceColumnName} references ` +
+        `${targetTableName}.${targetColumnName} — the arrow points at the ` +
+        `referenced (PK/UNIQUE) column.`;
 
     const [edgePath, labelX, labelY] = getSmoothStepPath({
         sourceX: resolvedSourceX,
@@ -192,6 +214,7 @@ function RelationEdge({
                             `translate(-50%, -50%) ` +
                             `translate(${labelX}px, ${labelY}px)`,
                     }}
+                    title={connectionDescription}
                     onMouseDown={(event) => {
                         event.stopPropagation();
                     }}
@@ -203,8 +226,8 @@ function RelationEdge({
                         type="button"
                         className="relation-edge-label-main nodrag nopan"
                         onClick={toggleRelation}
-                        title="Toggle required / optional"
-                        aria-label={`Relationship is ${relation}. Click to toggle.`}
+                        title={`${connectionDescription} Click to toggle required/optional.`}
+                        aria-label={`Relationship is ${relation}. ${connectionDescription} Click to toggle.`}
                     >
                         <span className="relation-edge-dot" />
 

@@ -38,6 +38,7 @@ function SchemaToolbar({
     sqlPreviewOpen = false,
     onToggleSQLPreview,
     onHelp,
+    onBack,
 }) {
     const currentDialect =
         DIALECTS[dialect] || DIALECTS.postgresql;
@@ -45,6 +46,11 @@ function SchemaToolbar({
     const DialectIcon = currentDialect.icon;
 
     const handleBack = () => {
+        if (typeof onBack === "function") {
+            onBack();
+            return;
+        }
+
         if (typeof window !== "undefined") {
             window.history.back();
         }

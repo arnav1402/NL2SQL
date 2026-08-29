@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     FiCode,
     FiCopy,
+    FiCheck,
     FiDownload,
     FiDatabase,
     FiLink,
@@ -15,9 +16,16 @@ function SchemaPreview({
     edges = [],
     dialect = "postgresql",
     sql = "",
-    onCopy,
-    onDownload,
 }) {
+    const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        if (!copied) return undefined;
+
+        const timer = window.setTimeout(() => setCopied(false), 1500);
+        return () => window.clearTimeout(timer);
+    }, [copied]);
+
     const tables = useMemo(
         () =>
             nodes.map((node) => ({
@@ -110,8 +118,7 @@ function SchemaPreview({
     const totalColumns = useMemo(
         () =>
             tables.reduce(
-                (total, table) =>
-                    total + table.columns.length,
+                (total, table) => total + table.columns.length,
                 0
             ),
         [tables]
@@ -130,7 +137,51 @@ function SchemaPreview({
         [tables]
     );
 
-    const formattedDialect = dialect.toUpperCase();
+    const formattedDialect = String(dialect || "postgresql").toUpperCase();
+    const hasSQL = sql.trim().length > 0;
+
+    const handleCopy = async () => {
+        if (!hasSQL) return;
+
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(sql);
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = sql;
+                textarea.setAttribute("readonly", "");
+                textarea.style.position = "fixed";
+                textarea.style.opacity = "0";
+
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                textarea.remove();
+            }
+
+            setCopied(true);
+        } catch (error) {
+            console.error("Failed to copy SQL:", error);
+            setCopied(false);
+        }
+    };
+
+    const handleDownload = () => {
+        if (!hasSQL) return;
+
+        const blob = new Blob([sql], { type: "text/sql;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = `schema-${dialect || "sql"}.sql`;
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        window.setTimeout(() => URL.revokeObjectURL(url), 100);
+    };
 
     return (
         <aside className="schema-preview">
@@ -157,7 +208,7 @@ function SchemaPreview({
             </header>
 
             <div className="schema-preview-code">
-                {sql ? (
+                {hasSQL ? (
                     <div className="schema-code-wrapper">
                         <pre className="schema-code">{sql}</pre>
                     </div>
@@ -308,18 +359,18 @@ function SchemaPreview({
                     <button
                         type="button"
                         className="preview-action"
-                        onClick={onCopy}
-                        disabled={!sql}
+                        onClick={handleCopy}
+                        disabled={!hasSQL}
                     >
-                        <FiCopy />
-                        <span>Copy SQL</span>
+                        {copied ? <FiCheck /> : <FiCopy />}
+                        <span>{copied ? "Copied" : "Copy SQL"}</span>
                     </button>
 
                     <button
                         type="button"
                         className="preview-action primary"
-                        onClick={onDownload}
-                        disabled={!sql}
+                        onClick={handleDownload}
+                        disabled={!hasSQL}
                     >
                         <FiDownload />
                         <span>Download .sql</span>

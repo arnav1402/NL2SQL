@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import {
     FiMoreVertical,
@@ -14,8 +15,30 @@ function stopFlowEvent(event) {
     event.stopPropagation();
 }
 
+// Single source of truth for handle math — RelationEdge imports these
+// so the two files can never silently drift out of sync on row height.
 export const TABLE_HEADER_HEIGHT = 46;
 export const COLUMN_ROW_HEIGHT = 48;
+
+// Real dropdown of common SQL types. "Custom…" drops into a text field
+// for anything not on this list (dialect-specific types, sizes, etc.).
+const COLUMN_TYPE_OPTIONS = [
+    "INTEGER",
+    "BIGINT",
+    "SMALLINT",
+    "SERIAL",
+    "TEXT",
+    "VARCHAR(255)",
+    "BOOLEAN",
+    "DATE",
+    "TIMESTAMP",
+    "DECIMAL(10,2)",
+    "FLOAT",
+    "UUID",
+    "JSON",
+];
+
+const CUSTOM_TYPE_VALUE = "__custom__";
 
 function TableNode({ id, data }) {
     const tableName = data?.tableName || "table";
@@ -26,8 +49,91 @@ function TableNode({ id, data }) {
     const onDeleteColumn = data?.onDeleteColumn;
     const onMenu = data?.onMenu;
 
-    const TABLE_HEADER_HEIGHT = 46;
-    const COLUMN_ROW_HEIGHT = 48;
+    const [isRenamingTable, setIsRenamingTable] = useState(false);
+    const [tableDraft, setTableDraft] = useState(tableName);
+
+    // Tracks which single cell (a column's name or type field) is being
+    // edited right now, so only one input renders at a time per table.
+    const [editingCell, setEditingCell] = useState(null); // { columnId, field }
+    const [cellDraft, setCellDraft] = useState("");
+    const [typeCustomMode, setTypeCustomMode] = useState(false);
+
+    const commitTableRename = () => {
+        const nextName = tableDraft.trim();
+
+        if (updateTable && nextName && nextName !== tableName) {
+            updateTable(id, { tableName: nextName });
+        }
+
+        setIsRenamingTable(false);
+    };
+
+    const startTableRename = () => {
+        setTableDraft(tableName);
+        setIsRenamingTable(true);
+    };
+
+    const applyColumnField = (columnId, field, rawValue) => {
+        const trimmed = String(rawValue || "").trim();
+        if (!updateTable || !trimmed) return;
+
+        const nextValue = field === "type" ? trimmed.toUpperCase() : trimmed;
+
+        const nextColumns = columns.map((column) =>
+            column.id === columnId ? { ...column, [field]: nextValue } : column
+        );
+
+        updateTable(id, { columns: nextColumns });
+    };
+
+    const startNameEdit = (columnId, currentValue) => {
+        setEditingCell({ columnId, field: "name" });
+        setCellDraft(currentValue || "");
+    };
+
+    const startTypeEdit = (columnId, currentValue) => {
+        const upper = String(currentValue || "TEXT").toUpperCase();
+        const isKnown = COLUMN_TYPE_OPTIONS.includes(upper);
+
+        setEditingCell({ columnId, field: "type" });
+        setCellDraft(upper);
+        setTypeCustomMode(!isKnown);
+    };
+
+    const cancelCellEdit = () => {
+        setEditingCell(null);
+        setCellDraft("");
+        setTypeCustomMode(false);
+    };
+
+    const commitNameEdit = () => {
+        if (editingCell) {
+            applyColumnField(editingCell.columnId, "name", cellDraft);
+        }
+        cancelCellEdit();
+    };
+
+    const commitCustomTypeEdit = () => {
+        if (editingCell) {
+            applyColumnField(editingCell.columnId, "type", cellDraft);
+        }
+        cancelCellEdit();
+    };
+
+    const handleTypeSelectChange = (event) => {
+        const value = event.target.value;
+
+        if (value === CUSTOM_TYPE_VALUE) {
+            setCellDraft("");
+            setTypeCustomMode(true);
+            return;
+        }
+
+        if (editingCell) {
+            applyColumnField(editingCell.columnId, "type", value);
+        }
+        cancelCellEdit();
+    };
 
     const toggleColumnProperty = (columnId, property) => {
         if (!updateTable) return;
@@ -84,6 +190,10 @@ function TableNode({ id, data }) {
 
     return (
         <div className="schema-table-node">
+            {/* Connection points — always visible, positioned per-row.
+                Handles are direct children of the node (position: relative
+                on .schema-table-node) so an inline `top` is enough; no
+                extra absolutely-positioned wrapper needed. */}
             {columns.map((column, index) => {
                 const handleTop =
                     TABLE_HEADER_HEIGHT +
@@ -95,20 +205,26 @@ function TableNode({ id, data }) {
                     column.isUnique === true;
 
                 return (
-                    <div
-                        key={`handles-${column.id}`}
-                        className="schema-column-connection"
-                        style={{
-                            top: `${handleTop}px`,
-                        }}
-                    >
+                    <div key={`handles-${column.id}`}>
                         <Handle
                             id={column.id}
                             type="target"
                             position={Position.Left}
-                            className="column-handle column-handle-target"
+                            style={{ top: handleTop }}
+                            className={[
+                                "column-handle",
+                                "column-handle-target",
+                                canBeReferenced
+                                    ? "is-referenceable"
+                                    : "is-disabled",
+                            ].join(" ")}
                             isConnectable={canBeReferenced}
                             isConnectableEnd={canBeReferenced}
+                            title={
+                                canBeReferenced
+                                    ? `Reference ${tableName}.${column.name}`
+                                    : `${column.name || "column"} isn't PK/UNIQUE — can't be referenced`
+                            }
                             aria-label={
                                 canBeReferenced
                                     ? `Reference ${tableName}.${column.name}`
@@ -120,9 +236,11 @@ function TableNode({ id, data }) {
                             id={column.id}
                             type="source"
                             position={Position.Right}
+                            style={{ top: handleTop }}
                             className="column-handle column-handle-source"
                             isConnectable={true}
                             isConnectableStart={true}
+                            title={`Drag to create a foreign key from ${tableName}.${column.name}`}
                             aria-label={`Create foreign key from ${tableName}.${column.name}`}
                         />
                     </div>
@@ -132,13 +250,37 @@ function TableNode({ id, data }) {
             <div
                 className="schema-table-header drag-handle"
                 onMouseDown={stopFlowEvent}
+                onDoubleClick={(event) => {
+                    event.stopPropagation();
+                    startTableRename();
+                }}
             >
                 <div className="schema-table-title">
                     <HiOutlineTable className="schema-table-icon" />
 
-                    <span title={tableName}>
-                        {tableName}
-                    </span>
+                    {isRenamingTable ? (
+                        <input
+                            className="schema-table-title-input nodrag nopan"
+                            value={tableDraft}
+                            autoFocus
+                            onChange={(event) => setTableDraft(event.target.value)}
+                            onMouseDown={stopFlowEvent}
+                            onPointerDown={stopFlowEvent}
+                            onBlur={commitTableRename}
+                            onKeyDown={(event) => {
+                                if (event.key === "Enter") {
+                                    event.currentTarget.blur();
+                                } else if (event.key === "Escape") {
+                                    setTableDraft(tableName);
+                                    setIsRenamingTable(false);
+                                }
+                            }}
+                        />
+                    ) : (
+                        <span title="Double-click to rename">
+                            {tableName}
+                        </span>
+                    )}
                 </div>
 
                 <button
@@ -151,7 +293,7 @@ function TableNode({ id, data }) {
                         onMenu?.(id);
                     }}
                     aria-label={`Options for ${tableName}`}
-                    title={`Options for ${tableName}`}
+                    title={`Delete ${tableName}`}
                 >
                     <FiMoreVertical />
                 </button>
@@ -163,16 +305,39 @@ function TableNode({ id, data }) {
                         column.isForeignKey === true ||
                         column.foreignKey === true;
 
+                    const isEditingName =
+                        editingCell?.columnId === column.id &&
+                        editingCell.field === "name";
+
+                    const isEditingType =
+                        editingCell?.columnId === column.id &&
+                        editingCell.field === "type";
+
                     return (
                         <div
-                            className="schema-column-row nodrag"
+                            className={[
+                                "schema-column-row",
+                                "nodrag",
+                                column.isPrimaryKey ? "is-pk" : "",
+                                isForeignKey ? "is-fk" : "",
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
                             key={column.id}
                             onMouseDown={stopFlowEvent}
                             onPointerDown={stopFlowEvent}
                         >
                             <div
                                 className="schema-column-name"
-                                title={column.name}
+                                title={
+                                    isEditingName
+                                        ? undefined
+                                        : "Double-click to rename"
+                                }
+                                onDoubleClick={(event) => {
+                                    event.stopPropagation();
+                                    startNameEdit(column.id, column.name);
+                                }}
                             >
                                 <span
                                     className="schema-column-property-icon"
@@ -187,21 +352,107 @@ function TableNode({ id, data }) {
                                     )}
                                 </span>
 
-                                <span
-                                    className="schema-column-name-text"
-                                    title={column.name}
-                                >
-                                    {column.name || "column"}
-                                </span>
+                                {isEditingName ? (
+                                    <input
+                                        className="schema-column-name-input nodrag nopan"
+                                        value={cellDraft}
+                                        autoFocus
+                                        onChange={(event) =>
+                                            setCellDraft(event.target.value)
+                                        }
+                                        onMouseDown={stopFlowEvent}
+                                        onPointerDown={stopFlowEvent}
+                                        onBlur={commitNameEdit}
+                                        onKeyDown={(event) => {
+                                            if (event.key === "Enter") {
+                                                event.currentTarget.blur();
+                                            } else if (
+                                                event.key === "Escape"
+                                            ) {
+                                                cancelCellEdit();
+                                            }
+                                        }}
+                                    />
+                                ) : (
+                                    <span
+                                        className="schema-column-name-text"
+                                        title={column.name}
+                                    >
+                                        {column.name || "column"}
+                                    </span>
+                                )}
                             </div>
 
                             <div
                                 className="schema-column-type"
-                                title={column.type || "TEXT"}
+                                title={
+                                    isEditingType
+                                        ? undefined
+                                        : "Double-click to change type"
+                                }
+                                onDoubleClick={(event) => {
+                                    event.stopPropagation();
+                                    startTypeEdit(column.id, column.type);
+                                }}
                             >
-                                <span>
-                                    {column.type || "TEXT"}
-                                </span>
+                                {isEditingType ? (
+                                    typeCustomMode ? (
+                                        <input
+                                            className="schema-column-type-input nodrag nopan"
+                                            value={cellDraft}
+                                            autoFocus
+                                            placeholder="Custom type"
+                                            onChange={(event) =>
+                                                setCellDraft(
+                                                    event.target.value
+                                                )
+                                            }
+                                            onMouseDown={stopFlowEvent}
+                                            onPointerDown={stopFlowEvent}
+                                            onBlur={commitCustomTypeEdit}
+                                            onKeyDown={(event) => {
+                                                if (event.key === "Enter") {
+                                                    event.currentTarget.blur();
+                                                } else if (
+                                                    event.key === "Escape"
+                                                ) {
+                                                    cancelCellEdit();
+                                                }
+                                            }}
+                                        />
+                                    ) : (
+                                        <select
+                                            className="schema-column-type-select nodrag nopan"
+                                            value={cellDraft}
+                                            autoFocus
+                                            onChange={handleTypeSelectChange}
+                                            onMouseDown={stopFlowEvent}
+                                            onPointerDown={stopFlowEvent}
+                                            onBlur={cancelCellEdit}
+                                            onKeyDown={(event) => {
+                                                if (event.key === "Escape") {
+                                                    cancelCellEdit();
+                                                }
+                                            }}
+                                        >
+                                            {COLUMN_TYPE_OPTIONS.map(
+                                                (type) => (
+                                                    <option
+                                                        key={type}
+                                                        value={type}
+                                                    >
+                                                        {type}
+                                                    </option>
+                                                )
+                                            )}
+                                            <option value={CUSTOM_TYPE_VALUE}>
+                                                Custom…
+                                            </option>
+                                        </select>
+                                    )
+                                ) : (
+                                    <span>{column.type || "TEXT"}</span>
+                                )}
                             </div>
 
                             <div

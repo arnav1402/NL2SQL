@@ -54,6 +54,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: text;
+}
+
+.schema-table-title-input {
+    width: 100%;
+    min-width: 0;
+    padding: 2px 4px;
+    border: 1px solid #4265aa;
+    border-radius: 2px;
+    background: #0d131d;
+    color: #f2f5fa;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    outline: none;
 }
 
 .schema-table-icon {
@@ -121,6 +137,16 @@
     background: #111a28;
 }
 
+/* Subtle row accents echoing the handle colors — amber for the key a
+   relationship can point at, blue for a column that's already an FK. */
+.schema-column-row.is-pk {
+    box-shadow: inset 3px 0 0 0 rgba(214, 168, 79, 0.55);
+}
+
+.schema-column-row.is-fk {
+    box-shadow: inset 3px 0 0 0 rgba(76, 111, 255, 0.5);
+}
+
 .schema-column-name {
     min-width: 0;
     display: flex;
@@ -130,6 +156,7 @@
     font-family: "IBM Plex Mono", monospace;
     font-size: 10px;
     font-weight: 500;
+    cursor: text;
 }
 
 .schema-column-name-text {
@@ -137,6 +164,20 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.schema-column-name-input {
+    width: 100%;
+    min-width: 0;
+    padding: 2px 4px;
+    border: 1px solid #4265aa;
+    border-radius: 2px;
+    background: #111927;
+    color: #dce5f4;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    outline: none;
 }
 
 .schema-column-property-icon {
@@ -154,14 +195,20 @@
     height: 11px;
 }
 
-.schema-column-row:has(.column-action.pk.active)
-.schema-column-property-icon {
-    color: #6f91df;
+.schema-column-row.is-pk .schema-column-property-icon {
+    color: #d6a84f;
 }
 
-.schema-column-row:has(.column-action.fk.active)
-.schema-column-property-icon {
+.schema-column-row.is-fk .schema-column-property-icon {
     color: #6d8cff;
+}
+
+.schema-column-row.is-pk .schema-column-name-text {
+    color: #f1d9a0;
+}
+
+.schema-column-row.is-fk .schema-column-name-text {
+    color: #b7c5ff;
 }
 
 .schema-column-type {
@@ -174,12 +221,38 @@
     font-size: 8px;
     letter-spacing: 0.02em;
     white-space: nowrap;
+    cursor: text;
 }
 
 .schema-column-type span {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.schema-column-type-input,
+.schema-column-type-select {
+    width: 100%;
+    min-width: 0;
+    padding: 2px 4px;
+    border: 1px solid #4265aa;
+    border-radius: 2px;
+    background: #111927;
+    color: #9fb3d6;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 8px;
+    letter-spacing: 0.02em;
+    outline: none;
+}
+
+.schema-column-type-select {
+    appearance: auto;
+    cursor: pointer;
+}
+
+.schema-column-type-select option {
+    background: #111927;
+    color: #dce5f4;
 }
 
 .schema-column-actions {
@@ -315,27 +388,19 @@
     height: 13px;
 }
 
-/* Column connection area */
-
-.schema-column-connection {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 48px;
-    pointer-events: none;
-    z-index: 5;
-}
+/* =========================================================
+   CONNECTION HANDLES
+   Always visible (not hover-reveal) and color-coded so the
+   drag source/target is obvious without guessing:
+     - blue dot  (right edge)  = drag FROM here to create an FK
+     - amber dot (left edge)   = can be referenced (PK/UNIQUE)
+     - dim dot   (left edge)   = NOT referenceable, connection blocked
+   ========================================================= */
 
 .column-handle {
-    width: 9px;
-    height: 9px;
-    border: 2px solid #496bb5;
-    border-radius: 50%;
-    background: #0d131d;
-    opacity: 0;
-    pointer-events: all;
+    width: 9px !important;
+    height: 9px !important;
+    border-radius: 50% !important;
     z-index: 10;
     transition:
         opacity 120ms ease,
@@ -344,44 +409,56 @@
         border-color 120ms ease;
 }
 
-.schema-table-node:hover .column-handle {
-    opacity: 1;
-}
-
-.schema-column-row:hover .column-handle {
-    opacity: 1;
-}
-
 .column-handle:hover {
-    transform: scale(1.35);
-    border-color: #7597e1;
-    background: #243b70;
+    transform: scale(1.4);
 }
 
 .column-handle-source {
     right: -5px;
+    border: 2px solid #4c6fff !important;
+    background: #101a30 !important;
 }
 
-.column-handle-target {
+.column-handle-source:hover {
+    border-color: #7597e1 !important;
+    background: #243b70 !important;
+}
+
+.column-handle-target.is-referenceable {
     left: -5px;
+    border: 2px solid #d6a84f !important;
+    background: #241d10 !important;
+}
+
+.column-handle-target.is-referenceable:hover {
+    border-color: #f0c876 !important;
+    background: #3a2c14 !important;
+}
+
+.column-handle-target.is-disabled {
+    left: -5px;
+    border: 2px solid #3a4459 !important;
+    background: #0d131d !important;
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 .react-flow__handle.connecting {
     opacity: 1;
-    border-color: #7898dc;
-    background: #3159b8;
+    border-color: #7898dc !important;
+    background: #3159b8 !important;
 }
 
 .react-flow__handle.valid {
     opacity: 1;
-    border-color: #7b9be0;
-    background: #3654a6;
+    border-color: #f0c876 !important;
+    background: #3a2c14 !important;
 }
 
 .react-flow__handle.invalid {
-    opacity: 0.35;
-    border-color: #6a4852;
-    background: #24171b;
+    opacity: 0.3;
+    border-color: #6a4852 !important;
+    background: #24171b !important;
 }
 
 .react-flow__node.selected .schema-table-node {
@@ -410,7 +487,9 @@
     touch-action: none;
 }
 
-.schema-table-node button {
+.schema-table-node button,
+.schema-table-node select,
+.schema-table-node input {
     pointer-events: all;
 }
 
