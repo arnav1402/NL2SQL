@@ -102,6 +102,20 @@ npm run dev
 
 The frontend development server will start and provide a local URL in the terminal.
 
+OR
+
+## Run with Docker Compose (IN WORKING)
+
+```bash
+docker compose up --build
+```
+
+then open
+
+# Frontend: http://localhost:5173
+
+# Backend: http://localhost:8000/docs
+
 # Status
 
 A frontend, deployment setup, and further hardening are still to come.

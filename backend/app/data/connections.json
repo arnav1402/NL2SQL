@@ -1,1 +1,11 @@
-{}
+{
+  "22e8af33-2b47-4927-aaf7-609489c943fe": {
+    "db_type": "postgresql",
+    "dialect": "postgres",
+    "namespace": "ns-postgres-test-nl2sql-cea3",
+    "database_name": "postgres",
+    "created_at": "2026-08-31T17:45:08.246050+00:00",
+    "last_used_at": "2026-08-31T17:45:41.776712+00:00",
+    "schema_version": 1
+  }
+}
