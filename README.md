@@ -28,8 +28,8 @@ A system that lets you connect to a database (Postgres, MySQL, or SQLite) and as
 ## 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone https://github.com/arnav1402/NL2SQL.git
+cd NL2SQL
 ```
 
 ## 2. Create the Python virtual environment
