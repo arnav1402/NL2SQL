@@ -112,9 +112,8 @@ docker compose up --build
 
 then open
 
-# Frontend: http://localhost:5173
-
-# Backend: http://localhost:8000/docs
+Frontend: http://localhost:5173
+Backend: http://localhost:8000/docs
 
 # Status
 
