@@ -10,7 +10,7 @@ from uuid import uuid4
 from app.connection.engine_factory import build_engine_from_params, test_connection
 from app.connection.metadata import ConnectionMetadata
 from app.core.exceptions import ConnectionNotFoundError, UnsupportedDialectError
-from app.db.connector import get_sqlglot_dialect
+from app.db.connector import get_sqlglot_dialect, ingest_csv
 from app.db.inspector import get_table_cards
 from app.utils.logger import logger
 from app.vectordb.pinecone import delete_namespace, upsert_schema_cards
@@ -60,6 +60,10 @@ class ConnectionManager:
                     dialect=dialect,
                     namespace=item.get("namespace", f"ns-{connection_id}"),
                     database_name=item.get("database_name", "unknown"),
+                    duckdb_path=item.get("duckdb_path"),
+                    source_csv_path=item.get("source_csv_path"),
+                    table_name=item.get("table_name"),
+                    sample_rows=int(item.get("sample_rows", 2)),
                     created_at=datetime.fromisoformat(item.get("created_at", datetime.now(timezone.utc).isoformat())),
                     last_used_at=datetime.fromisoformat(item.get("last_used_at", datetime.now(timezone.utc).isoformat())),
                     schema_version=int(item.get("schema_version", 1)),
@@ -76,6 +80,10 @@ class ConnectionManager:
                 "dialect": metadata.dialect,
                 "namespace": metadata.namespace,
                 "database_name": metadata.database_name,
+                "duckdb_path": metadata.duckdb_path,
+                "source_csv_path": metadata.source_csv_path,
+                "table_name": metadata.table_name,
+                "sample_rows": metadata.sample_rows,
                 "created_at": metadata.created_at.isoformat(),
                 "last_used_at": metadata.last_used_at.isoformat(),
                 "schema_version": metadata.schema_version,
@@ -83,16 +91,24 @@ class ConnectionManager:
         with self._storage_path.open("w", encoding="utf-8") as handle:
             json.dump(payload, handle, indent=2)
 
-    def create_connection(self, db_type: str, **params) -> str:
+    def create_connection(
+        self,
+        db_type: str,
+        sample_rows: int = 2,
+        connection_id: str | None = None,
+        source_csv_path: str | None = None,
+        table_name: str | None = None,
+        **params,
+    ) -> str:
         engine = build_engine_from_params(db_type=db_type, **params)
         test_connection(engine)
 
-        connection_id = str(uuid4())
+        connection_id = connection_id or str(uuid4())
         database_name = params.get("database") or params.get("sqlite_path") or db_type
         schema_name = params.get("schema")
         namespace = self._build_namespace(database_name, schema_name)
         dialect = get_sqlglot_dialect(db_type)
-        cards = get_table_cards(engine, sample_rows=2)
+        cards = get_table_cards(engine, sample_rows=sample_rows)
         upsert_schema_cards(cards, namespace=namespace)
 
         metadata = ConnectionMetadata(
@@ -102,6 +118,10 @@ class ConnectionManager:
             dialect=dialect,
             namespace=namespace,
             database_name=str(database_name),
+            duckdb_path=params.get("duckdb_path"),
+            source_csv_path=source_csv_path,
+            table_name=table_name,
+            sample_rows=sample_rows,
         )
         self._registry[connection_id] = metadata
         self._save_to_disk()
@@ -120,7 +140,22 @@ class ConnectionManager:
 
     def refresh_schema(self, connection_id: str) -> ConnectionMetadata:
         metadata = self.get_connection(connection_id)
-        cards = get_table_cards(metadata.engine, sample_rows=2)
+        if metadata.source_csv_path and metadata.duckdb_path and metadata.table_name:
+            if metadata.engine is not None:
+                metadata.engine.dispose()
+            ingest_csv(
+                metadata.source_csv_path,
+                metadata.duckdb_path,
+                table_name=metadata.table_name,
+                replace=True,
+            )
+            metadata.engine = build_engine_from_params(
+                db_type=metadata.db_type,
+                duckdb_path=metadata.duckdb_path,
+            )
+            test_connection(metadata.engine)
+
+        cards = get_table_cards(metadata.engine, sample_rows=metadata.sample_rows)
         upsert_schema_cards(cards, namespace=metadata.namespace)
         metadata.schema_version += 1
         self._save_to_disk()
@@ -134,6 +169,15 @@ class ConnectionManager:
         metadata = self.get_connection(connection_id)
         if metadata.engine is not None:
             metadata.engine.dispose()
+        if metadata.duckdb_path:
+            try:
+                Path(metadata.duckdb_path).unlink(missing_ok=True)
+            except OSError as exc:
+                logger.warning(
+                    "Failed to delete DuckDB file during connection removal",
+                    exc_info=exc,
+                    extra={"connection_id": connection_id, "duckdb_path": metadata.duckdb_path},
+                )
         try:
             delete_namespace(metadata.namespace)
         except Exception as exc:

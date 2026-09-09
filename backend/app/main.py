@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.connection import router as connection_router
+from app.api.routes.csv_upload import router as csv_upload_router
 from app.api.routes.health import router as health_router
 from app.api.routes.query import router as query_router
 from app.api.routes.schema import router as schema_router
@@ -27,6 +28,7 @@ app.add_middleware(
 )
 
 app.include_router(connection_router)
+app.include_router(csv_upload_router)
 app.include_router(query_router)
 app.include_router(schema_router)
 app.include_router(health_router)
