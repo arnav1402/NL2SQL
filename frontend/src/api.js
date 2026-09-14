@@ -126,3 +126,56 @@ return "connected";
 export function getSchemaStructure(connectionId) {
     return request(`/schema/${connectionId}`);
 }
+
+
+// ---------------------------------------------------------
+// CSV UPLOAD
+// ---------------------------------------------------------
+
+export async function uploadCsv(file, tableName) {
+const formData = new FormData();
+formData.append("file", file);
+formData.append("table_name", tableName || "data");
+
+let res;
+
+try {
+    res = await fetch(`${BASE_URL}/connection/csv`, {
+    method: "POST",
+    body: formData,
+    // No Content-Type header — the browser sets the multipart
+    // boundary automatically. Setting it manually breaks the upload.
+    });
+} catch {
+    throw {
+    status: 0,
+    error: "NetworkError",
+    message: "Can't reach the server. Check your connection and try again.",
+    };
+}
+
+let body = null;
+
+try {
+    body = await res.json();
+} catch {
+    // Empty/non-JSON response
+}
+
+if (!res.ok) {
+    const detail = body?.detail;
+    const isStructured = detail && typeof detail === "object";
+
+    throw {
+    status: res.status,
+    error: isStructured ? detail.error : inferErrorKey(res.status),
+    message: isStructured
+        ? detail.detail
+        : typeof detail === "string"
+        ? detail
+        : "CSV upload failed.",
+    };
+}
+
+return body;
+}

@@ -28,3 +28,5 @@ node_modules/
 **/*.db
 **/*.sqlite
 **/*.sqlite3
+
+blueprint1.md

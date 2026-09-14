@@ -1,15 +1,28 @@
 {
-  "8ea27d63-5e48-4731-aa0f-7207ea6ae76c": {
+  "dc609d70-6c03-4fd9-994a-05d367cc424a": {
     "db_type": "duckdb",
     "dialect": "duckdb",
-    "namespace": "ns-duckdb-54c5",
+    "namespace": "ns-duckdb-2292",
     "database_name": "duckdb",
-    "duckdb_path": "C:\\Users\\ARNAV\\Desktop\\nl2sql\\backend\\data\\uploads\\8ea27d63-5e48-4731-aa0f-7207ea6ae76c.duckdb",
-    "source_csv_path": "C:\\Users\\ARNAV\\Desktop\\nl2sql\\backend\\data\\uploads\\8ea27d63-5e48-4731-aa0f-7207ea6ae76c.csv",
+    "duckdb_path": "/home/abuhamza/desktop/EngineeringCRCE/NL2SQL/backend/data/uploads/dc609d70-6c03-4fd9-994a-05d367cc424a.duckdb",
+    "source_csv_path": "/home/abuhamza/desktop/EngineeringCRCE/NL2SQL/backend/data/uploads/dc609d70-6c03-4fd9-994a-05d367cc424a.csv",
     "table_name": "data",
-    "sample_rows": 5,
-    "created_at": "2026-09-09T19:25:47.870230+00:00",
-    "last_used_at": "2026-09-09T19:30:54.252417+00:00",
+    "sample_rows": 2,
+    "created_at": "2026-09-14T16:41:21.939586+00:00",
+    "last_used_at": "2026-09-14T16:55:22.989329+00:00",
+    "schema_version": 1
+  },
+  "de96b635-6eaa-472b-84ba-d5423cc21eb3": {
+    "db_type": "duckdb",
+    "dialect": "duckdb",
+    "namespace": "ns-duckdb-d88b",
+    "database_name": "duckdb",
+    "duckdb_path": "/home/abuhamza/desktop/EngineeringCRCE/NL2SQL/backend/data/uploads/de96b635-6eaa-472b-84ba-d5423cc21eb3.duckdb",
+    "source_csv_path": "/home/abuhamza/desktop/EngineeringCRCE/NL2SQL/backend/data/uploads/de96b635-6eaa-472b-84ba-d5423cc21eb3.csv",
+    "table_name": "data",
+    "sample_rows": 2,
+    "created_at": "2026-09-14T16:55:37.300655+00:00",
+    "last_used_at": "2026-09-14T16:55:56.895575+00:00",
     "schema_version": 1
   }
 }
