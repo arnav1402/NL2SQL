@@ -1,5 +1,7 @@
+import React from "react";
 import "./ChatMessage.css";
 import ReactMarkdown from "react-markdown";
+import { FiCheck, FiCopy, FiDownload } from "react-icons/fi";
 import remarkGfm from "remark-gfm";
 
 const markdownComponents = {
@@ -76,6 +78,53 @@ const markdownComponents = {
     td: ({ children }) => <td>{children}</td>,
 };
 
+
+const csvValue = (value) => {
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    let stringValue;
+
+    if (typeof value === "object") {
+        try {
+            stringValue = JSON.stringify(value);
+        } catch {
+            stringValue = String(value);
+        }
+    } else {
+        stringValue = String(value);
+    }
+
+    if (/[",\n\r]/.test(stringValue)) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
+    }
+
+    return stringValue;
+};
+
+const buildCsv = (columns, rows) => {
+    const header = columns.map(csvValue).join(",");
+
+    const body = rows.map((row) =>
+        columns
+            .map((column, columnIndex) => {
+                let value;
+
+                if (Array.isArray(row)) {
+                    value = row[columnIndex];
+                } else if (row && typeof row === "object") {
+                    value = row[column];
+                }
+
+                return csvValue(value);
+            })
+            .join(",")
+    );
+
+    return [header, ...body].join("\r\n");
+};
+
 function MarkdownContent({ children, className = "" }) {
     if (
         children === null ||
@@ -98,6 +147,8 @@ function MarkdownContent({ children, className = "" }) {
 }
 
 export default function ChatMessage({ message }) {
+    const [copied, setCopied] = React.useState(null);
+
     if (!message) {
         return null;
     }
@@ -195,10 +246,10 @@ export default function ChatMessage({ message }) {
                                     {typeof details === "string"
                                         ? details
                                         : JSON.stringify(
-                                              details,
-                                              null,
-                                              2
-                                          )}
+                                                details,
+                                                null,
+                                                2
+                                        )}
                                 </pre>
                             )}
 
@@ -303,7 +354,30 @@ export default function ChatMessage({ message }) {
                             </div>
 
                             {normalizedSql && (
-                                <div className="chat-sql">
+                                <section className="chat-sql-section">
+                                    <div className="chat-sql-label">
+                                        <span>SQL</span>
+                                        <button
+                                            type="button"
+                                            className="chat-output-button"
+                                            onClick={async () => {
+                                                try {
+                                                    await navigator.clipboard.writeText(normalizedSql);
+                                                    setCopied("sql");
+                                                    window.setTimeout(() => setCopied(null), 1600);
+                                                } catch {
+                                                    setCopied(null);
+                                                }
+                                            }}
+                                            title="Copy SQL"
+                                            aria-label="Copy SQL"
+                                        >
+                                            {copied === "sql" ? <FiCheck /> : <FiCopy />}
+                                            <span>{copied === "sql" ? "Copied" : "Copy"}</span>
+                                        </button>
+                                    </div>
+
+                                    <div className="chat-sql">
                                     {normalizedSql
                                         .split("\n")
                                         .map(
@@ -331,20 +405,67 @@ export default function ChatMessage({ message }) {
                                                 </div>
                                             )
                                         )}
-                                </div>
+                                    </div>
+                                </section>
                             )}
 
                             <div className="chat-result">
-                                <div className="chat-card-header">
-                                    <span>RESULT</span>
+                                <div className="chat-result-header">
+                                    <span className="chat-result-title">RESULT</span>
 
-                                    <span className="chat-card-status">
-                                        {normalizedRows.length}{" "}
-                                        {normalizedRows.length ===
-                                        1
-                                            ? "ROW"
-                                            : "ROWS"}
-                                    </span>
+                                    <div className="chat-result-actions">
+                                        <span className="chat-result-count">
+                                            {normalizedRows.length}{" "}
+                                            {normalizedRows.length === 1 ? "ROW" : "ROWS"}
+                                        </span>
+
+                                        {normalizedColumns.length > 0 && normalizedRows.length > 0 && (
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    className="chat-output-button"
+                                                    onClick={async () => {
+                                                        try {
+                                                            await navigator.clipboard.writeText(
+                                                                buildCsv(normalizedColumns, normalizedRows)
+                                                            );
+                                                            setCopied("csv");
+                                                            window.setTimeout(() => setCopied(null), 1600);
+                                                        } catch {
+                                                            setCopied(null);
+                                                        }
+                                                    }}
+                                                    title="Copy result as CSV"
+                                                    aria-label="Copy result as CSV"
+                                                >
+                                                    {copied === "csv" ? <FiCheck /> : <FiCopy />}
+                                                    <span>{copied === "csv" ? "Copied" : "Copy CSV"}</span>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="chat-output-button"
+                                                    onClick={() => {
+                                                        const csv = buildCsv(normalizedColumns, normalizedRows);
+                                                        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                                                        const url = URL.createObjectURL(blob);
+                                                        const link = document.createElement("a");
+                                                        link.href = url;
+                                                        link.download = "query-results.csv";
+                                                        document.body.appendChild(link);
+                                                        link.click();
+                                                        link.remove();
+                                                        URL.revokeObjectURL(url);
+                                                    }}
+                                                    title="Download result as CSV"
+                                                    aria-label="Download result as CSV"
+                                                >
+                                                    <FiDownload />
+                                                    <span>Download CSV</span>
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {normalizedColumns.length >
@@ -425,8 +546,8 @@ export default function ChatMessage({ message }) {
                                                                                 undefined
                                                                                 ? "NULL"
                                                                                 : String(
-                                                                                      value
-                                                                                  )}
+                                                                                        value
+                                                                                )}
                                                                         </td>
                                                                     );
                                                                 }

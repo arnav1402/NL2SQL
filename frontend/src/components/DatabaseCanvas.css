@@ -27,7 +27,7 @@ HEADER
 ========================================================= */
 
 .database-canvas__header {
-min-height: 94px;
+min-height: 98px;
 
 display: flex;
 align-items: center;
@@ -35,7 +35,7 @@ justify-content: space-between;
 
 gap: 30px;
 
-padding: 22px 30px;
+padding: 24px 30px;
 
 border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 
@@ -46,12 +46,12 @@ flex-shrink: 0;
 
 
 .database-canvas__eyebrow {
-margin-bottom: 7px;
+margin-bottom: 8px;
 
 color: #53617a;
 
 font-family: var(--mono);
-font-size: 8px;
+font-size: 10px;
 font-weight: 500;
 
 letter-spacing: 0.16em;
@@ -63,7 +63,7 @@ margin: 0;
 
 color: #e2e6ed;
 
-font-size: 18px;
+font-size: 22px;
 font-weight: 500;
 
 letter-spacing: -0.02em;
@@ -71,11 +71,11 @@ letter-spacing: -0.02em;
 
 
 .database-canvas__description {
-margin: 5px 0 0;
+margin: 6px 0 0;
 
 color: #5e6878;
 
-font-size: 11px;
+font-size: 14px;
 line-height: 1.5;
 }
 
@@ -89,7 +89,7 @@ display: flex;
 align-items: center;
 gap: 10px;
 
-padding: 9px 12px;
+padding: 10px 14px;
 
 border: 1px solid rgba(255, 255, 255, 0.07);
 
@@ -100,8 +100,8 @@ flex-shrink: 0;
 
 
 .database-canvas__connection-dot {
-width: 6px;
-height: 6px;
+width: 7px;
+height: 7px;
 
 border-radius: 50%;
 
@@ -112,12 +112,12 @@ background: #4caf72;
 .database-canvas__connection-label {
 display: block;
 
-margin-bottom: 3px;
+margin-bottom: 4px;
 
 color: #4e596a;
 
 font-family: var(--mono);
-font-size: 7px;
+font-size: 9px;
 letter-spacing: 0.12em;
 }
 
@@ -128,7 +128,7 @@ display: block;
 color: #9ba5b5;
 
 font-family: var(--mono);
-font-size: 10px;
+font-size: 12px;
 }
 
 
@@ -207,7 +207,7 @@ left: 50%;
 
 transform: translate(-50%, -50%);
 
-width: min(360px, calc(100% - 40px));
+width: min(380px, calc(100% - 40px));
 
 text-align: center;
 
@@ -216,10 +216,10 @@ z-index: 1;
 
 
 .database-canvas__empty-icon {
-width: 58px;
-height: 58px;
+width: 62px;
+height: 62px;
 
-margin: 0 auto 17px;
+margin: 0 auto 19px;
 
 display: flex;
 align-items: center;
@@ -245,11 +245,11 @@ stroke-linecap: square;
 
 
 .database-canvas__empty-title {
-margin-bottom: 7px;
+margin-bottom: 8px;
 
 color: #8791a0;
 
-font-size: 12px;
+font-size: 15px;
 font-weight: 500;
 
 letter-spacing: 0.01em;
@@ -261,7 +261,7 @@ margin: 0;
 
 color: #4f5969;
 
-font-size: 10px;
+font-size: 13px;
 line-height: 1.6;
 }
 
@@ -271,12 +271,12 @@ FOOTER / STATUS
 ========================================================= */
 
 .database-canvas__footer {
-height: 32px;
+height: 34px;
 
 display: flex;
 align-items: center;
 
-gap: 8px;
+gap: 9px;
 
 padding: 0 14px;
 
@@ -287,7 +287,7 @@ background: #090c11;
 color: #46505f;
 
 font-family: var(--mono);
-font-size: 7px;
+font-size: 9px;
 letter-spacing: 0.12em;
 
 flex-shrink: 0;
@@ -295,8 +295,8 @@ flex-shrink: 0;
 
 
 .database-canvas__footer-dot {
-width: 5px;
-height: 5px;
+width: 6px;
+height: 6px;
 
 border-radius: 50%;
 
@@ -306,7 +306,7 @@ background: #4caf72;
 
 .database-canvas__footer-divider {
 width: 1px;
-height: 10px;
+height: 11px;
 
 margin: 0 2px;
 
@@ -321,19 +321,35 @@ RESPONSIVE
 @media (max-width: 700px) {
 
 .database-canvas__header {
-    padding: 18px;
+    padding: 20px 18px;
 }
 
 .database-canvas__connection {
     display: none;
 }
 
+.database-canvas__eyebrow {
+    font-size: 9px;
+}
+
 .database-canvas__title {
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .database-canvas__description {
-    font-size: 10px;
+    font-size: 13px;
+}
+
+.database-canvas__empty-title {
+    font-size: 14px;
+}
+
+.database-canvas__empty-text {
+    font-size: 12px;
+}
+
+.database-canvas__footer {
+    font-size: 8px;
 }
 
 }

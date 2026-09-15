@@ -52,7 +52,7 @@
         "Segoe UI",
         sans-serif;
 
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
 
     word-break: break-word;
@@ -171,7 +171,7 @@
         "Segoe UI",
         sans-serif;
 
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
 
     caret-color: #6f89c2;
@@ -232,7 +232,8 @@
 
 .chat-send-button {
     width: 34px;
-    height: 34px;
+    min-height: 38px;
+    height: auto;
 
     flex: 0 0 34px;
 
@@ -314,7 +315,7 @@
         "Fira Code",
         monospace;
 
-    font-size: 7px;
+    font-size: 9px;
 
     letter-spacing: 0.07em;
 
@@ -375,7 +376,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
 
     box-shadow:
@@ -401,7 +402,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 500;
 
     letter-spacing: 0.14em;
@@ -474,7 +475,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 500;
 
     letter-spacing: 0.12em;
@@ -485,7 +486,7 @@
 .chat-card-status {
     color: #46516a;
 
-    font-size: 10px;
+    font-size: 12px;
 
     letter-spacing: 0.1em;
 }
@@ -514,7 +515,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 
     letter-spacing: 0.06em;
 
@@ -545,7 +546,8 @@
 }
 
 .chat-sql-label {
-    height: 34px;
+    min-height: 38px;
+    height: auto;
 
     display: flex;
     align-items: center;
@@ -565,7 +567,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 7px;
+    font-size: 9px;
 
     letter-spacing: 0.12em;
 
@@ -574,6 +576,50 @@
 
 .chat-sql-label span:last-child {
     color: #3f4a5c;
+}
+
+.chat-output-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 26px;
+    padding: 4px 9px;
+    border: 1px solid #293342;
+    border-radius: 4px;
+    background: #151b24;
+    color: #8a96aa;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    cursor: pointer;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.chat-output-button svg {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
+}
+
+.chat-output-button:hover {
+    border-color: #3b527e;
+    background: #1a2434;
+    color: #c0cbe0;
+}
+
+.chat-output-button:active {
+    transform: translateY(1px);
+}
+
+.chat-result-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    flex-wrap: wrap;
 }
 
 .chat-sql {
@@ -597,7 +643,7 @@
         "Fira Code",
         monospace;
 
-    font-size: 10px;
+    font-size: 14px;
 
     line-height: 1.75;
 
@@ -678,7 +724,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 
     letter-spacing: 0.12em;
 
@@ -692,7 +738,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 }
 
 
@@ -734,7 +780,7 @@
         "Fira Code",
         monospace;
 
-    font-size: 9px;
+    font-size: 14px;
 }
 
 .chat-table th {
@@ -753,7 +799,7 @@
 
     text-align: left;
 
-    font-size: 8px;
+    font-size: 14px;
     font-weight: 500;
 
     letter-spacing: 0.05em;
@@ -775,7 +821,8 @@
 
     color: #a3adbd;
 
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 1.55;
 
     white-space: nowrap;
 
@@ -836,19 +883,19 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 9px;
+    font-size: 11px;
 
     text-align: center;
 }
 
 .chat-empty-result-title {
     color: #78859a;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .chat-empty-result-description {
     color: #454f60;
-    font-size: 8px;
+    font-size: 10px;
 }
 
 
@@ -873,7 +920,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 }
 
 .chat-result-truncated-dot {
@@ -901,7 +948,7 @@
 
     color: #aeb7c5;
 
-    font-size: 14px;
+    font-size: 15px;
 
     line-height: 1.75;
 }
@@ -920,7 +967,7 @@
 }
 
 .chat-schema-content h1 {
-    font-size: 18px;
+    font-size: 19px;
 }
 
 .chat-schema-content h2 {
@@ -928,7 +975,7 @@
 
     border-bottom: 1px solid #202630;
 
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .chat-schema-content h3 {
@@ -940,7 +987,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 14px;
+    font-size: 15px;
 
     letter-spacing: 0.08em;
 
@@ -1018,7 +1065,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .chat-schema-content th {
@@ -1031,13 +1078,13 @@
     color: #718098;
 
     text-align: left;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
 }
 
 .chat-schema-content td {
     padding: 8px 10px;
-    font-size: 14px;
+    font-size: 15px;
     border: 1px solid #1d242e;
 
     color: #9da8b8;
@@ -1067,7 +1114,7 @@
 
     color: #aeb6c4;
 
-    font-size: 12px;
+    font-size: 14px;
 
     line-height: 1.75;
 }
@@ -1093,7 +1140,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 
     letter-spacing: 0.12em;
 
@@ -1108,7 +1155,7 @@
 
     color: #7d8798;
 
-    font-size: 10px;
+    font-size: 12px;
 
     line-height: 1.6;
 }
@@ -1127,7 +1174,7 @@
 
     color: #aeb6c4;
 
-    font-size: 12px;
+    font-size: 14px;
 
     line-height: 1.7;
 }
@@ -1167,7 +1214,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 
     letter-spacing: 0.1em;
 
@@ -1192,13 +1239,13 @@
 
     color: #ff5757;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .chat-error-code {
     color: #814646;
 
-    font-size: 7px;
+    font-size: 9px;
 }
 
 .chat-error-text {
@@ -1208,7 +1255,7 @@
 
     color: #c97979;
 
-    font-size: 11px;
+    font-size: 13px;
 
     line-height: 1.6;
 }
@@ -1230,7 +1277,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 
     line-height: 1.6;
 }
@@ -1250,7 +1297,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 8px;
+    font-size: 10px;
 
     cursor: pointer;
 
@@ -1332,6 +1379,15 @@
         min-width: 600px;
     }
 
+    .chat-result-actions {
+        gap: 5px;
+    }
+
+    .chat-output-button {
+        font-size: 10px;
+        padding: 4px 7px;
+    }
+
     .chat-input-container {
         padding-left: 11px;
     }
@@ -1342,29 +1398,29 @@
 }
 
 .chat-message__content {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.7;
 }
 
 .chat-message__content p {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.7;
 }
 
 .chat-message__content h1 {
-    font-size: 20px;
+    font-size: 21px;
 }
 
 .chat-message__content h2 {
-    font-size: 18px;
+    font-size: 19px;
 }
 
 .chat-message__content h3 {
-    font-size: 16px;
+    font-size: 17px;
 }
 
 .chat-message__content li {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.7;
 }
 
@@ -1373,16 +1429,16 @@
 }
 
 .chat-message__content code {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .chat-message__content pre {
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.6;
 }
 
 .chat-message__content table {
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .chat-message__content th,
