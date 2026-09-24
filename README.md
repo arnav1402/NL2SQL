@@ -2,6 +2,22 @@
 
 A system that lets you connect to a database (Postgres, MySQL, or SQLite) and ask questions in plain English instead of writing SQL by hand.
 
+### Connect your Database
+
+![Connection create](assets/connect_form.png)
+
+### Visualize the database
+
+![Visualizer](assets/visualizer.png)
+
+### Query using GROQ on Pinecode vector DB
+
+![Query](assets/query.png)
+
+### API Docs
+
+![API](assets/fastapi.png)
+
 # Basically what's going on
 
 1. **Connect** — provide DB credentials via API (no hardcoding), and the system introspects your schema automatically.
