@@ -1,4 +1,4 @@
-.workspace-sidebar {
+ .workspace-sidebar {
 --database-color: #336791;
 
 flex: 0 0 238px;
@@ -41,7 +41,7 @@ border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 color: #e4e7eb;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 12px;
+font-size: 15px;
 font-weight: 600;
 
 letter-spacing: 0.7px;
@@ -69,7 +69,7 @@ box-sizing: border-box;
 display: flex;
 flex-direction: column;
 
-gap: 3px;
+gap: 4px;
 }
 
 .workspace-nav-section {
@@ -78,12 +78,12 @@ margin-top: 25px;
 
 .workspace-nav-section-label {
 padding: 0 10px;
-margin-bottom: 7px;
+margin-bottom: 8px;
 
 color: #4e5663;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 7px;
+font-size: 9px;
 
 letter-spacing: 1.2px;
 
@@ -94,7 +94,7 @@ text-transform: uppercase;
 position: relative;
 
 width: 100%;
-min-height: 38px;
+min-height: 40px;
 
 display: flex;
 align-items: center;
@@ -112,7 +112,7 @@ background: transparent;
 color: #777f8c;
 
 font-family: "Poppins", sans-serif;
-font-size: 11px;
+font-size: 14px;
 
 text-align: left;
 
@@ -161,10 +161,10 @@ color: #fff;
 }
 
 .workspace-nav-icon {
-width: 17px;
-height: 17px;
+width: 19px;
+height: 19px;
 
-flex: 0 0 17px;
+flex: 0 0 19px;
 
 display: flex;
 align-items: center;
@@ -173,7 +173,7 @@ justify-content: center;
 color: #59616e;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 17px;
+font-size: 19px;
 font-weight: 300;
 }
 
@@ -181,11 +181,12 @@ font-weight: 300;
 .workspace-nav-item.is-active .workspace-nav-icon {
 color: var(--database-color);
 }
-.workspace-nav-icon {
-  width: 17px;
-  height: 17px;
 
-  flex: 0 0 17px;
+.workspace-nav-icon {
+  width: 19px;
+  height: 19px;
+
+  flex: 0 0 19px;
 
   display: flex;
   align-items: center;
@@ -193,14 +194,14 @@ color: var(--database-color);
 
   color: #59616e;
 
-  font-size: 15px;
+  font-size: 17px;
 
   transition: color 150ms ease;
 }
 
 .workspace-nav-icon svg {
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
 
   stroke-width: 1.5;
 }
@@ -209,10 +210,11 @@ color: var(--database-color);
 .workspace-nav-item.is-active .workspace-nav-icon {
   color: var(--database-color);
 }
+
 .workspace-nav-label {
 min-width: 0;
 
-line-height: 1.35;
+line-height: 1.4;
 
 overflow: hidden;
 
@@ -236,7 +238,7 @@ box-sizing: border-box;
 .workspace-connection {
 width: 100%;
 
-padding: 13px 9px 12px;
+padding: 14px 10px 13px;
 
 box-sizing: border-box;
 
@@ -251,7 +253,7 @@ margin-bottom: 11px;
 color: #4e5663;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 7px;
+font-size: 9px;
 
 letter-spacing: 1.1px;
 }
@@ -266,10 +268,10 @@ min-width: 0;
 }
 
 .workspace-database-icon {
-width: 28px;
-height: 28px;
+width: 30px;
+height: 30px;
 
-flex: 0 0 28px;
+flex: 0 0 30px;
 
 display: flex;
 align-items: center;
@@ -291,8 +293,8 @@ border: 1px solid color-mix(
 }
 
 .workspace-database-icon img {
-width: 17px;
-height: 17px;
+width: 19px;
+height: 19px;
 
 object-fit: contain;
 }
@@ -303,14 +305,14 @@ min-width: 0;
 display: flex;
 flex-direction: column;
 
-gap: 3px;
+gap: 4px;
 }
 
 .workspace-database-name {
 color: #d8dce2;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 9px;
+font-size: 11px;
 
 white-space: nowrap;
 overflow: hidden;
@@ -325,7 +327,7 @@ overflow: hidden;
 color: #59616d;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 8px;
+font-size: 10px;
 
 text-overflow: ellipsis;
 white-space: nowrap;
@@ -342,16 +344,16 @@ margin-top: 11px;
 color: #4f5967;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 7px;
+font-size: 9px;
 
 letter-spacing: 0.8px;
 }
 
 .workspace-status-dot {
-width: 5px;
-height: 5px;
+width: 6px;
+height: 6px;
 
-flex: 0 0 5px;
+flex: 0 0 6px;
 
 border-radius: 50%;
 
@@ -371,7 +373,7 @@ background: rgba(255, 255, 255, 0.06);
 
 .workspace-exit {
 width: 100%;
-height: 34px;
+height: 36px;
 
 display: flex;
 align-items: center;
@@ -389,7 +391,7 @@ background: transparent;
 color: #B85C62;
 
 font-family: "JetBrains Mono", monospace;
-font-size: 9px;
+font-size: 11px;
 
 text-align: left;
 
@@ -410,7 +412,7 @@ color: #c5cad1;
 }
 
 .workspace-exit-icon {
-font-size: 13px;
+font-size: 15px;
 color: #B85C62
 }
 .workspace-exit-icon:hover{

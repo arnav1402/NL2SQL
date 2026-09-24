@@ -1,11 +1,16 @@
 import { useState } from "react";
 
-import { createConnection } from "../api";
+import { createConnection, uploadCsv } from "../api";
+import {
+    FiUploadCloud,
+    FiFileText,
+    FiX,
+} from "react-icons/fi";
 
 import PostgresSQLIcon from "../assets/PostgresSQL.svg";
 import MySQLIcon from "../assets/MySQL.svg";
 import SQLiteIcon from "../assets/SQLite.svg";
-
+import CSV from "../assets/CSV.svg";
 import "./DatabaseSelector.css";
 
 /*
@@ -33,6 +38,12 @@ const DATABASE_OPTIONS = [
         logo: SQLiteIcon,
         color: "#0F80CC",
     },
+    {
+        id: "csv",
+        name: "CSV File",
+        logo: CSV,
+        color: "#21a366",
+    },
 ];
 
 /*
@@ -55,6 +66,7 @@ const EMPTY_FORM_DATA = {
     database: "",
     schema: "",
     sqlite_path: "",
+    table_name: "",
 };
 
 /*
@@ -110,9 +122,16 @@ export default function DatabaseSelector({
     const [formData, setFormData] =
         useState(EMPTY_FORM_DATA);
 
+    const [csvFile, setCsvFile] = useState(null);    
     const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState(null);
+
+    // const [csvFile, setCsvFile] = useState(null);
+    const [isCsvDragging, setIsCsvDragging] = useState(false);
+
+    // const [loading, setLoading] = useState(false);
+    // const [error, setError] = useState(null);
 
     /*
      * =====================================================
@@ -156,8 +175,8 @@ export default function DatabaseSelector({
         setView("select");
         setSelectedDatabase(null);
 
-        setFormData(EMPTY_FORM_DATA);
-
+        setFormData(EMPTY_FORM_DATA);        
+        setCsvFile(null);     
         onClose();
     };
 
@@ -180,10 +199,9 @@ export default function DatabaseSelector({
          * placeholders instead.
          */
 
-        setFormData(EMPTY_FORM_DATA);
-
-        /*
-         * Move to connection form.
+        setFormData(EMPTY_FORM_DATA);        
+        setCsvFile(null);       
+         /*\n         * Move to connection form.
          */
 
         setView("details");
@@ -205,12 +223,9 @@ export default function DatabaseSelector({
         setView("select");
         setSelectedDatabase(null);
 
-        setFormData(EMPTY_FORM_DATA);
-    };
-
-    /*
-     * =====================================================
-     * FORM CHANGE
+        setFormData(EMPTY_FORM_DATA);        
+        setCsvFile(null);    
+    };    /*\n     * =====================================================\n     * FORM CHANGE
      * =====================================================
      */
 
@@ -225,6 +240,65 @@ export default function DatabaseSelector({
             [name]: value,
         }));
 
+        setError(null);
+    };
+
+    /*
+     * =====================================================
+     * CSV FILE HANDLING
+     * =====================================================
+     */
+
+    const handleCsvFile = (file) => {
+        if (!file) {
+            return;
+        }
+
+        if (!file.name.toLowerCase().endsWith(".csv")) {
+            setCsvFile(null);
+            setError("Please select a CSV file.");
+            return;
+        }
+
+        setCsvFile(file);
+        setError(null);
+    };
+
+    const handleCsvDrop = (event) => {
+        event.preventDefault();
+        setIsCsvDragging(false);
+
+        if (loading) {
+            return;
+        }
+
+        handleCsvFile(event.dataTransfer.files?.[0]);
+    };
+
+    const handleCsvBrowse = (event) => {
+        handleCsvFile(event.target.files?.[0]);
+        event.target.value = "";
+    };
+
+    const handleCsvDragOver = (event) => {
+        event.preventDefault();
+
+        if (!loading) {
+            setIsCsvDragging(true);
+        }
+    };
+
+    const handleCsvDragLeave = (event) => {
+        event.preventDefault();
+        setIsCsvDragging(false);
+    };
+
+    const removeCsvFile = () => {
+        if (loading) {
+            return;
+        }
+
+        setCsvFile(null);
         setError(null);
     };
 
@@ -301,16 +375,27 @@ export default function DatabaseSelector({
         setError(null);
 
         try {
-            const payload =
-                buildPayload();
+            let result;
 
-            console.log(
-                "Sending connection payload:",
-                payload
-            );
+            if (selectedDatabase === "csv") {
+                if (!csvFile) {
+                    throw new Error("Please select a CSV file to upload.");
+                }
 
-            const result =
-                await createConnection(payload);
+                result = await uploadCsv(
+                    csvFile,
+                    formData.table_name.trim() || "data"
+                );
+            } else {
+                const payload = buildPayload();
+
+                console.log(
+                    "Sending connection payload:",
+                    payload
+                );
+
+                result = await createConnection(payload);
+            }
 
             console.log(
                 "Backend connection response:",
@@ -330,6 +415,8 @@ export default function DatabaseSelector({
             setView("select");
             setSelectedDatabase(null);
             setFormData(EMPTY_FORM_DATA);
+            setCsvFile(null);
+            setIsCsvDragging(false);
             setError(null);
 
             onConnect(result);
@@ -424,12 +511,16 @@ export default function DatabaseSelector({
                                     >
 
                                         <span className="database-option-icon">
-                                            <img
-                                                src={
-                                                    database.logo
-                                                }
-                                                alt=""
-                                            />
+                                            {database.logo ? (
+                                                <img
+                                                    src={database.logo}
+                                                    alt=""
+                                                />
+                                            ) : (
+                                                <span className="database-option-icon-fallback">
+                                                    CSV
+                                                </span>
+                                            )}
                                         </span>
 
                                         <span className="database-option-name">
@@ -513,12 +604,16 @@ export default function DatabaseSelector({
                                 }}
                             >
                                 <div className="selected-database-logo">
-                                    <img
-                                        src={
-                                            selectedDatabaseData?.logo
-                                        }
-                                        alt=""
-                                    />
+                                    {selectedDatabaseData?.logo ? (
+                                        <img
+                                            src={selectedDatabaseData.logo}
+                                            alt=""
+                                        />
+                                    ) : (
+                                        <span className="database-option-icon-fallback">
+                                            CSV
+                                        </span>
+                                    )}
                                 </div>
 
                                 <span>
@@ -534,8 +629,8 @@ export default function DatabaseSelector({
                                     POSTGRES / MYSQL
                                 ================================= */}
 
-                                {selectedDatabase !==
-                                    "sqlite" && (
+                                {selectedDatabase !== "sqlite" &&
+                                    selectedDatabase !== "csv" && (
                                     <>
                                         <div className="connection-fields">
 
@@ -730,6 +825,123 @@ export default function DatabaseSelector({
 
                                     </div>
                                 )}
+
+                                {/* =================================
+                                    CSV
+                                ================================= */}
+
+                                {selectedDatabase === "csv" && (
+                                    <div className="csv-connection-fields">
+
+                                        <div className="connection-field connection-field--full">
+                                            <label className="connection-field-label">
+                                                CSV File
+                                            </label>
+
+                                            <div
+                                                className={`csv-upload-zone${
+                                                    isCsvDragging
+                                                        ? " is-dragging"
+                                                        : ""
+                                                }${
+                                                    csvFile
+                                                        ? " has-file"
+                                                        : ""
+                                                }${
+                                                    loading
+                                                        ? " is-disabled"
+                                                        : ""
+                                                }`}
+                                                onDragOver={handleCsvDragOver}
+                                                onDragLeave={handleCsvDragLeave}
+                                                onDrop={handleCsvDrop}
+                                            >
+                                                <input
+                                                    id="csv-file-input"
+                                                    className="csv-file-input"
+                                                    type="file"
+                                                    accept=".csv,text/csv"
+                                                    onChange={handleCsvBrowse}
+                                                    disabled={loading}
+                                                />
+
+                                                {csvFile ? (
+                                                    <div className="csv-upload-file">
+                                                        <div className="csv-upload-file-icon">
+                                                            <FiFileText />
+                                                        </div>
+
+                                                        <div className="csv-upload-file-info">
+                                                            <span className="csv-upload-file-name">
+                                                                {csvFile.name}
+                                                            </span>
+
+                                                            <span className="csv-upload-file-meta">
+                                                                CSV file selected
+                                                            </span>
+                                                        </div>
+
+                                                        <button
+                                                            type="button"
+                                                            className="csv-upload-remove"
+                                                            onClick={removeCsvFile}
+                                                            disabled={loading}
+                                                            aria-label="Remove CSV file"
+                                                            title="Remove file"
+                                                        >
+                                                            <FiX />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <label
+                                                        htmlFor="csv-file-input"
+                                                        className="csv-upload-content"
+                                                    >
+                                                        <span className="csv-upload-icon">
+                                                            <FiUploadCloud />
+                                                        </span>
+
+                                                        <span className="csv-upload-title">
+                                                            Drop your CSV file here
+                                                        </span>
+
+                                                        <span className="csv-upload-subtitle">
+                                                            or{" "}
+                                                            <span className="csv-upload-browse">
+                                                                browse files
+                                                            </span>
+                                                        </span>
+
+                                                        <span className="csv-upload-hint">
+                                                            CSV files only
+                                                        </span>
+                                                    </label>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="connection-field connection-field--full">
+                                            <label className="connection-field-label">
+                                                Table Name
+                                            </label>
+
+                                            <input
+                                                name="table_name"
+                                                type="text"
+                                                value={formData.table_name}
+                                                onChange={handleChange}
+                                                placeholder="data"
+                                                disabled={loading}
+                                            />
+
+                                            <span className="connection-field-hint">
+                                                Leave empty to use "data".
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                )}
+
 
                                 {/* =================================
                                     ERROR

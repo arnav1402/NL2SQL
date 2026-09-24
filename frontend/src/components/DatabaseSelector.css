@@ -66,7 +66,7 @@
     color: #5d6a7d;
 
     font-family: var(--mono);
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 500;
 
     letter-spacing: 1.6px;
@@ -78,7 +78,7 @@
     color: #e7e9ed;
 
     font-family: var(--sans);
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 500;
 
     letter-spacing: -0.5px;
@@ -90,7 +90,7 @@
     color: #697282;
 
     font-family: var(--sans);
-    font-size: 11px;
+    font-size: 14px;
 
     line-height: 1.55;
 }
@@ -123,7 +123,7 @@
     color: #687180;
 
     font-family: var(--mono);
-    font-size: 15px;
+    font-size: 17px;
 
     cursor: pointer;
 
@@ -262,7 +262,7 @@
     color: #dfe3e9;
 
     font-family: var(--sans);
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
 
     transition: color 160ms ease;
@@ -285,7 +285,7 @@
     color: #687080;
 
     font-family: var(--mono);
-    font-size: 15px;
+    font-size: 17px;
 
     transition:
         color 160ms ease,
@@ -318,7 +318,7 @@
     color: #464f5d;
 
     font-family: var(--mono);
-    font-size: 7px;
+    font-size: 9px;
 
     letter-spacing: 0.8px;
 }
@@ -356,7 +356,7 @@
     color: #687180;
 
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 13px;
 
     cursor: pointer;
 
@@ -418,7 +418,7 @@
     color: #f4f5f7;
 
     font-family: var(--sans);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
 }
 
@@ -475,7 +475,7 @@
     color: #7b8492;
 
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 11px;
 
     letter-spacing: 0.8px;
 
@@ -507,7 +507,7 @@
     color: #f2f3f5;
 
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 14px;
 
     transition:
         border-color 140ms ease,
@@ -570,7 +570,7 @@
     color: #f87171;
 
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 13px;
 
     line-height: 1.5;
 }
@@ -590,7 +590,7 @@
 
     color: #ef4444;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -626,7 +626,7 @@
     color: #ffffff;
 
     font-family: var(--sans);
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 500;
 
     cursor: pointer;
@@ -772,4 +772,235 @@
     .connection-field--full {
         grid-column: auto;
     }
+}
+
+
+/* =========================================================
+   CSV UPLOAD
+   ========================================================= */
+
+.csv-connection-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.csv-upload-zone {
+    position: relative;
+    width: 100%;
+    min-height: 138px;
+
+    box-sizing: border-box;
+
+    border: 1px dashed rgba(33, 163, 102, 0.42);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(33, 163, 102, 0.075),
+            rgba(255, 255, 255, 0.012)
+        );
+
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.csv-upload-zone:hover,
+.csv-upload-zone.is-dragging {
+    border-color: #21a366;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(33, 163, 102, 0.13),
+            rgba(255, 255, 255, 0.018)
+        );
+}
+
+.csv-upload-zone.is-dragging {
+    box-shadow: 0 0 0 1px rgba(33, 163, 102, 0.18);
+}
+
+.csv-upload-zone.is-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.csv-upload-zone.has-file {
+    min-height: 82px;
+    border-style: solid;
+    border-color: rgba(33, 163, 102, 0.34);
+}
+
+.csv-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.csv-upload-content {
+    min-height: 138px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.csv-upload-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 9px;
+
+    border: 1px solid rgba(33, 163, 102, 0.25);
+    background: rgba(33, 163, 102, 0.09);
+
+    color: #21a366;
+    font-size: 18px;
+}
+
+.csv-upload-title {
+    color: #dfe3e9;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.csv-upload-subtitle {
+    margin-top: 4px;
+
+    color: #687180;
+    font-family: var(--sans);
+    font-size: 13px;
+}
+
+.csv-upload-browse {
+    color: #21a366;
+    font-weight: 500;
+}
+
+.csv-upload-hint {
+    margin-top: 9px;
+
+    color: #4e5664;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.csv-upload-file {
+    min-height: 82px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    padding: 14px;
+}
+
+.csv-upload-file-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 34px;
+
+    border: 1px solid rgba(33, 163, 102, 0.28);
+    background: rgba(33, 163, 102, 0.10);
+
+    color: #21a366;
+    font-size: 16px;
+}
+
+.csv-upload-file-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    margin-left: 10px;
+}
+
+.csv-upload-file-name {
+    overflow: hidden;
+
+    color: #dfe3e9;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.csv-upload-file-meta {
+    color: #5d6a7d;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.csv-upload-remove {
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 26px;
+
+    margin-left: auto;
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+
+    color: #687180;
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition:
+        color 140ms ease,
+        border-color 140ms ease,
+        background-color 140ms ease;
+}
+
+.csv-upload-remove:hover:not(:disabled) {
+    border-color: rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.07);
+    color: #f87171;
+}
+
+.csv-upload-remove:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.connection-field-hint {
+    color: #4e5664;
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.4;
 }

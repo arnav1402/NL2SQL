@@ -77,14 +77,14 @@ MARK
 ========================================================= */
 
 .workspace-error-mark {
-width: 38px;
-height: 38px;
+width: 42px;
+height: 42px;
 
 display: flex;
 align-items: center;
 justify-content: center;
 
-margin-bottom: 20px;
+margin-bottom: 22px;
 
 border: 1px solid rgba(220, 65, 65, 0.35);
 
@@ -93,12 +93,12 @@ background: rgba(110, 25, 25, 0.12);
 color: #e15d5d;
 
 font-family: var(--mono);
-font-size: 13px;
+font-size: 16px;
 }
 
 .workspace-error-mark span {
-width: 16px;
-height: 16px;
+width: 18px;
+height: 18px;
 
 display: flex;
 align-items: center;
@@ -113,12 +113,12 @@ TYPOGRAPHY
 ========================================================= */
 
 .workspace-error-eyebrow {
-margin-bottom: 9px;
+margin-bottom: 10px;
 
 color: #754a4a;
 
 font-family: var(--mono);
-font-size: 7px;
+font-size: 10px;
 letter-spacing: 1.4px;
 }
 
@@ -128,22 +128,22 @@ margin: 0;
 color: #e4e7eb;
 
 font-family: var(--sans);
-font-size: clamp(28px, 4vw, 40px);
+font-size: clamp(32px, 4.5vw, 44px);
 font-weight: 500;
 
 letter-spacing: -1.3px;
-line-height: 1.05;
+line-height: 1.08;
 }
 
 .workspace-error-page p {
 max-width: 390px;
 
-margin: 13px 0 0;
+margin: 15px 0 0;
 
 color: #69727f;
 
 font-family: var(--sans);
-font-size: 11px;
+font-size: 14px;
 line-height: 1.7;
 }
 
@@ -160,8 +160,8 @@ justify-content: space-between;
 
 box-sizing: border-box;
 
-margin-top: 24px;
-padding: 9px 10px;
+margin-top: 26px;
+padding: 11px 12px;
 
 border-top: 1px solid rgba(255, 255, 255, 0.06);
 border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -169,7 +169,7 @@ border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 color: #4c5562;
 
 font-family: var(--mono);
-font-size: 7px;
+font-size: 9px;
 letter-spacing: 0.8px;
 }
 
@@ -181,19 +181,19 @@ ACTIONS
 .workspace-error-actions {
 display: flex;
 align-items: center;
-gap: 9px;
+gap: 10px;
 
-margin-top: 20px;
+margin-top: 22px;
 }
 
 .workspace-error-primary,
 .workspace-error-secondary {
-height: 34px;
+height: 38px;
 
-padding: 0 12px;
+padding: 0 14px;
 
 font-family: var(--mono);
-font-size: 8px;
+font-size: 10px;
 
 cursor: pointer;
 
@@ -224,7 +224,7 @@ color: #ed7a7a;
 }
 
 .workspace-error-primary span {
-font-size: 11px;
+font-size: 14px;
 }
 
 .workspace-error-secondary {
@@ -257,7 +257,7 @@ bottom: 22px;
 color: #363d47;
 
 font-family: var(--mono);
-font-size: 8px;
+font-size: 10px;
 letter-spacing: 0.8px;
 }
 
@@ -276,14 +276,14 @@ z-index: 20;
 
 width: 100%;
 
-min-height: 58px;
+min-height: 62px;
 
 display: flex;
 align-items: center;
 
 box-sizing: border-box;
 
-padding: 9px 14px;
+padding: 10px 16px;
 
 border-bottom: 1px solid rgba(220, 65, 65, 0.22);
 
@@ -294,23 +294,23 @@ backdrop-filter: blur(10px);
 }
 
 .workspace-error-banner-icon {
-width: 26px;
-height: 26px;
+width: 30px;
+height: 30px;
 
-flex: 0 0 26px;
+flex: 0 0 30px;
 
 display: flex;
 align-items: center;
 justify-content: center;
 
-margin-right: 11px;
+margin-right: 12px;
 
 border: 1px solid rgba(225, 93, 93, 0.3);
 
 color: #e26767;
 
 font-family: var(--mono);
-font-size: 10px;
+font-size: 13px;
 }
 
 .workspace-error-banner-content {
@@ -323,31 +323,31 @@ flex: 1;
 color: #df7a7a;
 
 font-family: var(--mono);
-font-size: 8px;
+font-size: 10px;
 letter-spacing: 0.7px;
 }
 
 .workspace-error-banner-message {
-margin-top: 3px;
+margin-top: 4px;
 
 overflow: hidden;
 
 color: #9e6464;
 
 font-family: var(--sans);
-font-size: 9px;
+font-size: 11px;
 
 text-overflow: ellipsis;
 white-space: nowrap;
 }
 
 .workspace-error-banner-action {
-height: 29px;
+height: 32px;
 
 flex: 0 0 auto;
 
 margin-left: 14px;
-padding: 0 10px;
+padding: 0 12px;
 
 border: 1px solid rgba(225, 93, 93, 0.3);
 
@@ -356,7 +356,7 @@ background: rgba(225, 93, 93, 0.07);
 color: #dc7474;
 
 font-family: var(--mono);
-font-size: 7px;
+font-size: 9px;
 letter-spacing: 0.5px;
 
 cursor: pointer;
@@ -398,5 +398,17 @@ RESPONSIVE
 
 .workspace-error-banner-message {
     white-space: normal;
+}
+
+.workspace-error-page h1 {
+    font-size: clamp(29px, 9vw, 38px);
+}
+
+.workspace-error-page p {
+    font-size: 13px;
+}
+
+.workspace-error-footer {
+    font-size: 9px;
 }
 }
