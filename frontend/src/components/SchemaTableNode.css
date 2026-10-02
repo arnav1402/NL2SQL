@@ -1,23 +1,23 @@
 /* SchemaTableNode.css */
 .schema-view-node {
-width: 260px;
-border: 1px solid #202630;
-background: linear-gradient(180deg, rgba(18,22,29,0.98), rgba(12,15,20,0.98));
-box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-font-family: "Poppins", sans-serif;
+  width: 260px;
+  border: 1px solid #202630;
+  background: linear-gradient(180deg, rgba(18,22,29,0.98), rgba(12,15,20,0.98));
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  font-family: "Poppins", sans-serif;
 }
 
 .schema-view-header {
-height: 42px;
-display: flex;
-align-items: center;
-gap: 8px;
-padding: 0 12px;
-border-bottom: 1px solid #202630;
-color: #dce1e9;
-font-family: "JetBrains Mono", monospace;
-font-size: 11px;
-font-weight: 600;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid #202630;
+  color: #dce1e9;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .schema-view-icon { color: #3654a6; flex-shrink: 0; }
@@ -25,20 +25,20 @@ font-weight: 600;
 .schema-view-columns { display: flex; flex-direction: column; }
 
 .schema-view-row {
-height: 30px;
-display: flex;
-align-items: center;
-gap: 8px;
-padding: 0 12px;
-border-bottom: 1px solid #171b22;
-font-size: 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid #171b22;
+  font-size: 12px;
 }
 
 .schema-view-row:last-child { border-bottom: none; }
 
-.schema-view-row-icon { color: #4a5568; font-size: 11px; flex-shrink: 0; }
+.schema-view-row-icon { color: #4a5568; font-size: 13px; flex-shrink: 0; }
 .schema-view-row-name { color: #b8c0cc; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.schema-view-row-type { color: #566178; font-family: "JetBrains Mono", monospace; font-size: 9px; text-transform: uppercase; }
+.schema-view-row-type { color: #566178; font-family: "JetBrains Mono", monospace; font-size: 11px; text-transform: uppercase; }
 
 .schema-view-row.is-pk .schema-view-row-icon { color: #d6a84f; }
 .schema-view-row.is-pk .schema-view-row-name { color: #f1d9a0; font-weight: 500; }
@@ -47,8 +47,8 @@ font-size: 10px;
 .schema-view-row.is-fk .schema-view-row-name { color: #a9b8ff; }
 
 .schema-view-handle {
-width: 6px !important;
-height: 6px !important;
-background: #3654a6 !important;
-border: 1px solid #0a0d12 !important;
+  width: 6px !important;
+  height: 6px !important;
+  background: #3654a6 !important;
+  border: 1px solid #0a0d12 !important;
 }

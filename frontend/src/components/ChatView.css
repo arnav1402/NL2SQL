@@ -40,7 +40,7 @@
     margin: 0 0 7px;
     color: #596579;
     font-family: "JetBrains Mono", monospace;
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.2;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -50,7 +50,7 @@
     margin: 0;
     color: #e0e4eb;
     font-family: "Poppins", sans-serif;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 500;
     line-height: 1.2;
     letter-spacing: -0.02em;
@@ -61,7 +61,7 @@
     max-width: 620px;
     color: #626c7d;
     font-family: "Poppins", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.6;
 }
 
@@ -130,14 +130,14 @@
     background: rgba(255, 255, 255, 0.025);
     color: #566174;
     font-family: "JetBrains Mono", monospace;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .chat-empty h2 {
     margin: 0;
     color: #cfd4dc;
     font-family: "Poppins", sans-serif;
-    font-size: 21px;
+    font-size: 23px;
     font-weight: 500;
 }
 
@@ -146,7 +146,7 @@
     margin: 9px 0 24px;
     color: #59626f;
     font-family: "Poppins", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.7;
 }
 
@@ -164,7 +164,7 @@
     background: rgba(255, 255, 255, 0.02);
     color: #6c7582;
     font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
+    font-size: 13px;
     cursor: pointer;
     transition:
         background-color 140ms ease,
@@ -245,7 +245,7 @@
     background: transparent;
     color: #d9dee7;
     font-family: "Poppins", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.55;
     white-space: pre-wrap;
     word-break: break-word;
@@ -281,7 +281,7 @@
     background: #6d7787;
     color: #11151c;
     font-family: "JetBrains Mono", monospace;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1;
     cursor: pointer;
     z-index: 10;
@@ -317,7 +317,7 @@
     box-sizing: border-box;
     color: #39414d;
     font-family: "JetBrains Mono", monospace;
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.3;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -366,11 +366,11 @@
     }
 
     .chat-view-header h1 {
-        font-size: 21px;
+        font-size: 23px;
     }
 
     .chat-view-header p {
-        font-size: 13px;
+        font-size: 15px;
     }
 
     .chat-messages {
@@ -399,7 +399,7 @@
 
     .chat-suggestion-row button {
         width: 100%;
-        font-size: 12px;
+        font-size: 14px;
     }
 }
 
@@ -413,11 +413,11 @@
     }
 
     .chat-view-header h1 {
-        font-size: 20px;
+        font-size: 22px;
     }
 
     .chat-view-header p {
-        font-size: 13px;
+        font-size: 15px;
     }
 
     .chat-view-header-right {
@@ -441,7 +441,7 @@
         height: 50px;
         min-height: 50px;
         padding: 12px 52px 11px 13px !important;
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .chat-composer .chat-send {

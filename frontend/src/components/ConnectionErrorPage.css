@@ -1,21 +1,12 @@
 .connection-error-page {
-
   position: fixed;
-
   inset: 0;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   overflow: hidden;
-
   background: #080a0e;
-
   color: #e8ebef;
-
 }
 
 
@@ -26,45 +17,25 @@
 --------------------------------------------------------- */
 
 .connection-error-grid {
-
   position: absolute;
-
   inset: 0;
-
   opacity: 0.18;
-
   background-image:
-
     linear-gradient(
-
       rgba(255, 255, 255, 0.035) 1px,
-
       transparent 1px
-
     ),
-
     linear-gradient(
-
       90deg,
-
       rgba(255, 255, 255, 0.035) 1px,
-
       transparent 1px
-
     );
-
   background-size: 32px 32px;
-
   mask-image: linear-gradient(
-
     to bottom,
-
     black,
-
     transparent 85%
-
   );
-
 }
 
 
@@ -75,13 +46,9 @@
 --------------------------------------------------------- */
 
 .connection-error-content {
-
   position: relative;
-
   z-index: 2;
-
   width: min(520px, calc(100% - 32px));
-
 }
 
 
@@ -92,27 +59,17 @@
 --------------------------------------------------------- */
 
 .connection-error-brand {
-
   margin-bottom: 20px;
-
   color: #dfe3e8;
-
   font-family: var(--mono);
-
-  font-size: 15px;
-
+  font-size: 17px;
   font-weight: 600;
-
   letter-spacing: 1.2px;
-
 }
 
 .connection-error-brand i {
-
   color: #536b9c;
-
   font-style: normal;
-
 }
 
 
@@ -123,19 +80,12 @@
 --------------------------------------------------------- */
 
 .connection-error-panel {
-
   padding: 38px;
-
   border: 1px solid rgba(255, 255, 255, 0.10);
-
   background: rgba(12, 15, 21, 0.92);
-
   box-shadow:
-
     0 25px 80px rgba(0, 0, 0, 0.45);
-
   text-align: center;
-
 }
 
 
@@ -146,17 +96,11 @@
 --------------------------------------------------------- */
 
 .connection-error-eyebrow {
-
   margin-bottom: 24px;
-
   color: #6b7483;
-
   font-family: var(--mono);
-
-  font-size: 11px;
-
+  font-size: 13px;
   letter-spacing: 1.7px;
-
 }
 
 
@@ -167,29 +111,17 @@
 --------------------------------------------------------- */
 
 .connection-error-icon {
-
   width: 48px;
-
   height: 48px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   margin: 0 auto 16px;
-
   border: 1px solid rgba(220, 70, 70, 0.38);
-
   background: rgba(150, 35, 35, 0.12);
-
   color: #ff6868;
-
   font-family: var(--mono);
-
-  font-size: 25px;
-
+  font-size: 27px;
 }
 
 
@@ -200,17 +132,11 @@
 --------------------------------------------------------- */
 
 .connection-error-code {
-
   margin-bottom: 9px;
-
   color: #b86666;
-
   font-family: var(--mono);
-
-  font-size: 11px;
-
+  font-size: 13px;
   letter-spacing: 1.3px;
-
 }
 
 
@@ -221,35 +147,21 @@
 --------------------------------------------------------- */
 
 .connection-error-panel h1 {
-
   margin: 0;
-
   color: #e7eaee;
-
   font-family: var(--sans);
-
-  font-size: 29px;
-
+  font-size: 31px;
   font-weight: 500;
-
   letter-spacing: -0.6px;
-
 }
 
 .connection-error-panel p {
-
   max-width: 390px;
-
   margin: 12px auto 0;
-
   color: #737d8c;
-
   font-family: var(--sans);
-
-  font-size: 15px;
-
+  font-size: 17px;
   line-height: 1.65;
-
 }
 
 
@@ -260,91 +172,53 @@
 --------------------------------------------------------- */
 
 .connection-error-actions {
-
   display: flex;
-
   justify-content: center;
-
   gap: 10px;
-
   margin-top: 28px;
-
 }
 
 .connection-error-actions button {
-
   height: 42px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 10px;
-
   padding: 0 18px;
-
   font-family: var(--mono);
-
-  font-size: 12px;
-
+  font-size: 14px;
   cursor: pointer;
-
   transition:
-
     background-color 150ms ease,
-
     border-color 150ms ease,
-
     color 150ms ease,
-
     transform 150ms ease;
-
 }
 
 .connection-error-retry {
-
   border: 1px solid rgba(255, 255, 255, 0.10);
-
   background: #11151c;
-
   color: #c4cad3;
-
 }
 
 .connection-error-retry:hover {
-
   background: #171c24;
-
   border-color: rgba(255, 255, 255, 0.18);
-
   color: #fff;
-
 }
 
 .connection-error-home {
-
   border: 1px solid #3654a6;
-
   background: #3654a6;
-
   color: #fff;
-
 }
 
 .connection-error-home:hover {
-
   background: #4263ba;
-
   border-color: #4263ba;
-
 }
-
 .connection-error-actions button:active {
-
   transform: translateY(1px);
-
 }
 
 
@@ -355,45 +229,27 @@
 --------------------------------------------------------- */
 
 .connection-error-footer {
-
   display: flex;
-
   align-items: center;
-
   gap: 9px;
-
   margin-top: 17px;
-
   color: #414a57;
-
   font-family: var(--mono);
-
-  font-size: 10px;
-
+  font-size: 12px;
   letter-spacing: 0.9px;
-
 }
 
 .connection-error-status-dot {
-
   width: 5px;
-
   height: 5px;
-
   border-radius: 50%;
-
   background: #a85d5d;
-
 }
 
 .connection-error-divider {
-
   width: 1px;
-
   height: 11px;
-
   background: rgba(255, 255, 255, 0.10);
-
 }
 
 
@@ -404,49 +260,26 @@
 --------------------------------------------------------- */
 
 @media (max-width: 560px) {
-
   .connection-error-panel {
-
     padding: 30px 22px;
-
   }
-
   .connection-error-actions {
-
     flex-direction: column;
-
   }
-
   .connection-error-actions button {
-
     width: 100%;
-
   }
-
   .connection-error-footer {
-
     flex-wrap: wrap;
-
-    font-size: 9px;
-
+    font-size: 11px;
   }
-
   .connection-error-panel h1 {
-
-    font-size: 25px;
-
+    font-size: 27px;
   }
-
   .connection-error-panel p {
-
-    font-size: 14px;
-
+    font-size: 16px;
   }
-
   .connection-error-brand {
-
-    font-size: 14px;
-
+    font-size: 16px;
   }
-
 }

@@ -51,7 +51,7 @@ margin-bottom: 8px;
 color: #53617a;
 
 font-family: var(--mono);
-font-size: 10px;
+font-size: 12px;
 font-weight: 500;
 
 letter-spacing: 0.16em;
@@ -63,7 +63,7 @@ margin: 0;
 
 color: #e2e6ed;
 
-font-size: 22px;
+font-size: 24px;
 font-weight: 500;
 
 letter-spacing: -0.02em;
@@ -75,7 +75,7 @@ margin: 6px 0 0;
 
 color: #5e6878;
 
-font-size: 14px;
+font-size: 16px;
 line-height: 1.5;
 }
 
@@ -117,7 +117,7 @@ margin-bottom: 4px;
 color: #4e596a;
 
 font-family: var(--mono);
-font-size: 9px;
+font-size: 11px;
 letter-spacing: 0.12em;
 }
 
@@ -128,7 +128,7 @@ display: block;
 color: #9ba5b5;
 
 font-family: var(--mono);
-font-size: 12px;
+font-size: 14px;
 }
 
 
@@ -249,7 +249,7 @@ margin-bottom: 8px;
 
 color: #8791a0;
 
-font-size: 15px;
+font-size: 17px;
 font-weight: 500;
 
 letter-spacing: 0.01em;
@@ -261,7 +261,7 @@ margin: 0;
 
 color: #4f5969;
 
-font-size: 13px;
+font-size: 15px;
 line-height: 1.6;
 }
 
@@ -287,7 +287,7 @@ background: #090c11;
 color: #46505f;
 
 font-family: var(--mono);
-font-size: 9px;
+font-size: 11px;
 letter-spacing: 0.12em;
 
 flex-shrink: 0;
@@ -329,27 +329,27 @@ RESPONSIVE
 }
 
 .database-canvas__eyebrow {
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .database-canvas__title {
-    font-size: 20px;
+    font-size: 22px;
 }
 
 .database-canvas__description {
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .database-canvas__empty-title {
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .database-canvas__empty-text {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .database-canvas__footer {
-    font-size: 8px;
+    font-size: 10px;
 }
 
 }

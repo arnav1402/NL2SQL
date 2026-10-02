@@ -52,7 +52,7 @@
         "Segoe UI",
         sans-serif;
 
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.6;
 
     word-break: break-word;
@@ -171,7 +171,7 @@
         "Segoe UI",
         sans-serif;
 
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.5;
 
     caret-color: #6f89c2;
@@ -315,7 +315,7 @@
         "Fira Code",
         monospace;
 
-    font-size: 9px;
+    font-size: 11px;
 
     letter-spacing: 0.07em;
 
@@ -376,7 +376,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
 
     box-shadow:
@@ -402,7 +402,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
 
     letter-spacing: 0.14em;
@@ -475,7 +475,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
 
     letter-spacing: 0.12em;
@@ -486,7 +486,7 @@
 .chat-card-status {
     color: #46516a;
 
-    font-size: 12px;
+    font-size: 14px;
 
     letter-spacing: 0.1em;
 }
@@ -515,7 +515,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 
     letter-spacing: 0.06em;
 
@@ -567,7 +567,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 9px;
+    font-size: 11px;
 
     letter-spacing: 0.12em;
 
@@ -590,7 +590,7 @@
     background: #151b24;
     color: #8a96aa;
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.01em;
     text-transform: none;
@@ -643,7 +643,7 @@
         "Fira Code",
         monospace;
 
-    font-size: 14px;
+    font-size: 16px;
 
     line-height: 1.75;
 
@@ -724,7 +724,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 
     letter-spacing: 0.12em;
 
@@ -738,7 +738,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -780,7 +780,7 @@
         "Fira Code",
         monospace;
 
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .chat-table th {
@@ -799,7 +799,7 @@
 
     text-align: left;
 
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
 
     letter-spacing: 0.05em;
@@ -821,7 +821,7 @@
 
     color: #a3adbd;
 
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.55;
 
     white-space: nowrap;
@@ -883,19 +883,19 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 11px;
+    font-size: 13px;
 
     text-align: center;
 }
 
 .chat-empty-result-title {
     color: #78859a;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .chat-empty-result-description {
     color: #454f60;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -920,7 +920,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .chat-result-truncated-dot {
@@ -948,7 +948,7 @@
 
     color: #aeb7c5;
 
-    font-size: 15px;
+    font-size: 17px;
 
     line-height: 1.75;
 }
@@ -967,7 +967,7 @@
 }
 
 .chat-schema-content h1 {
-    font-size: 19px;
+    font-size: 21px;
 }
 
 .chat-schema-content h2 {
@@ -975,7 +975,7 @@
 
     border-bottom: 1px solid #202630;
 
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .chat-schema-content h3 {
@@ -987,7 +987,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 15px;
+    font-size: 17px;
 
     letter-spacing: 0.08em;
 
@@ -1023,7 +1023,7 @@
     background: #0b0e13;
 
     color: #91a2c0;
-    font-size: 14px;
+    font-size: 16px;
     font-family:
         "JetBrains Mono",
         monospace;
@@ -1065,7 +1065,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .chat-schema-content th {
@@ -1078,13 +1078,13 @@
     color: #718098;
 
     text-align: left;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 500;
 }
 
 .chat-schema-content td {
     padding: 8px 10px;
-    font-size: 15px;
+    font-size: 17px;
     border: 1px solid #1d242e;
 
     color: #9da8b8;
@@ -1114,7 +1114,7 @@
 
     color: #aeb6c4;
 
-    font-size: 14px;
+    font-size: 16px;
 
     line-height: 1.75;
 }
@@ -1140,7 +1140,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 
     letter-spacing: 0.12em;
 
@@ -1155,7 +1155,7 @@
 
     color: #7d8798;
 
-    font-size: 12px;
+    font-size: 14px;
 
     line-height: 1.6;
 }
@@ -1174,7 +1174,7 @@
 
     color: #aeb6c4;
 
-    font-size: 14px;
+    font-size: 16px;
 
     line-height: 1.7;
 }
@@ -1214,7 +1214,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 
     letter-spacing: 0.1em;
 
@@ -1239,13 +1239,13 @@
 
     color: #ff5757;
 
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .chat-error-code {
     color: #814646;
 
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .chat-error-text {
@@ -1255,7 +1255,7 @@
 
     color: #c97979;
 
-    font-size: 13px;
+    font-size: 15px;
 
     line-height: 1.6;
 }
@@ -1277,7 +1277,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 
     line-height: 1.6;
 }
@@ -1297,7 +1297,7 @@
         "JetBrains Mono",
         monospace;
 
-    font-size: 10px;
+    font-size: 12px;
 
     cursor: pointer;
 
@@ -1384,7 +1384,7 @@
     }
 
     .chat-output-button {
-        font-size: 10px;
+        font-size: 12px;
         padding: 4px 7px;
     }
 
@@ -1393,34 +1393,34 @@
     }
 
     .chat-input-footer {
-        font-size: 6px;
+        font-size: 8px;
     }
 }
 
 .chat-message__content {
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.7;
 }
 
 .chat-message__content p {
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.7;
 }
 
 .chat-message__content h1 {
-    font-size: 21px;
+    font-size: 23px;
 }
 
 .chat-message__content h2 {
-    font-size: 19px;
+    font-size: 21px;
 }
 
 .chat-message__content h3 {
-    font-size: 17px;
+    font-size: 19px;
 }
 
 .chat-message__content li {
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.7;
 }
 
@@ -1429,19 +1429,19 @@
 }
 
 .chat-message__content code {
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .chat-message__content pre {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.6;
 }
 
 .chat-message__content table {
-    font-size: 15px;
+    font-size: 17px;
 }
 
 .chat-message__content th,
 .chat-message__content td {
-    font-size: 14px;
+    font-size: 16px;
 }

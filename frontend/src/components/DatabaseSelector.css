@@ -66,7 +66,7 @@
     color: #5d6a7d;
 
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
 
     letter-spacing: 1.6px;
@@ -78,7 +78,7 @@
     color: #e7e9ed;
 
     font-family: var(--sans);
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 500;
 
     letter-spacing: -0.5px;
@@ -90,7 +90,7 @@
     color: #697282;
 
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 16px;
 
     line-height: 1.55;
 }
@@ -123,7 +123,7 @@
     color: #687180;
 
     font-family: var(--mono);
-    font-size: 17px;
+    font-size: 19px;
 
     cursor: pointer;
 
@@ -262,7 +262,7 @@
     color: #dfe3e9;
 
     font-family: var(--sans);
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 500;
 
     transition: color 160ms ease;
@@ -285,7 +285,7 @@
     color: #687080;
 
     font-family: var(--mono);
-    font-size: 17px;
+    font-size: 19px;
 
     transition:
         color 160ms ease,
@@ -318,7 +318,7 @@
     color: #464f5d;
 
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 11px;
 
     letter-spacing: 0.8px;
 }
@@ -356,7 +356,7 @@
     color: #687180;
 
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 15px;
 
     cursor: pointer;
 
@@ -418,7 +418,7 @@
     color: #f4f5f7;
 
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
 }
 
@@ -475,7 +475,7 @@
     color: #7b8492;
 
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 13px;
 
     letter-spacing: 0.8px;
 
@@ -507,7 +507,7 @@
     color: #f2f3f5;
 
     font-family: var(--mono);
-    font-size: 14px;
+    font-size: 16px;
 
     transition:
         border-color 140ms ease,
@@ -570,7 +570,7 @@
     color: #f87171;
 
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 15px;
 
     line-height: 1.5;
 }
@@ -590,7 +590,7 @@
 
     color: #ef4444;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
 }
 
@@ -626,7 +626,7 @@
     color: #ffffff;
 
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
 
     cursor: pointer;
@@ -872,13 +872,13 @@
     background: rgba(33, 163, 102, 0.09);
 
     color: #21a366;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .csv-upload-title {
     color: #dfe3e9;
     font-family: var(--sans);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
 }
 
@@ -887,7 +887,7 @@
 
     color: #687180;
     font-family: var(--sans);
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .csv-upload-browse {
@@ -900,7 +900,7 @@
 
     color: #4e5664;
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
@@ -929,7 +929,7 @@
     background: rgba(33, 163, 102, 0.10);
 
     color: #21a366;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .csv-upload-file-info {
@@ -946,7 +946,7 @@
 
     color: #dfe3e9;
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -955,7 +955,7 @@
 .csv-upload-file-meta {
     color: #5d6a7d;
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.4px;
     text-transform: uppercase;
 }
@@ -977,7 +977,7 @@
     background: rgba(255, 255, 255, 0.02);
 
     color: #687180;
-    font-size: 15px;
+    font-size: 17px;
 
     cursor: pointer;
 
@@ -1001,6 +1001,6 @@
 .connection-field-hint {
     color: #4e5664;
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.4;
 }

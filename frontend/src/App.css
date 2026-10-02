@@ -142,7 +142,7 @@ button {
   opacity: 0.32;
 
   font-family: var(--mono);
-  font-size: 13.8px;
+  font-size: 15.8px;
   letter-spacing: 0.3px;
 
   white-space: nowrap;
@@ -170,7 +170,7 @@ button {
   align-items: baseline;
 
   font-family: "Sora", sans-serif;
-  font-size: 23.8px;
+  font-size: 25.8px;
   font-weight: 600;
   letter-spacing: -0.8px;
 }
@@ -178,7 +178,7 @@ button {
 .brand i {
   color: var(--cobalt);
   font-style: normal;
-  font-size: 30px;
+  font-size: 32px;
   line-height: 0;
 }
 
@@ -194,7 +194,7 @@ button {
   color: var(--gray-400);
 
   font-family: "Poppins", sans-serif;
-  font-size: 11.2px;
+  font-size: 13.2px;
   font-weight: 500;
 
   letter-spacing: 1.8px;
@@ -247,7 +247,7 @@ button {
   color: var(--gray-300);
 
   font-family: "Sora", sans-serif;
-  font-size: 15px;
+  font-size: 17px;
 
   cursor: pointer;
 
@@ -291,7 +291,7 @@ button {
   margin-bottom: -24px;
   color: var(--gray-200);
   font-family: "Sora", sans-serif;
-  font-size: 16.2px;
+  font-size: 18.2px;
   font-weight: 600;
   letter-spacing: 3px;
 }
@@ -299,7 +299,7 @@ button {
 .hero-wordmark i {
   color: var(--cobalt-bright);
   font-style: normal;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 0;
 }
 
@@ -309,7 +309,7 @@ button {
   color: var(--gray-300);
 
   font-family: "Poppins", sans-serif;
-  font-size: 11.2px;
+  font-size: 13.2px;
   font-weight: 500;
 
   letter-spacing: 2.8px;
@@ -321,7 +321,7 @@ button {
   color: var(--white);
 
   font-family: "Sora", sans-serif;
-  font-size: clamp(38px, 3.4vw, 54px);
+  font-size: clamp(40px, 3.4vw, 56px);
   font-weight: 600;
 
   line-height: 1.1;
@@ -339,7 +339,7 @@ button {
 
   color: var(--gray-300);
 
-  font-size: 16.2px;
+  font-size: 18.2px;
   font-weight: 400;
 
   line-height: 1.85;
@@ -368,7 +368,7 @@ button {
   color: var(--white);
 
   font-family: "Poppins", sans-serif;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 500;
 
   letter-spacing: 0.2px;
@@ -422,7 +422,7 @@ button {
 
 .button-arrow {
   font-family: "Sora", sans-serif;
-  font-size: 21.2px;
+  font-size: 23.2px;
 
   transition: transform 220ms ease;
 }
@@ -539,7 +539,7 @@ button {
 
   color: var(--gray-300);
   font-family: var(--mono);
-  font-size: 12.5px;
+  font-size: 14.5px;
   letter-spacing: 0.4px;
 }
 
@@ -552,7 +552,7 @@ button {
   gap: 10px;
 
   font-family: var(--mono);
-  font-size: 16.2px;
+  font-size: 18.2px;
   line-height: 1.6;
 }
 
@@ -626,7 +626,7 @@ button {
   text-align: center;
 
   color: var(--gray-400);
-  font-size: 16.2px;
+  font-size: 18.2px;
 
   opacity: 0;
   transition: opacity 300ms ease;
@@ -673,7 +673,7 @@ button {
 
   color: var(--gray-400);
   font-family: var(--mono);
-  font-size: 11.2px;
+  font-size: 13.2px;
   font-weight: 500;
   letter-spacing: 1.4px;
 }
@@ -683,7 +683,7 @@ button {
 
   color: var(--gray-100);
   font-family: var(--mono);
-  font-size: 13.8px;
+  font-size: 15.8px;
   line-height: 1.7;
 
   white-space: pre;
@@ -699,7 +699,7 @@ button {
   border-spacing: 0;
 
   font-family: var(--mono);
-  font-size: 13.8px;
+  font-size: 15.8px;
   line-height: 1.4;
 
   color: var(--gray-100);
@@ -715,7 +715,7 @@ button {
   color: #aeb6c4;
   background: rgba(255, 255, 255, 0.035);
 
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 500;
   letter-spacing: 0.25px;
   text-align: left;
@@ -736,7 +736,7 @@ button {
   color: #d7dce5;
   background: transparent;
 
-  font-size: 13.8px;
+  font-size: 15.8px;
   font-weight: 400;
   white-space: nowrap;
 
@@ -779,7 +779,7 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.08);
 
   color: var(--gray-200);
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.6;
 
   opacity: 0;
@@ -797,7 +797,7 @@ button {
 .conclusion-check {
   flex-shrink: 0;
   color: var(--success);
-  font-size: 15px;
+  font-size: 17px;
 }
 
 /* ---------- process section ---------- */
@@ -818,7 +818,7 @@ button {
 
   color: var(--white);
   font-family: "Sora", sans-serif;
-  font-size: clamp(24px, 2.4vw, 32px);
+  font-size: clamp(26px, 2.4vw, 34px);
   font-weight: 600;
   letter-spacing: -0.8px;
   line-height: 1.25;
@@ -843,7 +843,7 @@ button {
 
   color: var(--cobalt-bright);
   font-family: var(--mono);
-  font-size: 13.8px;
+  font-size: 15.8px;
   letter-spacing: 1.2px;
 }
 
@@ -852,7 +852,7 @@ button {
 
   color: var(--white);
   font-family: "Sora", sans-serif;
-  font-size: 22.5px;
+  font-size: 24.5px;
   font-weight: 600;
 }
 
@@ -861,7 +861,7 @@ button {
   max-width: 280px;
 
   color: var(--gray-300);
-  font-size: 15.6px;
+  font-size: 17.6px;
   line-height: 1.75;
 }
 
@@ -899,7 +899,7 @@ button {
 
   color: var(--gray-400);
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
 
   letter-spacing: 1.4px;
@@ -991,7 +991,7 @@ button {
   }
 
   .hero-copy h1 {
-    font-size: 47.5px;
+    font-size: 49.5px;
     letter-spacing: -2px;
   }
 
@@ -1024,7 +1024,7 @@ button {
   .status-line {
     left: 20px;
     bottom: 18px;
-    font-size: 8.8px;
+    font-size: 10.8px;
   }
 
   .footer-mark {

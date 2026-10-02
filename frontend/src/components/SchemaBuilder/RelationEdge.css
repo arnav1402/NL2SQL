@@ -1,3 +1,4 @@
+
 .relation-edge-label {
     position: absolute;
     display: inline-flex;
@@ -17,7 +18,7 @@
         Consolas,
         "Liberation Mono",
         monospace;
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0.06em;
@@ -37,7 +38,7 @@
     color: #7592ff;
 }
 
-.relation-edge-label--required:hover {
+.relation-edge-label--required\:hover {
     border-color: #4c6fff;
     background: #17213a;
     color: #9bb0ff;
@@ -51,7 +52,7 @@
     color: #7e8da7;
 }
 
-.relation-edge-label--optional:hover {
+.relation-edge-label--optional\:hover {
     border-color: #657590;
     background: #171d28;
     color: #a0aec4;
@@ -84,7 +85,7 @@
     cursor: pointer;
 }
 
-.relation-edge-label-main:hover {
+.relation-edge-label-main\:hover {
     color: inherit;
 }
 
@@ -125,7 +126,7 @@
         "SFMono-Regular",
         Consolas,
         monospace;
-    font-size: 6px;
+    font-size: 8px;
     font-weight: 700;
     letter-spacing: 0.04em;
     line-height: 1;
@@ -151,7 +152,7 @@
     background: #21171c;
     color: #bd6c79;
     font-family: Arial, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1;
     cursor: pointer;
     pointer-events: all;
@@ -161,18 +162,18 @@
         color 120ms ease;
 }
 
-.relation-edge-delete:hover {
+.relation-edge-delete\:hover {
     border-color: #a85b6a;
     background: #321b22;
     color: #ef9aa7;
 }
 
-.relation-edge-label:focus-within {
+.relation-edge-label\:focus-within {
     outline: 1px solid #6d8cff;
     outline-offset: 2px;
 }
 
-.relation-edge-label button:focus-visible {
+.relation-edge-label button\:focus-visible {
     outline: 1px solid #6d8cff;
     outline-offset: 2px;
 }
@@ -251,7 +252,7 @@
         min-width: 70px;
         min-height: 22px;
         padding: 3px 6px;
-        font-size: 7px;
+        font-size: 9px;
     }
 
     .relation-edge-dot {
@@ -261,7 +262,7 @@
     }
 
     .relation-edge-cascade {
-        font-size: 5.5px;
+        font-size: 7.5px;
     }
 
     .relation-edge-delete {
@@ -270,3 +271,4 @@
         flex-basis: 17px;
     }
 }
+
